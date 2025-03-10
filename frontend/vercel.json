@@ -4,7 +4,7 @@
     ],
     "builds": [
       {
-        "src": "dist/**",
+        "src": "dist/youtube-shorts-ui/**",
         "use": "@vercel/static"
       }
     ]

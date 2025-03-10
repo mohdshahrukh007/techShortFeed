@@ -106,11 +106,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         thumbnail: short.url,
         views: short.views,
         id: short.videoId,
-        safeUrl: this.getSafeURL(short.videoId) // Cache Safe URL here
+        safeUrl: this.getSafeURL(short.videoId), // Cache Safe URL here
       }));
     });
   }
-  
+
   // fetchShorts(filterSearch?: any): void {
   //   const searchUrl = this.buildQueryUrl(filterSearch);
   //   // "snippet&q=technology|programming|software|coding|AI|machine%20learning|web%20development";
@@ -123,12 +123,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   //       id: short.videoId
   //     }));
   //   });
-    // this.videos = videoId.map((item: any) => ({
-    //   id: item.id.videoId,
-    //   title: item.snippet?.title,
-    //   tags: item.snippet?.tags || [],
-    //   thumbnail: item.snippet?.thumbnails.medium.url,
-    // }));
+  // this.videos = videoId.map((item: any) => ({
+  //   id: item.id.videoId,
+  //   title: item.snippet?.title,
+  //   tags: item.snippet?.tags || [],
+  //   thumbnail: item.snippet?.thumbnails.medium.url,
+  // }));
   // }
 
   // ✅ Handle Swipe Gestures on Mobile
@@ -151,7 +151,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.videos = this.videos?.filter((video: any) => {
       // Filter by technology
       return (
-        (!filters.category || video.title.includes(filters.category)) 
+        !filters.category || video.title.includes(filters.category)
         // &&
         // (!filters.skillLevel || video.title === filters.skillLevel) &&
         // (!filters.contentType || video.title.includes(filters.contentType)) &&
@@ -203,8 +203,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ✅ Get Safe YouTube URL
   getSafeURL(id: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-    );
+    let url = this.sanitizer.bypassSecurityTrustResourceUrl(id);
+    if (id) {
+      url = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+      );
+    }
+    return url;
   }
 }
