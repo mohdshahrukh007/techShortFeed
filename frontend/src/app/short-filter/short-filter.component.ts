@@ -49,45 +49,6 @@ export class ShortFilterComponent implements OnInit {
     return video.id;
   }
   ngOnInit(): void {
-    // Mock data - in a real app, this would come from a service
-    // this.videos = [
-    //   {
-    //     id: 1,
-    //     title: '5 React.js Hooks Every Developer Should Know',
-    //     creator: 'TechGuru',
-    //     creatorAvatar: 'assets/avatars/tech-guru.jpg',
-    //     skillLevel: 'intermediate',
-    //     techTags: ['React', 'JavaScript', 'Web Dev'],
-    //     likes: 24000,
-    //     dislikes: 156,
-    //     comments: 345,
-    //     thumbnailUrl: 'assets/thumbnails/react-hooks.jpg'
-    //   },
-    //   {
-    //     id: 2,
-    //     title: 'Docker in 60 Seconds - Essential Commands',
-    //     creator: 'DevOpsDaily',
-    //     creatorAvatar: 'assets/avatars/devops-daily.jpg',
-    //     skillLevel: 'beginner',
-    //     techTags: ['Docker', 'DevOps', 'CLI'],
-    //     likes: 15000,
-    //     dislikes: 82,
-    //     comments: 213,
-    //     thumbnailUrl: 'assets/thumbnails/docker-commands.jpg'
-    //   },
-    //   {
-    //     id: 3,
-    //     title: 'Advanced TensorFlow Techniques for Computer Vision',
-    //     creator: 'AI Explorer',
-    //     creatorAvatar: 'assets/avatars/ai-explorer.jpg',
-    //     skillLevel: 'advanced',
-    //     techTags: ['TensorFlow', 'AI/ML', 'Computer Vision'],
-    //     likes: 32000,
-    //     dislikes: 145,
-    //     comments: 502,
-    //     thumbnailUrl: 'assets/thumbnails/tensorflow-cv.jpg'
-    //   }
-    // ];
     this.feedService.setFilter({ category: "Tech", tag: "AI" });
   }
   selectTechnology(tech: string): void {
@@ -101,7 +62,6 @@ export class ShortFilterComponent implements OnInit {
       contentType: this.selectedContentType,
       maxDuration: this.maxDuration,
     };
-
     this.feedService.setFilter(filters);
   }
 

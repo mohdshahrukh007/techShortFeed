@@ -6,7 +6,7 @@
       {
         "src": "dist/youtube-shorts-ui/**",
         "use": "@vercel/static"
-      }
+      } 
     ]
   }
   

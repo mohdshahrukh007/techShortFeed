@@ -62,8 +62,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filterSubscription = this.feedService
       .getFilter()
       .subscribe((filter) => {
-        this.applyFilters(filter);
-        this.fetchShorts(filter);
+        if (filter) {
+          this.applyFilters(filter);
+          this.fetchShorts(filter);
+        }
       });
   }
   ngAfterViewInit(): void {
@@ -82,55 +84,24 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       duration = "long";
     }
-    //  const url =
-    //   `https://www.googleapis.com/youtube/v3/search?part=snippet` +
-    //   `&q=${encodeURIComponent(searchQuery)}` +
-    //   `&type=video` +
-    //   `&videoDuration=short` + // ✅ Filter for Shorts
-    //   `&maxResults=10` +
-    //   `&videoDefinition=high` +
-    //   `&order=relevance` +
-    //   `&safeSearch=moderate` +
-    //   `&relevanceLanguage=en` +
-    //   `&regionCode=US` +
-    //   `&videoEmbeddable=true` +
-    //   `&key=${this.apiKey}`;
     return searchQuery;
   }
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      this.videos = res.videos.map((short: any) => ({
-        title: short.title,
-        url: short.url || [],
-        thumbnail: short.url,
-        views: short.views,
-        id: short.videoId,
-        safeUrl: this.getSafeURL(short.videoId), // Cache Safe URL here
-      }));
+      this.videos = res.videos
+        .filter((short: any) => short.videoId) // ✅ Only include videos with a valid ID
+        .map((short: any) => ({
+          title: short.title,
+          url: short.url || [],
+          thumbnail: short.url,
+          views: short.views,
+          id: short.videoId,
+          safeUrl: this.getSafeURL(short.videoId), // ✅ Cache Safe URL here
+        }));
     });
   }
-
-  // fetchShorts(filterSearch?: any): void {
-  //   const searchUrl = this.buildQueryUrl(filterSearch);
-  //   // "snippet&q=technology|programming|software|coding|AI|machine%20learning|web%20development";
-  //   this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-  //     this.videos = res.videos.map((short: any) => ({
-  //       title: short.title,
-  //       url: short.url || [],
-  //       thumbnail: short.url,
-  //       views: short.views,
-  //       id: short.videoId
-  //     }));
-  //   });
-  // this.videos = videoId.map((item: any) => ({
-  //   id: item.id.videoId,
-  //   title: item.snippet?.title,
-  //   tags: item.snippet?.tags || [],
-  //   thumbnail: item.snippet?.thumbnails.medium.url,
-  // }));
-  // }
-
+  
   // ✅ Handle Swipe Gestures on Mobile
   setupSwipeGestures(): void {
     const container = document.querySelector(
