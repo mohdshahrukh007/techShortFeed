@@ -1,0 +1,28 @@
+# Angular specific files
+.angular/
+dist/
+node_modules/
+tmp/
+out-tsc/
+coverage/
+
+# Environment files
+src/environments/*.ts
+
+# Logs and system files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vercel

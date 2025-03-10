@@ -1,0 +1,25 @@
+<app-short-filter ></app-short-filter>
+<div class="video-container">
+  <div id="videoContainer" class="video-wrapper">
+    <div
+      *ngFor="let video of videos; trackBy: trackByFn let i = index"
+      #videoItem
+      class="shorts-container"
+      [attr.data-video-id]="video.id"
+    >
+      <div class="iframe-wrapper">
+        <iframe
+          [src]="video.safeUrl"
+          [style.height]="iframeHeight"
+          width="100%"
+          frameborder="0"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+        <div class="iframe-overlay"></div>
+      </div>
+      <!-- <div class="video-title">{{ video.title }}</div> -->
+    </div>
+  </div>
+</div>
