@@ -148,13 +148,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     return video.id;
   }
   applyFilters(filters: any): void {
-    this.videos = this.videoItems?.filter((video: any) => {
+    this.videos = this.videos?.filter((video: any) => {
       // Filter by technology
       return (
-        (!filters.category || video.techTags.includes(filters.category)) &&
-        (!filters.skillLevel || video.skillLevel === filters.skillLevel) &&
-        (!filters.contentType || video.title.includes(filters.contentType)) &&
-        (!filters.maxDuration || video.duration <= filters.maxDuration)
+        (!filters.category || video.title.includes(filters.category)) 
+        // &&
+        // (!filters.skillLevel || video.title === filters.skillLevel) &&
+        // (!filters.contentType || video.title.includes(filters.contentType)) &&
+        // (!filters.maxDuration || video.title <= filters.maxDuration)
       );
       // Filter by skill level
       // if (video.skillLevel !== filterObj?.selectedSkillLevel) {
