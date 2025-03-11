@@ -149,7 +149,7 @@ const getShortViaScrap = async (keyword) => {
       let url = video.querySelector("#thumbnail")?.href || "";
       const videoId = url.match(/v=([^&]+)/)?.[1];
       if (videoId) {
-        url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+        url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
       }
       const views =
         video.querySelector("#metadata-line span")?.innerText || "No views";
