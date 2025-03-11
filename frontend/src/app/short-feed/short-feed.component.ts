@@ -83,8 +83,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           if (iframe) {
             if (entry.isIntersecting) {
               // ✅ Start video when it comes into view
-              const videoId = iframe.getAttribute("data-id") || '';
-              iframe.src = this.getSafeURL(videoId).toString()
+              const videoId = iframe.getAttribute("data-id");
+              iframe.src =`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
             } else {
               // ✅ Stop video when it leaves the view
               iframe.src = "";
