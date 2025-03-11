@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(
   {
-    origin:["https://vercel.com/mohdshahrukh007s-projects/tech-short-5kzi/"],
+    origin:["https://tech-short-5kzi-lzquvq3pn-mohdshahrukh007s-projects.vercel.app/"],
     methods:["POST","GET"],
     credentials:true
 
@@ -21,7 +21,7 @@ const setContext = (req, res, next) => {
 };
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
-app.use("https://vercel.com/mohdshahrukh007s-projects/tech-short-5kzi/api", sampleRoutes);
+app.use("https://tech-short-5kzi-lzquvq3pn-mohdshahrukh007s-projects.vercel.app/api", sampleRoutes);
 // app.use("/api", sampleRoutes);
 
 app.listen(PORT, () => {
