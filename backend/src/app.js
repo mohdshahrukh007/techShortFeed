@@ -20,7 +20,7 @@ const setContext = (req, res, next) => {
 };
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
-app.use("/", sampleRoutes);
+app.use("https://tech-short-5kzi.vercel.app/", sampleRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
