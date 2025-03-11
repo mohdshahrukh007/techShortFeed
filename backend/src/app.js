@@ -7,7 +7,7 @@ app.use(express.json());
   
 app.use(cors(
   {
-    origin:["https://tech-short-5kzi.vercel.app/"],
+    origin:["https://tech-short-5kzi-kmsgmsg6x-mohdshahrukh007s-projects.vercel.app/"],
     methods:["POST","GET"],
     credentials:true
 
@@ -20,8 +20,8 @@ const setContext = (req, res, next) => {
 };
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
-app.use("https://tech-short-5kzi.vercel.app/", sampleRoutes);
-app.use("/api", sampleRoutes);
+app.use("https://tech-short-5kzi-kmsgmsg6x-mohdshahrukh007s-projects.vercel.app/api", sampleRoutes);
+// app.use("/api", sampleRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
