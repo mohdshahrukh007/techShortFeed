@@ -7,7 +7,7 @@ import { catchError, map, throwError } from "rxjs";
 })
 export class ShortService {
   private twitterUrl = "http://localhost:3000/search?topic=";
-  private ytUrl = "https://vercel.com/mohdshahrukh007s-projects/tech-short-5kzi/api/shorts?query=";
+  private ytUrl = "https://tech-short-5kzi-lzquvq3pn-mohdshahrukh007s-projects.vercel.app/api/shorts?query=";
 
   constructor(private http: HttpClient) {}
 
