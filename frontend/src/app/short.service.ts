@@ -7,7 +7,7 @@ import { catchError, map, throwError } from "rxjs";
 })
 export class ShortService {
   private twitterUrl = "http://localhost:3000/search?topic=";
-  private ytUrl = "http://localhost:3000/shorts?query=";
+  private ytUrl = "http://localhost:3000/api/shorts?query=";
 
   constructor(private http: HttpClient) {}
 
