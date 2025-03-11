@@ -3,13 +3,8 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(cors());
 app.use(express.json());
-
-const whitelist = [
-  '*'
-];
-
+  
 app.use(cors(
   {
     origin:["https://tech-short-feed-dyhsgke0j-mohdshahrukh007s-projects.vercel.app/"],
