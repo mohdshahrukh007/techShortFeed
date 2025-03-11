@@ -7,7 +7,7 @@ app.use(express.json());
   
 app.use(cors(
   {
-    origin:["https://tech-short-feed-dyhsgke0j-mohdshahrukh007s-projects.vercel.app/"],
+    origin:["https://tech-short-5kzi.vercel.app/"],
     methods:["POST","GET"],
     credentials:true
 
