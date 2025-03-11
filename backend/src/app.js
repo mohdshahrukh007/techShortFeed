@@ -4,7 +4,8 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-  
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors(
   {
     origin:["https://tech-short-5kzi-kmsgmsg6x-mohdshahrukh007s-projects.vercel.app/"],
