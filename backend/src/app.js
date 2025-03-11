@@ -21,7 +21,7 @@ app.use(cors(
 // };
 // app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
-app.use("api", sampleRoutes);
+app.use("/api", sampleRoutes);
 // app.use("/api", sampleRoutes);
 
 app.listen(PORT, () => {

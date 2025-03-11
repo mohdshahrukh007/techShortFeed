@@ -47,7 +47,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   setIframeHeight() {
-    const footerHeight = 100; // Adjust based on your footer's height in pixels
+    const footerHeight = 40; // Adjust based on your footer's height in pixels
     const viewportHeight = window.innerHeight;
     this.iframeHeight = `${viewportHeight - footerHeight}px`;
   }
@@ -102,7 +102,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   ngAfterViewChecked(): void {
-    this.setupIntersectionObserver()
+    // this.setupIntersectionObserver()
   }
 
   // ✅ Fetch YouTube Shorts
