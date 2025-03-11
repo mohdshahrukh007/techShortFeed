@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(
   {
-    origin:["https://tech-short-5kzi.vercel.app/"],
+    origin:["https://tech-short-5kzi.vercel.app/",'http://localhost:4200'],
     methods:["POST","GET"],
     credentials:true
 
