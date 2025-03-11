@@ -38,7 +38,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     contentType: "Tutorials",
     maxDuration: 90,
   };
-
+  private observer!: IntersectionObserver;
   constructor(
     private sanitizer: DomSanitizer,
     private shortService: ShortService,
@@ -70,6 +70,38 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit(): void {
     this.setupSwipeGestures();
+  }
+  setupIntersectionObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const iframe = entry.target.querySelector("iframe");
+          if (iframe) {
+            if (entry.isIntersecting) {
+              // Play video when visible
+              iframe.src = iframe.getAttribute("data-src")!;
+            } else {
+              // Stop video when not visible
+              iframe.src = "";
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Play only if 50% of the video is visible
+      }
+    );
+  
+    this.videoItems.forEach((video) => {
+      this.observer.observe(video.nativeElement);
+    });
+  }
+  ngAfterViewChecked(): void {
+    this.setupIntersectionObserver()
   }
 
   // ✅ Fetch YouTube Shorts
