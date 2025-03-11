@@ -1,5 +1,5 @@
 const express = require('express');
-const { getShorts, postData, getTwitter,getShortsApi } = require('../controllers/feed');
+const {  postData, getTwitter,getShortsApi } = require('../controllers/feed');
 
 const router = express.Router();
 

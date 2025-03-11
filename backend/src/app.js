@@ -15,13 +15,13 @@ app.use(cors(
   }
 ));
 
-const setContext = (req, res, next) => {
-  if (!req.context) req.context = {};
-  next();
-};
-app.use(setContext);
+// const setContext = (req, res, next) => {
+//   if (!req.context) req.context = {};
+//   next();
+// };
+// app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
-app.use("https://tech-short-5kzi.vercel.app/api", sampleRoutes);
+app.use("/api", sampleRoutes);
 // app.use("/api", sampleRoutes);
 
 app.listen(PORT, () => {

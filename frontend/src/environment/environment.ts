@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,
-    apiUrl: 'https://your-backend.vercel.app'
+    production: false,
+    apiUrl: 'https://tech-short-5kzi.vercel.app'
   };
   
