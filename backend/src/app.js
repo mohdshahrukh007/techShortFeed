@@ -12,7 +12,7 @@ const whitelist = [
 
 app.use(cors(
   {
-    origin:["techshort-owgv3b1bx-mohdshahrukh007s-projects.vercel.app"],
+    origin:["https://tech-short-feed-dyhsgke0j-mohdshahrukh007s-projects.vercel.app/"],
     methods:["POST","GET"],
     credentials:true
 
