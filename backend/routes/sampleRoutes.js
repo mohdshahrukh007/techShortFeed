@@ -1,10 +1,10 @@
 const express = require('express');
-const {  getShortsApi } = require('../controllers/feed');
+const {  getShorts } = require('../controllers/feed');
 
 const router = express.Router();
 
 // ✅ Route to fetch YouTube Shorts
-router.get('/shorts', getShortsApi);
+router.get('/shorts', getShorts);
 
 // ✅ Route to post data
 // router.post('/data', postData);

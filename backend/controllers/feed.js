@@ -1,6 +1,6 @@
 const axios = require("axios");
 require("dotenv").config(); // Load .env file
-const { chromium } = require('playwright');
+// const { chromium } = require('playwright');
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
@@ -93,7 +93,119 @@ const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
 //   return videos;
 // };
 
-const getShortsApi = async (req, res) => {
+
+// const getShorts = async (keyword) => {
+//   const browser = await chromium.puppeteer.launch({
+//     args: chromium.args,
+//     defaultViewport: chromium.defaultViewport,
+//     executablePath: await chromium.executablePath,
+//     headless: true
+//   });
+
+//   const page = await browser.newPage();
+//   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+//     keyword
+//   )}&sp=EgQQARgB`;
+
+//   console.log(`Searching for: ${keyword}`);
+//   await page.goto(searchUrl, { waitUntil: 'networkidle2' });
+
+//   // Wait for the shorts container to load
+//   await page.waitForSelector('ytd-video-renderer');
+
+//   const videos = await page.evaluate(() => {
+//     const videoElements = document.querySelectorAll('ytd-video-renderer');
+
+//     return Array.from(videoElements).map((video) => {
+//       const title = video.querySelector('#video-title')?.innerText || 'No title';
+//       let url = video.querySelector('#thumbnail')?.href || '';
+//       const videoId = url.match(/v=([^&]+)/)?.[1];
+//       if (videoId) {
+//         url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+//       }
+//       const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
+//       const thumbnail = video.querySelector('img')?.src || '';
+
+//       return { videoId, title, url, views, thumbnail };
+//     });
+//   });
+
+//   console.log(`Scraped ${videos.length} shorts`);
+
+//   await browser.close();
+
+//   return videos;
+// };
+const { chromium } = require('playwright');
+
+const getShortViaScrap = async (keyword, limit = 5) => {
+  const browser = await chromium.launch({ headless: false }); // 🔥 Use headless: false for debugging
+  const page = await browser.newPage();
+
+  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    keyword
+  )}&sp=EgQQARgB`; // Filter for Shorts
+
+  console.log(`🔎 Searching for: ${keyword}`);
+  await page.goto(searchUrl, { waitUntil: 'domcontentloaded' });
+
+  await page.waitForSelector('ytd-video-renderer');
+
+  let videos = [];
+  let scrollAttempts = 0;
+  const MAX_SCROLLS = 10; // Increase scroll attempts
+
+  while (videos.length < limit && scrollAttempts < MAX_SCROLLS) {
+    // ✅ Extract videos
+    const newVideos = await page.evaluate(() => {
+      const videoElements = document.querySelectorAll('ytd-video-renderer');
+
+      return Array.from(videoElements).map((video) => {
+        const title = video.querySelector('#video-title')?.innerText || 'No title';
+        let url = video.querySelector('#thumbnail')?.href || '';
+        const videoId = url.match(/v=([^&]+)/)?.[1];
+        if (videoId) {
+          url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+        }
+        const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
+        const thumbnail = video.querySelector('img')?.src || '';
+
+        return { videoId, title, url, views, thumbnail };
+      });
+    });
+
+    // ✅ Add new videos, avoid duplicates
+    for (const video of newVideos) {
+      if (!videos.some(v => v.videoId === video.videoId)) {
+        videos.push(video);
+      }
+      if (videos.length >= limit) break;
+    }
+
+    if (videos.length >= limit) break;
+
+    // ✅ Trigger loading by scrolling and simulating interaction
+    console.log(`➡️ Scrolling attempt: ${scrollAttempts + 1}`);
+    await page.mouse.move(100, 100); // 🔥 Helps trigger lazy loading
+    await page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)');
+    await page.waitForTimeout(1000);
+
+    scrollAttempts++;
+  }
+
+  console.log(`✅ Scraped ${videos.length} shorts`);
+
+  await browser.close();
+
+  return videos.slice(0, limit);
+};
+
+
+
+
+
+
+const getShorts = async (req, res) => {
   console.log(req.query);
   const query = req?.query?.query || "javascript";
   if (!query) {
@@ -109,44 +221,45 @@ const getShortsApi = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch yt videos" });
   }
 };
+module.exports = { getShorts };
 
-const getShortViaScrap = async (keyword) => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
+// const getShortViaScrap = async (keyword) => {
+//   const browser = await chromium.launch();
+//   const page = await browser.newPage();
 
-  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    keyword
-  )}&sp=EgQQARgB`; // Filter for Shorts
+//   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+//     keyword
+//   )}&sp=EgQQARgB`; // Filter for Shorts
 
-  console.log(`Searching for: ${keyword}`);
-  await page.goto(searchUrl, { waitUntil: 'networkidle' });
+//   console.log(`Searching for: ${keyword}`);
+//   await page.goto(searchUrl, { waitUntil: 'networkidle' });
 
-  await page.waitForSelector('ytd-video-renderer');
+//   await page.waitForSelector('ytd-video-renderer');
 
-  const videos = await page.evaluate(() => {
-    const videoElements = document.querySelectorAll('ytd-video-renderer');
+//   const videos = await page.evaluate(() => {
+//     const videoElements = document.querySelectorAll('ytd-video-renderer');
 
-    return Array.from(videoElements).map((video) => {
-      const title = video.querySelector('#video-title')?.innerText || 'No title';
-      let url = video.querySelector('#thumbnail')?.href || '';
-      const videoId = url.match(/v=([^&]+)/)?.[1];
-      if (videoId) {
-        url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
-      }
-      const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
-      const thumbnail = video.querySelector('img')?.src || '';
+//     return Array.from(videoElements).map((video) => {
+//       const title = video.querySelector('#video-title')?.innerText || 'No title';
+//       let url = video.querySelector('#thumbnail')?.href || '';
+//       const videoId = url.match(/v=([^&]+)/)?.[1];
+//       if (videoId) {
+//         url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+//       }
+//       const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
+//       const thumbnail = video.querySelector('img')?.src || '';
 
-      return { videoId, title, url, views, thumbnail };
-    });
-  });
+//       return { videoId, title, url, views, thumbnail };
+//     });
+//   });
 
-  console.log(`Scraped ${videos.length} shorts`);
+//   console.log(`Scraped ${videos.length} shorts`);
 
-  await browser.close();
+//   await browser.close();
 
-  return videos;
-};
+//   return videos;
+// };
 
-module.exports = {
-  getShortsApi
-};
+// module.exports = {
+//   getShorts
+// };
