@@ -5,15 +5,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: '*', // Allow any origin
+  methods: ["POST", "GET"],
+  credentials: true
+}));
 
-app.use(cors(
-  {
-    origin:["https://tech-short-5kzi.vercel.app/","http://localhost:4200","http://localhost:3000/"],
-    methods:["POST","GET"],
-    credentials:true
-
-  }
-));
 
 const setContext = (req, res, next) => {
   if (!req.context) req.context = {};
