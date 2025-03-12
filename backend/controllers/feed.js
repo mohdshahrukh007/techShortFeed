@@ -1,6 +1,7 @@
 const axios = require("axios");
 const puppeteer = require("puppeteer");
 require("dotenv").config(); // Load .env file
+const { chromium } = require('playwright');
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
@@ -109,25 +110,18 @@ const getShortsApi = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch yt videos" });
   }
 };
-const chromium = require('chrome-aws-lambda');
 
 const getShortViaScrap = async (keyword) => {
-  const browser = await chromium.puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: true
-  });
-
+  const browser = await chromium.launch();
   const page = await browser.newPage();
+
   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
     keyword
-  )}&sp=EgQQARgB`;
+  )}&sp=EgQQARgB`; // Filter for Shorts
 
   console.log(`Searching for: ${keyword}`);
-  await page.goto(searchUrl, { waitUntil: 'networkidle2' });
+  await page.goto(searchUrl, { waitUntil: 'networkidle' });
 
-  // Wait for the shorts container to load
   await page.waitForSelector('ytd-video-renderer');
 
   const videos = await page.evaluate(() => {
@@ -153,6 +147,7 @@ const getShortViaScrap = async (keyword) => {
 
   return videos;
 };
+
 
 module.exports = { getShortsApi };
 
