@@ -48,7 +48,7 @@ export class AppComponent {
     if (window.innerWidth < 600) {
       this.iframeHeight ='300px' // Smaller height for mobile screens
     } else {
-      this.iframeHeight = '5100rem'  // Larger height for desktop screens
+      this.iframeHeight = '500px '  // Larger height for desktop screens
     }
   }
 }
