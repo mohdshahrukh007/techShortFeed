@@ -1,5 +1,4 @@
 const axios = require("axios");
-const puppeteer = require("puppeteer");
 require("dotenv").config(); // Load .env file
 const { chromium } = require('playwright');
 
@@ -43,56 +42,56 @@ const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
 // };
 
 
-const getShortViaScrapold = async (keyword) => {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+// const getShortViaScrapold = async (keyword) => {
+//   const browser = await puppeteer.launch({ headless: true });
+//   const page = await browser.newPage();
 
-  // Construct search URL for Shorts with keyword
-  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    keyword
-  )}&sp=EgQQARgB`; // Filters for Shorts
+//   // Construct search URL for Shorts with keyword
+//   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+//     keyword
+//   )}&sp=EgQQARgB`; // Filters for Shorts
 
-  console.log(`Searching for: ${keyword}`);
-  await page.goto(searchUrl, { waitUntil: "networkidle2" });
+//   console.log(`Searching for: ${keyword}`);
+//   await page.goto(searchUrl, { waitUntil: "networkidle2" });
 
-  // Wait for the shorts container to load
-  await page.waitForSelector("ytd-video-renderer");
+//   // Wait for the shorts container to load
+//   await page.waitForSelector("ytd-video-renderer");
 
-  // Extract video data
-  const videos = await page.evaluate(() => {
-    const videoElements = document.querySelectorAll("ytd-video-renderer");
+//   // Extract video data
+//   const videos = await page.evaluate(() => {
+//     const videoElements = document.querySelectorAll("ytd-video-renderer");
   
-    return Array.from(videoElements).map((video) => {
-      const title =
-        video.querySelector("#video-title")?.innerText || "No title";
+//     return Array.from(videoElements).map((video) => {
+//       const title =
+//         video.querySelector("#video-title")?.innerText || "No title";
   
-      // Get the video ID from the watch URL and convert to an embed URL
-      let url = video.querySelector("#thumbnail")?.href || "";
-      const videoId = url.match(/v=([^&]+)/)?.[1];
-      if (videoId) {
-        url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
-      }
-      const views =
-        video.querySelector("#metadata-line span")?.innerText || "No views";
-      const thumbnail = video.querySelector("img")?.src || "";
+//       // Get the video ID from the watch URL and convert to an embed URL
+//       let url = video.querySelector("#thumbnail")?.href || "";
+//       const videoId = url.match(/v=([^&]+)/)?.[1];
+//       if (videoId) {
+//         url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+//       }
+//       const views =
+//         video.querySelector("#metadata-line span")?.innerText || "No views";
+//       const thumbnail = video.querySelector("img")?.src || "";
   
-      return {
-        videoId,
-        title,
-        url,
-        views,
-        thumbnail,
-      };
-    });
-  });
+//       return {
+//         videoId,
+//         title,
+//         url,
+//         views,
+//         thumbnail,
+//       };
+//     });
+//   });
   
 
-  console.log(`Scraped ${videos.length} shorts`);
+//   console.log(`Scraped ${videos.length} shorts`);
 
-  await browser.close();
+//   await browser.close();
 
-  return videos;
-};
+//   return videos;
+// };
 
 const getShortsApi = async (req, res) => {
   console.log(req.query);
@@ -148,13 +147,6 @@ const getShortViaScrap = async (keyword) => {
   return videos;
 };
 
-
-module.exports = { getShortsApi };
-
-
 module.exports = {
-  getShorts,
-  postData,
-  getTwitter,
   getShortsApi
 };
