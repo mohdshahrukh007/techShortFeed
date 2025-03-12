@@ -42,168 +42,150 @@ const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
 // };
 
 
-// const getShortViaScrapold = async (keyword) => {
-//   const browser = await puppeteer.launch({ headless: true });
+
+//  const { chromium } = require('playwright');
+
+// const getShortViaScrap = async (keyword, limit = 5) => {
+//   const browser = await chromium.launch({ headless: false }); // 🔥 Use headless: false for debugging
 //   const page = await browser.newPage();
 
-//   // Construct search URL for Shorts with keyword
 //   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
 //     keyword
-//   )}&sp=EgQQARgB`; // Filters for Shorts
+//   )}&sp=EgQQARgB`; // Filter for Shorts
 
-//   console.log(`Searching for: ${keyword}`);
-//   await page.goto(searchUrl, { waitUntil: "networkidle2" });
+//   console.log(`🔎 Searching for: ${keyword}`);
+//   await page.goto(searchUrl, { waitUntil: 'domcontentloaded' });
 
-//   // Wait for the shorts container to load
-//   await page.waitForSelector("ytd-video-renderer");
-
-//   // Extract video data
-//   const videos = await page.evaluate(() => {
-//     const videoElements = document.querySelectorAll("ytd-video-renderer");
-  
-//     return Array.from(videoElements).map((video) => {
-//       const title =
-//         video.querySelector("#video-title")?.innerText || "No title";
-  
-//       // Get the video ID from the watch URL and convert to an embed URL
-//       let url = video.querySelector("#thumbnail")?.href || "";
-//       const videoId = url.match(/v=([^&]+)/)?.[1];
-//       if (videoId) {
-//         url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
-//       }
-//       const views =
-//         video.querySelector("#metadata-line span")?.innerText || "No views";
-//       const thumbnail = video.querySelector("img")?.src || "";
-  
-//       return {
-//         videoId,
-//         title,
-//         url,
-//         views,
-//         thumbnail,
-//       };
-//     });
-//   });
-  
-
-//   console.log(`Scraped ${videos.length} shorts`);
-
-//   await browser.close();
-
-//   return videos;
-// };
-
-
-// const getShorts = async (keyword) => {
-//   const browser = await chromium.puppeteer.launch({
-//     args: chromium.args,
-//     defaultViewport: chromium.defaultViewport,
-//     executablePath: await chromium.executablePath,
-//     headless: true
-//   });
-
-//   const page = await browser.newPage();
-//   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-//     keyword
-//   )}&sp=EgQQARgB`;
-
-//   console.log(`Searching for: ${keyword}`);
-//   await page.goto(searchUrl, { waitUntil: 'networkidle2' });
-
-//   // Wait for the shorts container to load
 //   await page.waitForSelector('ytd-video-renderer');
 
-//   const videos = await page.evaluate(() => {
-//     const videoElements = document.querySelectorAll('ytd-video-renderer');
+//   let videos = [];
+//   let scrollAttempts = 0;
+//   const MAX_SCROLLS = 10; // Increase scroll attempts
 
-//     return Array.from(videoElements).map((video) => {
-//       const title = video.querySelector('#video-title')?.innerText || 'No title';
-//       let url = video.querySelector('#thumbnail')?.href || '';
-//       const videoId = url.match(/v=([^&]+)/)?.[1];
-//       if (videoId) {
-//         url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
-//       }
-//       const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
-//       const thumbnail = video.querySelector('img')?.src || '';
+//   while (videos.length < limit && scrollAttempts < MAX_SCROLLS) {
+//     // ✅ Extract videos
+//     const newVideos = await page.evaluate(() => {
+//       const videoElements = document.querySelectorAll('ytd-video-renderer');
 
-//       return { videoId, title, url, views, thumbnail };
+//       return Array.from(videoElements).map((video) => {
+//         const title = video.querySelector('#video-title')?.innerText || 'No title';
+//         let url = video.querySelector('#thumbnail')?.href || '';
+//         const videoId = url.match(/v=([^&]+)/)?.[1];
+//         if (videoId) {
+//           url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+//         }
+//         const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
+//         const thumbnail = video.querySelector('img')?.src || '';
+
+//         return { videoId, title, url, views, thumbnail };
+//       });
 //     });
-//   });
 
-//   console.log(`Scraped ${videos.length} shorts`);
+//     // ✅ Add new videos, avoid duplicates
+//     for (const video of newVideos) {
+//       if (!videos.some(v => v.videoId === video.videoId)) {
+//         videos.push(video);
+//       }
+//       if (videos.length >= limit) break;
+//     }
+
+//     if (videos.length >= limit) break;
+
+//     // ✅ Trigger loading by scrolling and simulating interaction
+//     console.log(`➡️ Scrolling attempt: ${scrollAttempts + 1}`);
+//     await page.mouse.move(100, 100); // 🔥 Helps trigger lazy loading
+//     await page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)');
+//     await page.waitForTimeout(1000);
+
+//     scrollAttempts++;
+//   }
+
+//   console.log(`✅ Scraped ${videos.length} shorts`);
 
 //   await browser.close();
 
-//   return videos;
+//   return videos.slice(0, limit);
 // };
-const { chromium } = require('playwright');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 
 const getShortViaScrap = async (keyword, limit = 5) => {
-  const browser = await chromium.launch({ headless: false }); // 🔥 Use headless: false for debugging
-  const page = await browser.newPage();
+  let browser;
+  try {
+    // ✅ Fallback to puppeteer executablePath if chromium path is undefined
+    const executablePath =
+      (await chromium.executablePath) || // ✅ Works on Vercel
+      require('puppeteer').executablePath(); // ✅ Works in local dev
 
-  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    keyword
-  )}&sp=EgQQARgB`; // Filter for Shorts
+    console.log(`➡️ Using executablePath: ${executablePath}`);
 
-  console.log(`🔎 Searching for: ${keyword}`);
-  await page.goto(searchUrl, { waitUntil: 'domcontentloaded' });
-
-  await page.waitForSelector('ytd-video-renderer');
-
-  let videos = [];
-  let scrollAttempts = 0;
-  const MAX_SCROLLS = 10; // Increase scroll attempts
-
-  while (videos.length < limit && scrollAttempts < MAX_SCROLLS) {
-    // ✅ Extract videos
-    const newVideos = await page.evaluate(() => {
-      const videoElements = document.querySelectorAll('ytd-video-renderer');
-
-      return Array.from(videoElements).map((video) => {
-        const title = video.querySelector('#video-title')?.innerText || 'No title';
-        let url = video.querySelector('#thumbnail')?.href || '';
-        const videoId = url.match(/v=([^&]+)/)?.[1];
-        if (videoId) {
-          url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
-        }
-        const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
-        const thumbnail = video.querySelector('img')?.src || '';
-
-        return { videoId, title, url, views, thumbnail };
-      });
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath, // ✅ Use fallback if undefined
+      headless: chromium.headless ?? true,
     });
 
-    // ✅ Add new videos, avoid duplicates
-    for (const video of newVideos) {
-      if (!videos.some(v => v.videoId === video.videoId)) {
-        videos.push(video);
+    const page = await browser.newPage();
+
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+      keyword
+    )}&sp=EgQQARgB`; // Filter for Shorts
+
+    console.log(`🔎 Searching for: ${keyword}`);
+    await page.goto(searchUrl, { waitUntil: 'networkidle2' });
+
+    await page.waitForSelector('ytd-video-renderer');
+
+    let videos = [];
+    let scrollAttempts = 0;
+    const MAX_SCROLLS = 5;
+
+    while (videos.length < limit && scrollAttempts < MAX_SCROLLS) {
+      const newVideos = await page.evaluate(() => {
+        const videoElements = document.querySelectorAll('ytd-video-renderer');
+
+        return Array.from(videoElements).map((video) => {
+          const title = video.querySelector('#video-title')?.innerText || 'No title';
+          let url = video.querySelector('#thumbnail')?.href || '';
+          const videoId = url.match(/v=([^&]+)/)?.[1];
+          if (videoId) {
+            url = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1`;
+          }
+          const views = video.querySelector('#metadata-line span')?.innerText || 'No views';
+          const thumbnail = video.querySelector('img')?.src || '';
+
+          return { videoId, title, url, views, thumbnail };
+        });
+      });
+
+      for (const video of newVideos) {
+        if (!videos.some(v => v.videoId === video.videoId)) {
+          videos.push(video);
+        }
+        if (videos.length >= limit) break;
       }
+
       if (videos.length >= limit) break;
+
+      console.log(`➡️ Scrolling attempt: ${scrollAttempts + 1}`);
+      await page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)');
+      await page.waitForTimeout(500);
+
+      scrollAttempts++;
     }
 
-    if (videos.length >= limit) break;
-
-    // ✅ Trigger loading by scrolling and simulating interaction
-    console.log(`➡️ Scrolling attempt: ${scrollAttempts + 1}`);
-    await page.mouse.move(100, 100); // 🔥 Helps trigger lazy loading
-    await page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)');
-    await page.waitForTimeout(1000);
-
-    scrollAttempts++;
+    console.log(`✅ Scraped ${videos.length} shorts`);
+    return videos.slice(0, limit);
+  } catch (error) {
+    console.error("❌ Error in scraping:", error);
+    throw error;
+  } finally {
+    if (browser) await browser.close();
   }
-
-  console.log(`✅ Scraped ${videos.length} shorts`);
-
-  await browser.close();
-
-  return videos.slice(0, limit);
 };
 
-
-
-
-
+module.exports = { getShortViaScrap };
 
 const getShorts = async (req, res) => {
   console.log(req.query);
