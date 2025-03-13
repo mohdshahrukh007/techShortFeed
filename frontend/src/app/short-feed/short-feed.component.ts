@@ -19,7 +19,7 @@ import { ShortService } from "../short.service";
   styleUrls: ["./short-feed.component.scss"],
 })
 export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
-  videos: any[] = [];
+  videos: any[] = [{id:'I5_Gx3JNho8'}];
   searchQuery: string = "javascript";
   apiKey = "AIzaSyDwRdSOdeXHLNJZszerfYGfgQmS0NwVnqg"; //"AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA";
   @ViewChildren("videoItem") videoItems!: QueryList<ElementRef>;
@@ -122,8 +122,60 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      this.videos = res.videos
-        .filter((short: any) => short.videoId) // ✅ Only include videos with a valid ID
+     
+    }, (error) => {
+      this.videos = [
+        {
+          title: 'JavaScript in 100 Seconds',
+          videoId: 'DHjqpvDnNGE',
+          thumbnail: 'https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg'
+        },
+        {
+          title: 'JavaScript for the Haters',
+          videoId: 'aXOChLn5ZdQ',
+          thumbnail: 'https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg'
+        },
+        {
+          title: 'Best Programming Languages #programming #coding #javascript',
+          videoId: '5-oiLKEWIEw',
+          thumbnail: 'https://i.ytimg.com/vi/5-oiLKEWIEw/hqdefault.jpg'
+        },
+        {
+          title: 'How To Master JavaScript',
+          videoId: 'I5_Gx3JNho8',
+          thumbnail: 'https://i.ytimg.com/vi/I5_Gx3JNho8/hqdefault.jpg'
+        },
+        {
+          title: 'Pikachu | HTML CSS JavaScript',
+          videoId: 'y2OHIr_CZ4s',
+          thumbnail: 'https://i.ytimg.com/vi/y2OHIr_CZ4s/hqdefault.jpg'
+        },
+        {
+          title: 'What is the difference between JavaScript and TypeScript ?! #tech #coding #stem',
+          videoId: 'IfrJfGowmj0',
+          thumbnail: 'https://i.ytimg.com/vi/IfrJfGowmj0/hqdefault.jpg'
+        },
+        {
+          title: 'The best thing you can do with JavaScript #javascript #programming',
+          videoId: 'zO6CHvTErxE',
+          thumbnail: 'https://i.ytimg.com/vi/zO6CHvTErxE/hqdefault.jpg'
+        },
+        {
+          title: 'Maps Are A Game Changer For JavaScript',
+          videoId: '4PZeIwXx1hc',
+          thumbnail: 'https://i.ytimg.com/vi/4PZeIwXx1hc/hqdefault.jpg'
+        },
+        {
+          title: 'Playwright TypeScript #5 Playwright Architecture | Playwright Testing Tutorial',
+          videoId: '0mn6zKjiMGg',
+          thumbnail: 'https://i.ytimg.com/vi/0mn6zKjiMGg/hqdefault.jpg'
+        },
+        {
+          title: 'Let’s play… Does your code suck? JavaScript Variables Edition',
+          videoId: 'ZRjmGq1gAEQ',
+          thumbnail: 'https://i.ytimg.com/vi/ZRjmGq1gAEQ/hqdefault.jpg'
+        }
+      ].filter((short: any) => short.videoId) // ✅ Only include videos with a valid ID
         .map((short: any) => ({
           title: short.title,
           url: short.url || [],
@@ -155,7 +207,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.videos = this.videos?.filter((video: any) => {
       // Filter by technology
       return (
-        !filters.category || video.title.includes(filters.category)
+        !filters.category || video?.title?.includes(filters.category)
         // &&
         // (!filters.skillLevel || video.title === filters.skillLevel) &&
         // (!filters.contentType || video.title.includes(filters.contentType)) &&
@@ -206,7 +258,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ✅ Get Safe YouTube URL
-  getSafeURL(id: string): SafeResourceUrl {
+  getSafeURL(id: string  ): SafeResourceUrl {
     let url = this.sanitizer.bypassSecurityTrustResourceUrl(id);
     if (id) {
       url = this.sanitizer.bypassSecurityTrustResourceUrl(

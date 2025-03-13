@@ -8,7 +8,7 @@ const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
 // ✅ Fetch YouTube Shorts
 const getShorts = async (req, res) => {
   try {
-    const searchQuery = "javascript";
+    const searchQuery = req.query||"javascript";
     const url =
       `https://www.googleapis.com/youtube/v3/search?part=snippet` +
       `&q=${encodeURIComponent(searchQuery)}` +
@@ -21,7 +21,7 @@ const getShorts = async (req, res) => {
       `&relevanceLanguage=en` +
       `&regionCode=US` +
       `&videoEmbeddable=true` +
-      `&key=${YOUTUBE_API_KEY}`;
+      `&key=1${YOUTUBE_API_KEY}`;
 
     const response = await axios.get(url);
     const videos = response.data.items.map((video) => ({

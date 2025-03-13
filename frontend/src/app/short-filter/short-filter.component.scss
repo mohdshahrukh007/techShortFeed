@@ -299,49 +299,7 @@
     height: 24px;
     display: inline-block;
   }
-  
-  /* Make the app responsive */
-  @media (max-width: 768px) {
-    .search-container {
-      width: 40%;
-    }
-    
-    .filter-groups {
-      flex-wrap: wrap;
-    }
-    
-    .filter-group {
-      min-width: 150px;
-    }
-    
-    .short-info {
-      padding: 12px;
-    }
-    
-    .interaction-group {
-      gap: 12px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .search-container {
-      display: none;
-    }
-    
-    .filter-group {
-      min-width: 120px;
-    }
-    
-    .short-title {
-      font-size: 16px;
-    }
-    
-    .interaction-buttons {
-      flex-direction: column;
-      gap: 16px;
-    }
-    
-    .interaction-group {
-      justify-content: space-between;
-    }
+  .filter-groups{
+    display: flex;
+    flex-direction: column;
   }
