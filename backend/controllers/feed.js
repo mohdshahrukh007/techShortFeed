@@ -2,7 +2,7 @@ const axios = require("axios");
 require("dotenv").config(); // Load .env file
 // const { chromium } = require('playwright');
 
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+const YOUTUBE_API_KEY = 'AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA'///process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
 
 // ✅ Fetch YouTube Shorts
@@ -14,7 +14,7 @@ const getShorts = async (req, res) => {
       `&q=${encodeURIComponent(searchQuery)}` +
       `&type=video` +
       `&videoDuration=short` + // ✅ Filter for Shorts
-      `&maxResults=10` +
+      `&maxResults=50` +
       `&videoDefinition=high` +
       `&order=relevance` +
       `&safeSearch=moderate` +
