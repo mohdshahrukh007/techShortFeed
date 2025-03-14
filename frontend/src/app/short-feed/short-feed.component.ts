@@ -144,7 +144,7 @@ overlayClass:any;
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-        res.filter((short: any) => short.videoId)
+      this.videos=  res.filter((short: any) => short.videoId)
         .map((short: any) => ({
           title: short.title,
           thumbnail: short.thumbnail,
