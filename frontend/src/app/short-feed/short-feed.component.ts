@@ -54,18 +54,20 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterSubscription.unsubscribe();
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
     window.removeEventListener("resize", this.setIframeHeight.bind(this));
   }
-
   ngOnInit(): void {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
-    this.feedService.setFilter(this.defaultFilter);
     this.filterSubscription = this.feedService.getFilter().subscribe((filter) => {
       if (filter) {
         this.applyFilters(filter);
-        this.fetchShorts(filter);
+        if (this.videos.length === 0) {
+          this.fetchShorts(filter);
+        }
       }
     });
   }
