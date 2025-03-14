@@ -205,7 +205,71 @@ overlayClass:any;
         this.pauseVideo();
         this.setupIntersectionObserver();
       }, 100);
-    });
+    }
+  , (error) => {
+    this.videos =  [{
+      "kind": "youtube#searchResult",
+      "videoId": "DHjqpvDnNGE",
+      "title": "JavaScript in 100 Seconds",
+      "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+      "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+      "channelTitle": "Fireship",
+      "publishedAt": "2022-01-13T17:56:13Z",
+      "liveBroadcastContent": "none"
+  },
+  {
+      "kind": "youtube#searchResult",
+      "videoId": "aXOChLn5ZdQ",
+      "title": "JavaScript for the Haters",
+      "description": "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+      "thumbnail": "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+      "channelTitle": "Fireship",
+      "publishedAt": "2022-11-24T16:00:11Z",
+      "liveBroadcastContent": "none"
+  },
+  {
+      "kind": "youtube#searchResult",
+      "videoId": "5-oiLKEWIEw",
+      "title": "Best Programming Languages #programming #coding #javascript",
+      "description": "",
+      "thumbnail": "https://i.ytimg.com/vi/5-oiLKEWIEw/hqdefault.jpg",
+      "channelTitle": "Devslopes",
+      "publishedAt": "2023-05-01T03:26:26Z",
+      "liveBroadcastContent": "none"
+  },
+  {
+      "kind": "youtube#searchResult",
+      "videoId": "I5_Gx3JNho8",
+      "title": "How To Master JavaScript",
+      "description": "Twitch Everything is built live on twitch Twitch : https://bit.ly/3xhFO3E Discord: discord.gg/ThePrimeagen Spotify DevHour: ...",
+      "thumbnail": "https://i.ytimg.com/vi/I5_Gx3JNho8/hqdefault.jpg",
+      "channelTitle": "ThePrimeagen",
+      "publishedAt": "2024-05-29T19:37:45Z",
+      "liveBroadcastContent": "none"
+  },
+  {
+      "kind": "youtube#searchResult",
+      "videoId": "gT0Lh1eYk78",
+      "title": "HTML, CSS, JavaScript Explained [in 4 minutes for beginners]",
+      "description": "Before you start any web development tutorials for beginners, FIRST understand what languages are used for building websites: ...",
+      "thumbnail": "https://i.ytimg.com/vi/gT0Lh1eYk78/hqdefault.jpg",
+      "channelTitle": "Danielle Thé",
+      "publishedAt": "2016-10-16T19:14:12Z",
+      "liveBroadcastContent": "none"
+  },  ].filter((short: any) => short.videoId)
+      .map((short: any) => ({
+        title: short?.title,
+        thumbnail: short?.thumbnail,
+        id: short?.videoId,
+        safeUrl: this.getSafeURL(short?.videoId),
+      }));
+    // Reinitialize the IntersectionObserver after fetching new videos
+    setTimeout(() => {
+      this.pauseVideo();
+      this.setupIntersectionObserver();
+    }, 100);
+  }
+    );
   }
   getHashtags(title: string): string[] {
     return title?.match(/#[\w]+/g) || []; // Match hashtags like #Angular #JavaScript
