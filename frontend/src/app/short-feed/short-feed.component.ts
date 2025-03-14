@@ -19,18 +19,7 @@ import { ShortService } from "../short.service";
   styleUrls: ["./short-feed.component.scss"],
 })
 export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
-  videos: any[] = [{id:'I5_Gx3JNho8'}];
-  searchQuery: string = "javascript";
-  apiKey = "AIzaSyDwRdSOdeXHLNJZszerfYGfgQmS0NwVnqg"; //"AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA";
-  @ViewChildren("videoItem") videoItems!: QueryList<ElementRef>;
-  // baseUrl = "https://www.googleapis.com/youtube/v3/search";
-  iframeHeight: string = "";
-  filterSubscription!: Subscription;
-  private currentIndex = 0;
-  private touchStartY = 0;
-  private touchEndY = 0;
-  private minSwipeDistance = 30; // Minimum swipe distance to trigger
-  filterSearch: string = "AI";
+  videos: any[] = [{ id: "I5_Gx3JNho8" }];
   defaultFilter = {
     category:
       "technology|programming|software|coding|AI|machine%20learning|web%20development",
@@ -38,7 +27,19 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     contentType: "Tutorials",
     maxDuration: 90,
   };
+  searchQuery: string = "javascript";
+  apiKey = "AIzaSyDwRdSOdeXHLNJZszerfYGfgQmS0NwVnqg";
+  @ViewChildren("videoItem") videoItems!: QueryList<ElementRef>;
+  iframeHeight: string = "";
+  filterSubscription!: Subscription;
+  private currentIndex = 0;
   private observer!: IntersectionObserver;
+  private activeVideo: HTMLIFrameElement | null = null;
+  touchStartY: number | undefined;
+  touchEndY!: number;
+  // Initialize minSwipeDistance with a default value (in pixels)
+  minSwipeDistance: number = 30;
+
   constructor(
     private sanitizer: DomSanitizer,
     private shortService: ShortService,
@@ -47,143 +48,132 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   setIframeHeight() {
-    const footerHeight = 40; // Adjust based on your footer's height in pixels
+    const footerHeight = 40;
     const viewportHeight = window.innerHeight;
     this.iframeHeight = `${viewportHeight - footerHeight}px`;
   }
+
   ngOnDestroy() {
     this.filterSubscription.unsubscribe();
     window.removeEventListener("resize", this.setIframeHeight.bind(this));
   }
+
   ngOnInit(): void {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
     this.feedService.setFilter(this.defaultFilter);
-    this.filterSubscription = this.feedService
-      .getFilter()
-      .subscribe((filter) => {
-        if (filter) {
-          this.applyFilters(filter);
-          this.fetchShorts(filter);
-        }
-      });
+    this.filterSubscription = this.feedService.getFilter().subscribe((filter) => {
+      if (filter) {
+        this.applyFilters(filter);
+        this.fetchShorts(filter);
+      }
+    });
   }
+
   ngAfterViewInit(): void {
     this.setupSwipeGestures();
+    this.setupIntersectionObserver();
   }
-  setupIntersectionObserver() {
+
+  // Setup Intersection Observer
+  setupIntersectionObserver(): void {
+    // Disconnect any previous observer to avoid duplicate observations
     if (this.observer) {
       this.observer.disconnect();
     }
-  
+
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const iframe = entry.target.querySelector("iframe");
-          if (iframe) {
-            if (entry.isIntersecting) {
-              // ✅ Start video when it comes into view
-              const videoId = iframe.getAttribute("data-id");
-              iframe.src =`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-            } else {
-              // ✅ Stop video when it leaves the view
-              iframe.src = "";
-            }
+          const iframe = entry.target as HTMLIFrameElement;
+          if (entry.isIntersecting) {
+            this.playVideo(iframe);
+          } else {
+            this.pauseVideo(iframe);
           }
         });
       },
-      {
-        threshold: 0.5, // Play only if 50% of the video is visible
-      }
+      { threshold: 0.7 } // Trigger when 70% of the video is visible
     );
-  
-    this.videoItems.forEach((video) => {
-      this.observer.observe(video.nativeElement);
+
+    this.videoItems.forEach((item) => {
+      const iframe = item.nativeElement.querySelector("iframe");
+      if (iframe) {
+        this.observer.observe(iframe);
+      }
     });
   }
-  ngAfterViewChecked(): void {
-    // this.setupIntersectionObserver()
+
+  // Play Video
+  playVideo(iframe: HTMLIFrameElement) {
+    if (this.activeVideo && this.activeVideo !== iframe) {
+      this.pauseVideo(this.activeVideo);
+    }
+    this.activeVideo = iframe;
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"playVideo","args":""}',
+      "*"
+    );
   }
 
-  // ✅ Fetch YouTube Shorts
+  // Pause Video
+  pauseVideo(iframe: HTMLIFrameElement) {
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"pauseVideo","args":""}',
+      "*"
+    );
+  }
+
+  // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
     let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;
-    // Convert maxDuration to PT (ISO 8601) format for YouTube API
-    let duration = "";
-    if (filterSearch.maxDuration <= 60) {
-      duration = "short";
-    } else if (filterSearch.maxDuration <= 240) {
-      duration = "medium";
-    } else {
-      duration = "long";
-    }
     return searchQuery;
   }
+
+  // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       this.videos = res.videos
-        .filter((short: any) => short.videoId) // ✅ Only include videos with a valid ID
+        .filter((short: any) => short.videoId)
         .map((short: any) => ({
           title: short.title,
           url: short.url || [],
           thumbnail: short.url,
           views: short.views,
           id: short.videoId,
-          safeUrl: this.getSafeURL(short.videoId), // ✅ Cache Safe URL here
+          safeUrl: this.getSafeURL(short.videoId),
         }));
+      // Reinitialize the IntersectionObserver after fetching new videos
+      setTimeout(() => this.setupIntersectionObserver(), 100);
     });
   }
-  
-  // ✅ Handle Swipe Gestures on Mobile
+
+  // Handle Swipe Gestures
   setupSwipeGestures(): void {
-    const container = document.querySelector(
-      ".shorts-container"
-    ) as HTMLElement;
-    container?.addEventListener("touchstart", (event) => {
-      this.touchStartY = event.touches[0].clientY;
-    });
-    container?.addEventListener("touchend", (event) => {
-      this.touchEndY = event.changedTouches[0].clientY;
-      this.handleSwipeGesture();
-    });
+    const container = document.querySelector(".shorts-container") as HTMLElement;
+    if (container) {
+      container.addEventListener("touchstart", (event) => {
+        this.touchStartY = event.touches[0].clientY;
+      });
+      container.addEventListener("touchend", (event) => {
+        this.touchEndY = event.changedTouches[0].clientY;
+        this.handleSwipeGesture();
+      });
+    }
   }
-  trackByFn(index: number, video: any): string {
-    return video.id;
-  }
-  applyFilters(filters: any): void {
-    this.videos = this.videos?.filter((video: any) => {
-      // Filter by technology
-      return (
-        !filters.category || video?.title?.includes(filters.category)
-        // &&
-        // (!filters.skillLevel || video.title === filters.skillLevel) &&
-        // (!filters.contentType || video.title.includes(filters.contentType)) &&
-        // (!filters.maxDuration || video.title <= filters.maxDuration)
-      );
-      // Filter by skill level
-      // if (video.skillLevel !== filterObj?.selectedSkillLevel) {
-      //   return false;
-      // }
 
-      // // In a real app, we would also filter by content type and duration
-
-      // return true;
-    });
-  }
-  // ✅ Handle swipe direction and movement
   handleSwipeGesture(): void {
-    const distance = this.touchEndY - this.touchStartY;
+    const distance = this.touchEndY - (this.touchStartY ?? 0);
     if (Math.abs(distance) > this.minSwipeDistance) {
       if (distance < 0) {
-        this.nextVideo(); // Swipe up → next video
+        this.nextVideo();
       } else {
-        this.previousVideo(); // Swipe down → previous video
+        this.previousVideo();
       }
     }
   }
 
-  // ✅ Go to next video
   nextVideo(): void {
     if (this.currentIndex < this.videoItems.length - 1) {
       this.currentIndex++;
@@ -191,7 +181,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // ✅ Go to previous video
   previousVideo(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -199,20 +188,24 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // ✅ Scroll to target video smoothly
   scrollToVideo(index: number): void {
     const targetVideo = this.videoItems.toArray()[index].nativeElement;
     targetVideo.scrollIntoView({ behavior: "smooth" });
   }
 
-  // ✅ Get Safe YouTube URL
-  getSafeURL(id: string ='I5_Gx3JNho8'): SafeResourceUrl {
-    let url = this.sanitizer.bypassSecurityTrustResourceUrl(id);
-    if (id) {
-      url = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-      );
-    }
-    return url;
+  getSafeURL(id: string = "I5_Gx3JNho8"): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+    );
+  }
+
+  trackByFn(index: number, video: any): string {
+    return video.id;
+  }
+
+  applyFilters(filters: any): void {
+    this.videos = this.videos?.filter((video: any) => {
+      return !filters.category || video?.title?.includes(filters.category);
+    });
   }
 }

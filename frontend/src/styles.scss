@@ -1,4 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
-body{
-    overflow: hidden;
-}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent scrollbars */
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  /* Ensure that all elements respect box-sizing */
+  *, *::before, *::after {
+    box-sizing: inherit;
+  }
+  
+  

@@ -1,5 +1,6 @@
-<app-short-filter ></app-short-filter>
 <div class="video-container">
+  <app-short-filter></app-short-filter>
+
   <div id="videoContainer" class="video-wrapper">
     <div
       *ngFor="let video of videos; trackBy: trackByFn let i = index"

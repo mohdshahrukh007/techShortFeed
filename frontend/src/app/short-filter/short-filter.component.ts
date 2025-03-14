@@ -20,15 +20,13 @@ interface TechVideo {
   styleUrls: ["./short-filter.component.scss"],
 })
 export class ShortFilterComponent implements OnInit {
-  videos: any[] = [];
-  filteredVideos: any[] = [];
+  videos: TechVideo[] = [];
+  filteredVideos: TechVideo[] = [];
   showFilters: boolean = false;
-  toggleFilters() {
-    this.showFilters = !this.showFilters;
-  }
+
   // Filter state
   selectedTechnology: string = "Web Dev";
-  selectedSkillLevel: string = "beginner";
+  selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "beginner";
   selectedContentType: string = "Tutorials";
   maxDuration: number = 90;
 
@@ -41,21 +39,29 @@ export class ShortFilterComponent implements OnInit {
     "Cybersecurity",
     "Data Science",
   ];
-  skillLevels: string[] = ["beginner", "intermediate", "advanced"];
+  skillLevels: ("beginner" | "intermediate" | "advanced")[] = [
+    "beginner",
+    "intermediate",
+    "advanced",
+  ];
   contentTypes: string[] = ["Tutorials", "Reviews", "News", "Tips & Tricks"];
 
   constructor(private feedService: FeedserviceService) {}
-  trackByFn(index: number, video: any): string {
+
+  ngOnInit(): void {
+    this.getFilters(); // Initial filter setup
+  }
+
+  trackByFn(index: number, video: TechVideo): number {
     return video.id;
   }
-  ngOnInit(): void {
-    this.feedService.setFilter({ category: "Tech", tag: "AI" });
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
-  selectTechnology(tech: string): void {
-    this.selectedTechnology = tech;
-    this.getFilters(); // 🔥 Call the filter method directly
-  }
-  getFilters() {
+
+  // Unified getFilters() call to avoid multiple redundant calls
+  getFilters(): void {
     const filters = {
       category: this.selectedTechnology,
       skillLevel: this.selectedSkillLevel,
@@ -65,8 +71,13 @@ export class ShortFilterComponent implements OnInit {
     this.feedService.setFilter(filters);
   }
 
-  selectSkillLevel(level: string): void {
-    this.selectedSkillLevel = level as "beginner" | "intermediate" | "advanced";
+  selectTechnology(tech: string): void {
+    this.selectedTechnology = tech;
+    this.getFilters();
+  }
+
+  selectSkillLevel(level: "beginner" | "intermediate" | "advanced"): void {
+    this.selectedSkillLevel = level;
     this.getFilters();
   }
 
@@ -75,35 +86,13 @@ export class ShortFilterComponent implements OnInit {
     this.getFilters();
   }
 
-  updateDuration(event: any): void {
-    this.maxDuration = event.target.value;
+  updateDuration(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.maxDuration = Number(target.value);
     this.getFilters();
   }
 
-  // selectTechnology(tech: string): void {
-  //   this.selectedTechnology = tech;
-  //   this.feedService.setFilter({ category: "Tech", tag: "AI" });
-  // }
-
-  // selectSkillLevel(level: string): void {
-  //   this.selectedSkillLevel = level as "beginner" | "intermediate" | "advanced";
-  //   this.feedService.setFilter({ Level: this.selectedSkillLevel });
-  // }
-
-  // selectContentType(type: string): void {
-  //   this.selectedContentType = type;
-  //   this.feedService.setFilter({ ContentType: this.selectedContentType });
-  // }
-
-  // updateDuration(event: any): void {
-  //   this.maxDuration = event.target.value;
-  //   this.feedService.setFilter({ maxDuration: this.maxDuration });
-  // }
-
   formatNumber(num: number): string {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K";
-    }
-    return num.toString();
+    return num >= 1000 ? (num / 1000).toFixed(1) + "K" : num.toString();
   }
 }
