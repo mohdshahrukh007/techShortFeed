@@ -46,11 +46,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     private feedService: FeedserviceService,
     private http: HttpClient
   ) {}
-
   setIframeHeight() {
     const footerHeight = 40;
     const viewportHeight = window.innerHeight;
     this.iframeHeight = `${viewportHeight - footerHeight}px`;
+    this.overlayClass=`${viewportHeight - 120}px`;
   }
 
   ngOnDestroy() {
@@ -62,19 +62,24 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
-    this.filterSubscription = this.feedService.getFilter().subscribe((filter) => {
-      if (filter) {
-        this.applyFilters(filter);
-        if (this.videos.length === 0) {
-          this.fetchShorts(filter);
+    this.filterSubscription = this.feedService
+      .getFilter()
+      .subscribe((filter) => {
+        if (filter) {
+          this.applyFilters(filter);
+          if (this.videos.length === 0) {
+            this.fetchShorts(filter);
+          }
         }
-      }
-    });
+      });
   }
 
   ngAfterViewInit(): void {
     this.setupSwipeGestures();
     this.setupIntersectionObserver();
+    if (this.activeVideo) {
+      this.playVideo(this.activeVideo);
+    }
   }
 
   // Setup Intersection Observer
@@ -101,29 +106,32 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
+        
         this.observer.observe(iframe);
       }
     });
   }
+  // Pause all videos initially, then play only the video in view
+  pauseVideo(x?:any) {
+    this.videoItems.forEach((item) => {
+      const iframe = item.nativeElement.querySelector("iframe");
+      if (iframe) {
+        iframe.contentWindow?.postMessage(
+          '{"event":"command","func":"pauseVideo","args":""}',
+          "*"
+        );
+      }
+    });
+  }
 
-  // Play Video
+  // Modified playVideo: first pause every video, then play the target video
   playVideo(iframe: HTMLIFrameElement) {
-    if (this.activeVideo && this.activeVideo !== iframe) {
-      this.pauseVideo(this.activeVideo);
-    }
-    this.activeVideo = iframe;
+    this.pauseVideo();
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"playVideo","args":""}',
       "*"
     );
-  }
-
-  // Pause Video
-  pauseVideo(iframe: HTMLIFrameElement) {
-    iframe.contentWindow?.postMessage(
-      '{"event":"command","func":"pauseVideo","args":""}',
-      "*"
-    );
+    this.activeVideo = iframe;
   }
 
   // Build the YouTube query URL based on filters
@@ -131,7 +139,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;
     return searchQuery;
   }
-
+overlayClass:any;
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
@@ -141,19 +149,30 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         .map((short: any) => ({
           title: short.title,
           url: short.url || [],
-          thumbnail: short.url,
+          thumbnail: short.thumbnail,
           views: short.views,
           id: short.videoId,
           safeUrl: this.getSafeURL(short.videoId),
         }));
       // Reinitialize the IntersectionObserver after fetching new videos
-      setTimeout(() => this.setupIntersectionObserver(), 100);
+      setTimeout(() => {
+        this.pauseVideo();
+        this.setupIntersectionObserver();
+      }, 100);
     });
   }
-
+  getHashtags(title: string): string[] {
+    return title?.match(/#[\w]+/g) || []; // Match hashtags like #Angular #JavaScript
+  }
+  
+  getTitleWithoutHashtags(title: string): string {
+    return title?.replace(/#[\w]+/g, '').trim(); // Remove hashtags from the title
+  }
   // Handle Swipe Gestures
   setupSwipeGestures(): void {
-    const container = document.querySelector(".shorts-container") as HTMLElement;
+    const container = document.querySelector(
+      ".shorts-container"
+    ) as HTMLElement;
     if (container) {
       container.addEventListener("touchstart", (event) => {
         this.touchStartY = event.touches[0].clientY;
@@ -195,7 +214,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     targetVideo.scrollIntoView({ behavior: "smooth" });
   }
 
-  getSafeURL(id: string = "I5_Gx3JNho8"): SafeResourceUrl {
+  getSafeURL(id: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
     );

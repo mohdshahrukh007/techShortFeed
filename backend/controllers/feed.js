@@ -15,7 +15,7 @@ const getShorts = async (req, res) => {
       `&q=${encodeURIComponent(searchQuery)}` +
       `&type=video` +
       `&videoDuration=short` +
-      `&maxResults=50` +
+      `&maxResults=5` +
       `&videoDefinition=high` +
       `&order=relevance` +
       `&safeSearch=moderate` +
@@ -34,54 +34,67 @@ const getShorts = async (req, res) => {
       channelTitle: video.snippet.channelTitle,
       publishedAt: video.snippet.publishedAt,
       liveBroadcastContent: video.snippet.liveBroadcastContent,
+      allObject:video,
     }));
     
-
     // ✅ Use mock data if no results are found
-    if (videos.length === 0) {
-      console.log("No videos found, using mock data...");
-      videos = [
-        {
-          title: "Learn Angular in 10 Minutes",
-          videoId: "dQw4w9WgXcQ",
-          thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-          creator: "Tech Guru",
-          creatorAvatar: "https://i.pravatar.cc/150?u=techguru",
-          skillLevel: "Beginner",
-          techTags: ["Angular", "Frontend"],
-          likes: 5200,
-          dislikes: 120,
-          comments: 340,
-        },
-        {
-          title: "React vs Vue: Which One to Choose?",
-          videoId: "bZx8rPd-PKQ",
-          thumbnail: "https://i.ytimg.com/vi/bZx8rPd-PKQ/hqdefault.jpg",
-          creator: "Code Master",
-          creatorAvatar: "https://i.pravatar.cc/150?u=codemaster",
-          skillLevel: "Intermediate",
-          techTags: ["React", "Vue", "Comparison"],
-          likes: 8100,
-          dislikes: 230,
-          comments: 410,
-        },
-        {
-          title: "Advanced JavaScript Tricks",
-          videoId: "3C1BWEwtEr0",
-          thumbnail: "https://i.ytimg.com/vi/3C1BWEwtEr0/hqdefault.jpg",
-          creator: "JS Wizard",
-          creatorAvatar: "https://i.pravatar.cc/150?u=jswizard",
-          skillLevel: "Advanced",
-          techTags: ["JavaScript", "Advanced"],
-          likes: 10900,
-          dislikes: 150,
-          comments: 620,
-        },
-      ];
-    }
-
-    res.status(200).json( videos);
+   
+    res.status(200).json(videos);
   } catch (error) {
+      console.log("No videos found, using mock data...");
+      let dummy =[
+        {
+            "kind": "youtube#searchResult",
+            "videoId": "DHjqpvDnNGE",
+            "title": "JavaScript in 100 Seconds",
+            "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+            "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+            "channelTitle": "Fireship",
+            "publishedAt": "2022-01-13T17:56:13Z",
+            "liveBroadcastContent": "none"
+        },
+        {
+            "kind": "youtube#searchResult",
+            "videoId": "aXOChLn5ZdQ",
+            "title": "JavaScript for the Haters",
+            "description": "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+            "thumbnail": "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+            "channelTitle": "Fireship",
+            "publishedAt": "2022-11-24T16:00:11Z",
+            "liveBroadcastContent": "none"
+        },
+        {
+            "kind": "youtube#searchResult",
+            "videoId": "5-oiLKEWIEw",
+            "title": "Best Programming Languages #programming #coding #javascript",
+            "description": "",
+            "thumbnail": "https://i.ytimg.com/vi/5-oiLKEWIEw/hqdefault.jpg",
+            "channelTitle": "Devslopes",
+            "publishedAt": "2023-05-01T03:26:26Z",
+            "liveBroadcastContent": "none"
+        },
+        {
+            "kind": "youtube#searchResult",
+            "videoId": "I5_Gx3JNho8",
+            "title": "How To Master JavaScript",
+            "description": "Twitch Everything is built live on twitch Twitch : https://bit.ly/3xhFO3E Discord: discord.gg/ThePrimeagen Spotify DevHour: ...",
+            "thumbnail": "https://i.ytimg.com/vi/I5_Gx3JNho8/hqdefault.jpg",
+            "channelTitle": "ThePrimeagen",
+            "publishedAt": "2024-05-29T19:37:45Z",
+            "liveBroadcastContent": "none"
+        },
+        {
+            "kind": "youtube#searchResult",
+            "videoId": "y2OHIr_CZ4s",
+            "title": "Pikachu | HTML CSS JavaScript",
+            "description": "shorts #html #css #javascript #tutorials #trending Source code: https://learning-axis.com/snippets/ Sound effects from Pixabay.",
+            "thumbnail": "https://i.ytimg.com/vi/y2OHIr_CZ4s/hqdefault.jpg",
+            "channelTitle": "Learning Axis",
+            "publishedAt": "2023-05-25T03:10:04Z",
+            "liveBroadcastContent": "none"
+        }
+    ]
+    res.status(200).json(dummy);
       console.log("No videos found, using mock data...");
     //   videos = [
     //     {

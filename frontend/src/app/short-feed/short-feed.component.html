@@ -1,6 +1,9 @@
 <div class="video-container">
   <app-short-filter></app-short-filter>
 
+  <div class="phone-container">
+    <div class="video-container"></div>
+  </div>
   <div id="videoContainer" class="video-wrapper">
     <div
       *ngFor="let video of videos; trackBy: trackByFn let i = index"
@@ -18,9 +21,18 @@
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen
         ></iframe>
-        <div class="iframe-overlay"></div>
+        <div class="iframe-overlay bg-dark" [ngStyle]="{ top: overlayClass}">
+          <div class="px-2">
+            <div class="player-name">{{getTitleWithoutHashtags(video?.title)}}</div>
+            <div class="tags-container">
+              <span *ngFor="let tag of getHashtags(video.title)" class="tag-chip rounded" [ngClass]="'category'">{{ tag }}</span>
+            </div>
+          </div>
+          <div class="profile-icon py-1 " *ngIf="video?.thumbnail">
+            <img [src]="video?.thumbnail" alt="Player profile" />
+          </div>
+        </div>
       </div>
-      <!-- <div class="video-title">{{ video.title }}</div> -->
     </div>
   </div>
 </div>
