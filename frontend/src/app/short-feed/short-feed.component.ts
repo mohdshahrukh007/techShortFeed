@@ -143,7 +143,7 @@ overlayClass:any;
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
-    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+    // this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       this.videos =  [
         {
             "kind": "youtube#searchResult",
@@ -659,7 +659,7 @@ overlayClass:any;
         this.pauseVideo();
         this.setupIntersectionObserver();
       }, 100);
-    });
+    // });
   }
   getHashtags(title: string): string[] {
     return title?.match(/#[\w]+/g) || []; // Match hashtags like #Angular #JavaScript
