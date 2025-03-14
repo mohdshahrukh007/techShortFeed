@@ -83,51 +83,51 @@ const getShorts = async (req, res) => {
     res.status(200).json( videos);
   } catch (error) {
       console.log("No videos found, using mock data...");
-      videos = [
-        {
-          title: "Learn Angular in 10 Minutes",
-          videoId: "dQw4w9WgXcQ",
-          thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-          creator: "Tech Guru",
-          creatorAvatar: "https://i.pravatar.cc/150?u=techguru",
-          skillLevel: "Beginner",
-          techTags: ["Angular", "Frontend"],
-          likes: 5200,
-          dislikes: 120,
-          comments: 340,
-        },
-        {
-          title: "React vs Vue: Which One to Choose?",
-          videoId: "bZx8rPd-PKQ",
-          thumbnail: "https://i.ytimg.com/vi/bZx8rPd-PKQ/hqdefault.jpg",
-          creator: "Code Master",
-          creatorAvatar: "https://i.pravatar.cc/150?u=codemaster",
-          skillLevel: "Intermediate",
-          techTags: ["React", "Vue", "Comparison"],
-          likes: 8100,
-          dislikes: 230,
-          comments: 410,
-        },
-        {
-          title: "Advanced JavaScript Tricks",
-          videoId: "3C1BWEwtEr0",
-          thumbnail: "https://i.ytimg.com/vi/3C1BWEwtEr0/hqdefault.jpg",
-          creator: "JS Wizard",
-          creatorAvatar: "https://i.pravatar.cc/150?u=jswizard",
-          skillLevel: "Advanced",
-          techTags: ["JavaScript", "Advanced"],
-          likes: 10900,
-          dislikes: 150,
-          comments: 620,
-        },
-      ];
-    }
-    res.status(200).json({videos:videos});
+    //   videos = [
+    //     {
+    //       title: "Learn Angular in 10 Minutes",
+    //       videoId: "dQw4w9WgXcQ",
+    //       thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+    //       creator: "Tech Guru",
+    //       creatorAvatar: "https://i.pravatar.cc/150?u=techguru",
+    //       skillLevel: "Beginner",
+    //       techTags: ["Angular", "Frontend"],
+    //       likes: 5200,
+    //       dislikes: 120,
+    //       comments: 340,
+    //     },
+    //     {
+    //       title: "React vs Vue: Which One to Choose?",
+    //       videoId: "bZx8rPd-PKQ",
+    //       thumbnail: "https://i.ytimg.com/vi/bZx8rPd-PKQ/hqdefault.jpg",
+    //       creator: "Code Master",
+    //       creatorAvatar: "https://i.pravatar.cc/150?u=codemaster",
+    //       skillLevel: "Intermediate",
+    //       techTags: ["React", "Vue", "Comparison"],
+    //       likes: 8100,
+    //       dislikes: 230,
+    //       comments: 410,
+    //     },
+    //     {
+    //       title: "Advanced JavaScript Tricks",
+    //       videoId: "3C1BWEwtEr0",
+    //       thumbnail: "https://i.ytimg.com/vi/3C1BWEwtEr0/hqdefault.jpg",
+    //       creator: "JS Wizard",
+    //       creatorAvatar: "https://i.pravatar.cc/150?u=jswizard",
+    //       skillLevel: "Advanced",
+    //       techTags: ["JavaScript", "Advanced"],
+    //       likes: 10900,
+    //       dislikes: 150,
+    //       comments: 620,
+    //     },
+    //   ];
+    // }
+    // res.status(200).json({videos:videos});
 
 
     // console.error("Error fetching YouTube shorts:", error.message);
     // res.status(500).json({ error: "Failed to fetch YouTube shorts" });
-};
+}};
 
 
 
