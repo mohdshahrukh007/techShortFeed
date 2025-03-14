@@ -136,7 +136,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      this.videos = res.videos
+      this.videos = res
         .filter((short: any) => short.videoId)
         .map((short: any) => ({
           title: short.title,
