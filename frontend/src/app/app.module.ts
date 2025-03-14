@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ShortFilterComponent } from './short-filter/short-filter.component';
 import { FormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from 'src/environment/environment';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     HttpClientModule,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
+      enabled: environment.production,
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
