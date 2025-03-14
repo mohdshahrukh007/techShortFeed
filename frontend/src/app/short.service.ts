@@ -26,7 +26,6 @@ export class ShortService {
   getYoutubeShort(query: string) {
     return this.http.get(`${this.ytUrl}${encodeURIComponent(query)}`).pipe(
       map((response: any) => {
-        // ✅ Process response (if needed)
         return response;
       }),
       catchError(this.handleError) // Handle error
