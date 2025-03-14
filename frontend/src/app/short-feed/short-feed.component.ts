@@ -143,42 +143,8 @@ overlayClass:any;
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
-    // this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      this.videos =  [
-       
-        {
-            "kind": "youtube#searchResult",
-            "videoId": "4pNmCWeNjp8",
-            "title": "The Top 5 MOST POPULAR JavaScript packages👩‍💻 #programming #software #javascript #code #technology",
-            "description": "",
-            "thumbnail": "https://i.ytimg.com/vi/4pNmCWeNjp8/hqdefault.jpg",
-            "channelTitle": "Coding with Lewis",
-            "publishedAt": "2024-11-28T18:43:05Z",
-            "liveBroadcastContent": "none"
-        },
-        {
-            "kind": "youtube#searchResult",
-            "videoId": "b4TpO9pYpqk",
-            "title": "Top 5 API Performance Tips #javascript #python #web #coding #programming",
-            "description": "Get our 158-page System Design PDF for free by subscribing to our weekly newsletter: https://bit.ly/bytebytegoYTshorts Animation ...",
-            "thumbnail": "https://i.ytimg.com/vi/b4TpO9pYpqk/hqdefault.jpg",
-            "channelTitle": "ByteByteGo",
-            "publishedAt": "2024-01-22T16:35:00Z",
-            "liveBroadcastContent": "none"
-        },
-        {
-            "kind": "youtube#searchResult",
-            "videoId": "FyyJtupBR7Q",
-            "title": "Why I&#39;m Finally Trying The Webstorm JavaScript IDE...",
-            "description": "Give Webstorm a try: https://jb.gg/Check-Out-WebStorm Prepping for your frontend interviews? Use code \"conner\" for a discount ...",
-            "thumbnail": "https://i.ytimg.com/vi/FyyJtupBR7Q/hqdefault.jpg",
-            "channelTitle": "Conner Ardman",
-            "publishedAt": "2024-11-15T14:30:15Z",
-            "liveBroadcastContent": "none"
-        }
-    ]
-    
-        .filter((short: any) => short.videoId)
+    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+        res.filter((short: any) => short.videoId)
         .map((short: any) => ({
           title: short.title,
           thumbnail: short.thumbnail,
@@ -190,7 +156,7 @@ overlayClass:any;
         this.pauseVideo();
         this.setupIntersectionObserver();
       }, 100);
-    // });
+    });
   }
   getHashtags(title: string): string[] {
     return title?.match(/#[\w]+/g) || []; // Match hashtags like #Angular #JavaScript
