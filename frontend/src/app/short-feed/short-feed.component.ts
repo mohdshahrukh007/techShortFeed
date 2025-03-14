@@ -130,10 +130,17 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       '{"event":"command","func":"playVideo","args":""}',
       "*"
     );
-    iframe.contentWindow?.postMessage(
-      '{"event":"command","func":"unMute","args":""}',
-      "*"
-    );
+    setTimeout(() => {
+      iframe.contentWindow?.postMessage(
+        JSON.stringify({
+          event: "command",
+          func: "unMute",
+          args: []
+        }),
+        "*"
+      );
+    }, 100); // 100ms delay to ensure the video starts before unmuting
+  
     this.activeVideo = iframe;
   }
 
