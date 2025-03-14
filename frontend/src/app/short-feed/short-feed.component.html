@@ -17,7 +17,7 @@
           [style.height]="iframeHeight"
           width="100%"
           frameborder="0"
-          allow="autoplay; encrypted-media; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen
         ></iframe>
@@ -25,7 +25,7 @@
           <div class="px-2">
             <div class="player-name">{{getTitleWithoutHashtags(video?.title)}}</div>
             <div class="tags-container">
-              <span *ngFor="let tag of getHashtags(video.title)" class="tag-chip rounded" [ngClass]="'category'">{{ tag }}</span>
+              <span *ngFor="let tag of getHashtags(video?.title)" class="tag-chip rounded" [ngClass]="'category'">{{ tag }}</span>
             </div>
           </div>
           <div class="profile-icon py-1 " *ngIf="video?.thumbnail">
