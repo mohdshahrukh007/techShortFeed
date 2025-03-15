@@ -9,12 +9,14 @@ import { ShortFilterComponent } from './short-filter/short-filter.component';
 import { FormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from 'src/environment/environment';
+import { IntrestBasedSignupComponent } from './intrest-based-signup/intrest-based-signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ShortFeedComponent,
     ShortFilterComponent,
+    IntrestBasedSignupComponent,
   ],
   imports: [
     BrowserModule,

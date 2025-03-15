@@ -94,15 +94,17 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         entries.forEach((entry) => {
           const iframe = entry.target as HTMLIFrameElement;
           if (entry.isIntersecting) {
-            this.playVideo(iframe);
+            setTimeout(() => {
+              if (entry.isIntersecting) this.playVideo(iframe);
+            }, 50);
           } else {
             this.pauseVideo(iframe);
           }
         });
       },
-      { threshold: 0.7 } // Trigger when 70% of the video is visible
+      { threshold: 0.7 }
     );
-
+    
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
@@ -123,9 +125,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // Modified playVideo: first pause every video, then play the target video
   playVideo(iframe: HTMLIFrameElement) {
-    this.pauseVideo();
+    if (this.activeVideo && this.activeVideo !== iframe) {
+      this.pauseVideo(this.activeVideo);
+    }
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"playVideo","args":""}',
       "*"
@@ -139,10 +142,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         }),
         "*"
       );
-    }, 100); // 100ms delay to ensure the video starts before unmuting
-  
+    }, 100);
     this.activeVideo = iframe;
   }
+  
 
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {

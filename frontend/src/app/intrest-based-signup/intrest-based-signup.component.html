@@ -1,0 +1,63 @@
+    <div class="container">
+    <div class="signup-card">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        
+        <div class="logo">
+        <span>TechShort</span>
+        </div>
+        
+        <h1 class="form-title">Create your account</h1>
+        
+        <div class="welcome-message">
+        <p>Tell us what you're passionate about so we can personalize your feed</p>
+        </div>
+        
+        <h2 class="interests-title">What tech areas excite you?</h2>
+        
+        <div class="category-filter">
+        <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="filterInterests('all')">All</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'dev'" (click)="filterInterests('dev')">Development</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'data'" (click)="filterInterests('data')">Data</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'design'" (click)="filterInterests('design')">Design</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'emerging'" (click)="filterInterests('emerging')">Emerging Tech</button>
+        </div>
+        
+        <div class="interests-container">
+        <div *ngFor="let interest of filteredInterests" 
+            class="interest-tag" 
+            [class.selected]="selectedInterests.includes(interest.name)"
+            (click)="toggleInterest(interest.name)">
+            <div class="interest-icon" *ngIf="interest.icon">
+            <i [class]="interest.icon"></i>
+            </div>
+            {{ interest.name }}
+            <div class="selection-indicator" *ngIf="selectedInterests.includes(interest.name)">
+            <i class="fas fa-check"></i>
+            </div>
+        </div>
+        </div>
+        
+        <div class="interest-progress">
+        <div class="progress-text">
+            <span>{{ selectedInterests.length }} selected</span>
+            <span *ngIf="selectedInterests.length < 3">Select at least {{ 3 - selectedInterests.length }} more</span>
+            <span *ngIf="selectedInterests.length >= 3">Great choices!</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" [style.width]="(selectedInterests.length / 5) * 100 + '%'"></div>
+        </div>
+        </div>
+        
+        <button class="signup-btn" 
+                [disabled]="selectedInterests.length < 3"
+                [class.ready]="selectedInterests.length >= 3"
+                (click)="createAccount()">
+        {{ selectedInterests.length < 3 ? 'Select more interests' : 'Create Account' }}
+        </button>
+        
+        <div class="login-link">
+        Already have an account? <a href="#">Log in</a>
+        </div>
+    </div>
+    </div>

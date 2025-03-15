@@ -1,4 +1,39 @@
   @import 'bootstrap/dist/css/bootstrap.min.css';
-body{
-  background-color: black;
-}
+
+  body {
+    font-family: 'Arial', sans-serif;
+    color: #ccc;
+    background-color: #121212;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Helvetica', sans-serif;
+    color: #fafafa;
+  }
+
+  p {
+    font-family: 'Georgia', serif;
+    color: #fafafa;
+    ;
+  }
+
+  a {
+    color: #1e90ff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #1c7ed6;
+    text-decoration: underline;
+  }
+
+  button {
+    font-family: 'Verdana', sans-serif;
+    color: #fff;
+    background-color: #1e90ff;
+    border: none;
+  }
+
+  button:hover {
+    background-color: #1c7ed6;
+  }
