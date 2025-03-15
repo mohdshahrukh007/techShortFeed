@@ -75,36 +75,41 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.setupSwipeGestures();
+    this.pauseAllVideos(); // Ensure all videos are initially paused
     this.setupIntersectionObserver();
-    if (this.activeVideo) {
-      this.playVideo(this.activeVideo);
+    // Start autoplay on the first video
+    const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
+    if (firstVideo) {
+      this.playVideo(firstVideo);
     }
   }
-
-  // Setup Intersection Observer
+  
   setupIntersectionObserver(): void {
-    // Disconnect any previous observer to avoid duplicate observations
+    // Disconnect any previous observer to avoid conflicts
     if (this.observer) {
       this.observer.disconnect();
     }
-
+  
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const iframe = entry.target as HTMLIFrameElement;
           if (entry.isIntersecting) {
-            setTimeout(() => {
-              if (entry.isIntersecting) this.playVideo(iframe);
-            }, 50);
+            // Pause the current active video (if any)
+            if (this.activeVideo && this.activeVideo !== iframe) {
+              this.pauseVideo(this.activeVideo);
+            }
+            // Play the new video
+            this.playVideo(iframe);
           } else {
             this.pauseVideo(iframe);
           }
         });
       },
-      { threshold: 0.7 }
+      { threshold: 0.7 } // Adjust threshold for sensitivity
     );
-    
+  
+    // Observe all videos
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
@@ -112,8 +117,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-  // Pause all videos initially, then play only the video in view
-  pauseVideo(x?: any) {
+  
+  pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
@@ -121,30 +126,44 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           '{"event":"command","func":"pauseVideo","args":""}',
           "*"
         );
+        iframe.contentWindow?.postMessage(
+          '{"event":"command","func":"mute","args":""}',
+          "*"
+        );
       }
     });
   }
-
+  
   playVideo(iframe: HTMLIFrameElement) {
     if (this.activeVideo && this.activeVideo !== iframe) {
       this.pauseVideo(this.activeVideo);
     }
+  
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"playVideo","args":""}',
       "*"
     );
     setTimeout(() => {
       iframe.contentWindow?.postMessage(
-        JSON.stringify({
-          event: "command",
-          func: "unMute",
-          args: []
-        }),
+        '{"event":"command","func":"unMute","args":""}',
         "*"
       );
     }, 100);
+  
     this.activeVideo = iframe;
   }
+  
+  pauseVideo(iframe: HTMLIFrameElement) {
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"pauseVideo","args":""}',
+      "*"
+    );
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"mute","args":""}',
+      "*"
+    );
+  }
+  
   
 
   // Build the YouTube query URL based on filters
@@ -216,7 +235,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reinitializeObserver(): void {
     setTimeout(() => {
-      this.pauseVideo();
+      // this.pauseVideo();
+      this.pauseAllVideos();
       this.setupIntersectionObserver();
     }, 100);
   }
