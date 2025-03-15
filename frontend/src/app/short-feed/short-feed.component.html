@@ -1,12 +1,8 @@
 <div class="video-container bg-dark">
   <app-short-filter></app-short-filter>
-
-  <div class="phone-container">
-    <div class="video-container"></div>
-  </div>
   <div id="videoContainer" class="video-wrapper">
     <div
-      *ngFor="let video of videos; trackBy: trackByFn let i = index"
+      *ngFor="let video of videos;let i = index"
       #videoItem
       class="shorts-container"
       [attr.data-video-id]="video.id"

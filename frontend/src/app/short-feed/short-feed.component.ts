@@ -6,6 +6,7 @@ import {
   ViewChildren,
   AfterViewInit,
   OnDestroy,
+  AfterContentChecked,
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
@@ -18,8 +19,8 @@ import { ShortService } from "../short.service";
   templateUrl: "./short-feed.component.html",
   styleUrls: ["./short-feed.component.scss"],
 })
-export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
-  videos: any[] = [{ id: "I5_Gx3JNho8" }];
+export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
+  videos: any[] = [];
   defaultFilter = {
     category:
       "technology|programming|software|coding|AI|machine%20learning|web%20development",
@@ -46,6 +47,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     private feedService: FeedserviceService,
     private http: HttpClient
   ) {}
+  
   setIframeHeight() {
     const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
     const viewportHeight = window.innerHeight / 16; // Convert px to rem
@@ -72,44 +74,65 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       });
-  }
+  }  
 
   ngAfterViewInit(): void {
-    this.pauseAllVideos(); // Ensure all videos are initially paused
+    this.pauseAllVideos(); 
     this.setupIntersectionObserver();
+  
     // Start autoplay on the first video
     const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
     if (firstVideo) {
       this.playVideo(firstVideo);
     }
-  }
   
+    // Enable swipe gestures
+    this.setupSwipeGestures(); 
+  }
   setupIntersectionObserver(): void {
-    // Disconnect any previous observer to avoid conflicts
     if (this.observer) {
       this.observer.disconnect();
     }
   
+    const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const threshold = isiOS ? 0.7 : 0.8;
+    const rootMargin = isiOS ? "0px 0px -20% 0px" : "0px 0px -10% 0px";
+  
     this.observer = new IntersectionObserver(
       (entries) => {
+        let nextActiveVideo: HTMLIFrameElement | null = null;
+  
         entries.forEach((entry) => {
           const iframe = entry.target as HTMLIFrameElement;
-          if (entry.isIntersecting) {
-            // Pause the current active video (if any)
-            if (this.activeVideo && this.activeVideo !== iframe) {
-              this.pauseVideo(this.activeVideo);
-            }
-            // Play the new video
-            this.playVideo(iframe);
-          } else {
-            this.pauseVideo(iframe);
+  
+          if (entry.isIntersecting && entry.intersectionRatio >= threshold) {
+            nextActiveVideo = iframe;
           }
         });
+  
+        if (nextActiveVideo) {
+          // If the next active video is different from the current one
+          if (this.activeVideo && this.activeVideo !== nextActiveVideo) {
+            this.pauseVideo(this.activeVideo);
+          }
+  
+          // Assign and play the next video
+          if (this.activeVideo !== nextActiveVideo) {
+            this.activeVideo = nextActiveVideo;
+            this.playVideo(nextActiveVideo);
+            setTimeout(() => {
+            // this.enableAudio();
+            }, 1000);
+          }
+        }
       },
-      { threshold: 0.7 } // Adjust threshold for sensitivity
+      {
+        threshold: threshold,
+        rootMargin: rootMargin,
+      }
     );
   
-    // Observe all videos
+    // Observe all video iframes
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
@@ -118,6 +141,22 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   
+  playVideo(iframe: HTMLIFrameElement): void {
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"playVideo","args":""}',
+      '*'
+    );
+  }
+  
+  pauseVideo(iframe: HTMLIFrameElement): void {
+    iframe.contentWindow?.postMessage(
+      '{"event":"command","func":"pauseVideo","args":""}',
+      '*'
+    );
+  }
+  
+  
+
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -126,46 +165,23 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           '{"event":"command","func":"pauseVideo","args":""}',
           "*"
         );
-        iframe.contentWindow?.postMessage(
-          '{"event":"command","func":"mute","args":""}',
-          "*"
-        );
+        // iframe.contentWindow?.postMessage(
+        //   '{"event":"command","func":"mute","args":""}',
+        //   "*"
+        // );
       }
     });
   }
+
   
-  playVideo(iframe: HTMLIFrameElement) {
-    if (this.activeVideo && this.activeVideo !== iframe) {
-      this.pauseVideo(this.activeVideo);
-    }
-  
-    iframe.contentWindow?.postMessage(
-      '{"event":"command","func":"playVideo","args":""}',
-      "*"
-    );
-    setTimeout(() => {
-      iframe.contentWindow?.postMessage(
+  enableAudio() {
+    if (this.activeVideo) {
+      this.activeVideo.contentWindow?.postMessage(
         '{"event":"command","func":"unMute","args":""}',
         "*"
       );
-    }, 100);
-  
-    this.activeVideo = iframe;
+    }
   }
-  
-  pauseVideo(iframe: HTMLIFrameElement) {
-    iframe.contentWindow?.postMessage(
-      '{"event":"command","func":"pauseVideo","args":""}',
-      "*"
-    );
-    iframe.contentWindow?.postMessage(
-      '{"event":"command","func":"mute","args":""}',
-      "*"
-    );
-  }
-  
-  
-
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
     let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;
@@ -256,6 +272,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     if (container) {
       container.addEventListener("touchstart", (event) => {
         this.touchStartY = event.touches[0].clientY;
+        this.enableAudio()
+
       });
       container.addEventListener("touchend", (event) => {
         this.touchEndY = event.changedTouches[0].clientY;
@@ -273,6 +291,21 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         this.previousVideo();
       }
     }
+    // Ensure video doesn't auto-resume during swipe
+    setTimeout(() => {
+      const targetVideo = this.videoItems.toArray()[this.currentIndex]
+        ?.nativeElement;
+      const iframe = targetVideo?.querySelector("iframe");
+
+      if (iframe && this.observer) {
+        const isIntersecting = this.observer
+          .takeRecords()
+          .some((entry) => entry.target === iframe && entry.isIntersecting);
+        if (!isIntersecting) {
+          this.pauseVideo(iframe);
+        }
+      }
+    }, 100);
   }
 
   nextVideo(): void {
