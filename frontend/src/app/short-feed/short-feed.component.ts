@@ -47,10 +47,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     private http: HttpClient
   ) {}
   setIframeHeight() {
-    const footerHeight = 70;
-    const viewportHeight = window.innerHeight;
-    this.iframeHeight = `${viewportHeight - footerHeight}px`;
-    this.overlayClass = `${viewportHeight - 120}px`;
+    const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
+    const viewportHeight = window.innerHeight / 16; // Convert px to rem
+    this.iframeHeight = `${viewportHeight - footerHeight}rem`;
+    this.overlayClass = `${viewportHeight - 7.5}rem`; // 120px in rem
   }
 
   ngOnDestroy() {
