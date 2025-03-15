@@ -50,14 +50,10 @@
         </div>
         
         <button class="signup-btn" 
-                [disabled]="selectedInterests.length < 3"
-                [class.ready]="selectedInterests.length >= 3"
+                
                 (click)="createAccount()">
-        {{ selectedInterests.length < 3 ? 'Select more interests' : 'Create Account' }}
+        {{ selectedInterests.length < 1 ? 'Select more interests' : 'Create Account' }}
         </button>
-        
-        <div class="login-link">
-        Already have an account? <a href="#">Log in</a>
-        </div>
+      
     </div>
     </div>
