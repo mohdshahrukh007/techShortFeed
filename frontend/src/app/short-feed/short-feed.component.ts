@@ -19,15 +19,8 @@ import { ShortService } from "../short.service";
   templateUrl: "./short-feed.component.html",
   styleUrls: ["./short-feed.component.scss"],
 })
-export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
+export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   videos: any[] = [];
-  defaultFilter = {
-    category:
-      "technology|programming|software|coding|AI|machine%20learning|web%20development",
-    skillLevel: "beginner",
-    contentType: "Tutorials",
-    maxDuration: 90,
-  };
   searchQuery: string = "javascript";
   apiKey = "AIzaSyDwRdSOdeXHLNJZszerfYGfgQmS0NwVnqg";
   @ViewChildren("videoItem") videoItems!: QueryList<ElementRef>;
@@ -40,7 +33,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   touchEndY!: number;
   // Initialize minSwipeDistance with a default value (in pixels)
   minSwipeDistance: number = 30;
-  dups: Array<any>=[];
+  dups: Array<any> = [];
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -48,7 +41,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     private cdr: ChangeDetectorRef,
     private feedserviceService: FeedserviceService
   ) {}
-  
+
   setIframeHeight() {
     const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
     const viewportHeight = window.innerHeight / 16; // Convert px to rem
@@ -68,66 +61,66 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     this.filterSubscription = this.feedserviceService
       .getFilter()
       .subscribe((filter: any) => {
-        if (filter.category) {
-          if (this.videos.length === 0) {
-            this.fetchShorts(filter);
-          }
-        }
+        console.log(filter);
+        this.fetchShorts(filter.interests.map((f: any) => f).join(" & ") || []);
       });
-  }  
+  }
 
   ngAfterViewInit(): void {
-    this.pauseAllVideos(); 
+    this.pauseAllVideos();
     this.setupIntersectionObserver();
-  
+
     // // Start autoplay on the first video
     // const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
     // if (firstVideo) {
     //   this.playVideo(firstVideo);
     // }
-  
+
     // Enable swipe gestures
-    this.setupSwipeGestures(); 
+    this.setupSwipeGestures();
   }
   setupIntersectionObserver(): void {
     if (this.observer) {
       this.observer.disconnect();
     }
-  
+
     const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     const threshold = isiOS ? 0.7 : 0.8;
     const rootMargin = isiOS ? "0px 0px -20% 0px" : "0px 0px -10% 0px";
-  
+
     this.observer = new IntersectionObserver(
       (entries) => {
         let nextActiveVideo: HTMLIFrameElement | null = null;
-  
+
         entries.forEach((entry) => {
           const iframe = entry.target as HTMLIFrameElement;
-  
+
           if (entry.isIntersecting && entry.intersectionRatio >= threshold) {
             nextActiveVideo = iframe;
           }
         });
-  
+
         if (nextActiveVideo) {
           // If the next active video is different from the current one
           if (this.activeVideo && this.activeVideo !== nextActiveVideo) {
             this.pauseVideo(this.activeVideo);
           }
-  
+
           // Assign and play the next video
           if (this.activeVideo !== nextActiveVideo) {
             this.activeVideo = nextActiveVideo;
             this.playVideo(nextActiveVideo);
             try {
-              let x :HTMLIFrameElement = nextActiveVideo;
-                 if(x?.nextSibling && x?.nextElementSibling && (x?.nextElementSibling as HTMLElement).offsetParent?.id =='loadMore'){
-                  this.loadMoreVideos();
-                }
-            } catch (err) {
-              
-            }
+              let x: HTMLIFrameElement = nextActiveVideo;
+              if (
+                x?.nextSibling &&
+                x?.nextElementSibling &&
+                (x?.nextElementSibling as HTMLElement).offsetParent?.id ==
+                  "loadMore"
+              ) {
+                this.loadMoreVideos();
+              }
+            } catch (err) {}
           }
         }
       },
@@ -136,7 +129,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
         rootMargin: rootMargin,
       }
     );
-  
+
     // Observe all video iframes
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -145,18 +138,18 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
       }
     });
   }
-  
+
   playVideo(iframe: HTMLIFrameElement): void {
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"playVideo","args":""}',
-      '*'
+      "*"
     );
   }
-  
+
   pauseVideo(iframe: HTMLIFrameElement): void {
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"pauseVideo","args":""}',
-      '*'
+      "*"
     );
   }
   pauseAllVideos() {
@@ -174,72 +167,38 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
       }
     });
   }
-  
+
   enableAudio() {
     if (this.activeVideo) {
       setTimeout(() => {
         this.activeVideo?.contentWindow?.postMessage(
           '{"event":"command","func":"unMute","args":""}',
-          '*'
+          "*"
         );
       }, 100);
     }
   }
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
-    let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;
+    let searchQuery;
+    if (typeof filterSearch) searchQuery = `${filterSearch} `;
+    else
+      searchQuery = `${filterSearch} ${filterSearch?.category} ${filterSearch?.contentType} ${filterSearch?.skillLevel}`;
     return searchQuery;
   }
   overlayClass: any;
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
-
-    this.shortService.getYoutubeShort(searchUrl).subscribe(
-      (res: any) => {
-            if (res.status = 200) {
-              this.dups =[
-                {
-                    "kind": "youtube#searchResult",
-                    "videoId": "DHjqpvDnNGE",
-                    "title": "JavaScript in 100 Seconds",
-                    "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-                    "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-                    "channelTitle": "Fireship",
-                    "publishedAt": "2022-01-13T17:56:13Z",
-                    "liveBroadcastContent": "none"
-                },
-                {
-                  "kind": "youtube#searchResult",
-                  "videoId": "DHjqpvDnNGE",
-                  "title": "JavaScript in 100 Seconds",
-                  "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-                  "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-                  "channelTitle": "Fireship",
-                  "publishedAt": "2022-01-13T17:56:13Z",
-                  "liveBroadcastContent": "none"
-              },
-              {
-                "kind": "youtube#searchResult",
-                "videoId": "DHjqpvDnNGE",
-                "title": "JavaScript in 100 Seconds",
-                "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-                "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-                "channelTitle": "Fireship",
-                "publishedAt": "2022-01-13T17:56:13Z",
-                "liveBroadcastContent": "none"
-            }
-          ] //this.mapVideoData(res.body)
-              this.videos = this.getFallbackVideos()//this.mapVideoData(this.dups); 
-            this.reinitializeObserver();
-            // Load dummy data on failure
-            }
-      },
-      
-    );
+    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+      if ((res.status = 200)) {
+        this.dups = res?.body || []; //this.mapVideoData(res.body)
+        this.videos = this.getFallbackVideos(); //this.mapVideoData(this.dups);
+        this.reinitializeObserver();
+        // Load dummy data on failure
+      }
+    });
   }
-
-  
 
   mapVideoData(data: any[]): any[] {
     return (data || [])
@@ -248,7 +207,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
         title: short?.title,
         thumbnail: short?.thumbnail,
         id: short?.videoId,
-      
       }));
   }
   getFallbackVideos(): any[] {
@@ -324,7 +282,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     }
   }
   loadMoreVideos(): void {
-    console.log('called');
+    console.log("called");
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
@@ -347,12 +305,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   }
 
   getSafeURL(id: string): SafeResourceUrl {
-    console.log(' safe url');
-    
-      return this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-      );
-   
+    console.log(" safe url");
+
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+    );
   }
 
   trackByFn(index: number, video: any): string {

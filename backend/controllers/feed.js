@@ -3,19 +3,16 @@ require("dotenv").config(); // Load .env file
 // const { chromium } = require('playwright');
 
 const YOUTUBE_API_KEY = 'AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA'///process.env.YOUTUBE_API_KEY;
-const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
-
 const getShorts = async (req, res) => {
   try {
     // ✅ Added a default value for searchQuery
     const searchQuery = req.query.q || "javascript";
-
     const url =
       `https://www.googleapis.com/youtube/v3/search?part=snippet` +
       `&q=${encodeURIComponent(searchQuery)}` +
       `&type=video` +
       `&videoDuration=short` +
-      `&maxResults=5` +
+      `&maxResults=50` +
       `&videoDefinition=high` +
       `&order=relevance` +
       `&safeSearch=moderate` +
@@ -23,8 +20,9 @@ const getShorts = async (req, res) => {
       `&regionCode=US` +
       `&videoEmbeddable=true` +
       `&key=1${YOUTUBE_API_KEY}`;
-
     const response = await axios.get(url);
+    console.log(response);
+    
     const videos = response.data.items.map((video) => ({
       kind: video.kind,
       videoId: video.id.videoId,
@@ -34,8 +32,8 @@ const getShorts = async (req, res) => {
       channelTitle: video.snippet.channelTitle,
       publishedAt: video.snippet.publishedAt,
       liveBroadcastContent: video.snippet.liveBroadcastContent,
-      allObject:video,
     }));
+    console.log("data...",videos);
     
     // ✅ Use mock data if no results are found
    

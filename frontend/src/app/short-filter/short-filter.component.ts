@@ -8,6 +8,7 @@ import { FeedserviceService } from "../feedservice.service";
 })
 export class ShortFilterComponent implements OnInit {
   showFilters: boolean = false;
+
   // Filter state
   selectedTechnology: string = "Web Dev";
   selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "beginner";
@@ -34,19 +35,42 @@ export class ShortFilterComponent implements OnInit {
   @ViewChild('filterBar') filterBar!: ElementRef;
 
   ngOnInit(): void {
-    this.getFilters(); // Initial filter setup
+    // Don't call getFilters() initially
   }
 
-  // ngAfterViewInit(): void {
-  //   document.addEventListener('click', (event) => {
-  //     if (!this.filterBar?.nativeElement?.contains(event?.target)) {
-  //       this.showFilters = false;
-  //     }
-  //   });
-  // }
-  
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
+  }
+
+  // Call filters only on change
+  selectTechnology(tech: string): void {
+    if (this.selectedTechnology !== tech) {
+      this.selectedTechnology = tech;
+      this.getFilters();
+    }
+  }
+
+  selectSkillLevel(level: "beginner" | "intermediate" | "advanced"): void {
+    if (this.selectedSkillLevel !== level) {
+      this.selectedSkillLevel = level;
+      this.getFilters();
+    }
+  }
+
+  selectContentType(type: string): void {
+    if (this.selectedContentType !== type) {
+      this.selectedContentType = type;
+      this.getFilters();
+    }
+  }
+
+  updateDuration(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const newDuration = Number(target.value);
+    if (this.maxDuration !== newDuration) {
+      this.maxDuration = newDuration;
+      this.getFilters();
+    }
   }
 
   // Unified getFilters() call to avoid multiple redundant calls
@@ -58,27 +82,6 @@ export class ShortFilterComponent implements OnInit {
       maxDuration: this.maxDuration,
     };
     this.feedService.setFilter(filters);
-  }
-
-  selectTechnology(tech: string): void {
-    this.selectedTechnology = tech;
-    this.getFilters();
-  }
-
-  selectSkillLevel(level: "beginner" | "intermediate" | "advanced"): void {
-    this.selectedSkillLevel = level;
-    this.getFilters();
-  }
-
-  selectContentType(type: string): void {
-    this.selectedContentType = type;
-    this.getFilters();
-  }
-
-  updateDuration(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.maxDuration = Number(target.value);
-    this.getFilters();
   }
 
   formatNumber(num: number): string {
