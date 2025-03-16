@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
+import { FeedserviceService } from "../feedservice.service";
 
 interface Interest {
   name: string;
@@ -57,8 +58,7 @@ export class IntrestBasedSignupComponent {
     { name: "5G", category: "emerging", icon: "fas fa-broadcast-tower" },
     { name: "Edge Computing", category: "emerging", icon: "fas fa-microchip" },
   ];
-
-  constructor(private router: Router) {}
+  constructor(private router: Router, private feedserviceService: FeedserviceService) {}
 
   ngOnInit(): void {
     this.filterInterests("all");
@@ -88,7 +88,7 @@ export class IntrestBasedSignupComponent {
 
   createAccount(): void {
     if (this.selectedInterests.length >= 1) {
-      console.log("Account created with interests:", this.selectedInterests);
+      this.feedserviceService.setFilter({ interests: this.selectedInterests });
       // Navigate to next step or submit to backend
       this.router.navigate(["/reel"]);
     } else {
