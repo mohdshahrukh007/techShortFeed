@@ -1,14 +1,14 @@
 <div   class="video-container bg-dark">
   <app-short-filter></app-short-filter>
-  <div id="videoContainer" class="video-wrapper" (touchstart)="enableAudio()">
-    <div
+  <div id="videoContainer" class="video-wrapper">
+    <div 
       *ngFor="let video of videos;let i = index"
       #videoItem
       class="shorts-container"
       [attr.data-video-id]="video.id"
     >
     
-    <div class="iframe-wrapper" [id]="videos.length-2 == i ? 'loadMore' : ''">
+    <div class="iframe-wrapper"  [id]="videos.length-2 == i ? 'loadMore' : ''">
         <iframe 
         *ngIf="video.safeUrl"
         [src]="video.safeUrl"

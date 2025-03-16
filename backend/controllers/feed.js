@@ -19,10 +19,8 @@ const getShorts = async (req, res) => {
       `&relevanceLanguage=en` +
       `&regionCode=US` +
       `&videoEmbeddable=true` +
-      `&key=1${YOUTUBE_API_KEY}`;
+      `&key=${YOUTUBE_API_KEY}`;
     const response = await axios.get(url);
-    console.log(response);
-    
     const videos = response.data.items.map((video) => ({
       kind: video.kind,
       videoId: video.id.videoId,
@@ -33,8 +31,6 @@ const getShorts = async (req, res) => {
       publishedAt: video.snippet.publishedAt,
       liveBroadcastContent: video.snippet.liveBroadcastContent,
     }));
-    console.log("data...",videos);
-    
     // ✅ Use mock data if no results are found
    
     res.status(200).json(videos);

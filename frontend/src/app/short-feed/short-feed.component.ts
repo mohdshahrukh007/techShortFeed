@@ -62,7 +62,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       .getFilter()
       .subscribe((filter: any) => {
         console.log(filter);
-        this.fetchShorts(filter.interests.map((f: any) => f).join(" & ") || []);
+        const storedFilters = localStorage.getItem('userFilters');
+        const filters = storedFilters ? JSON.parse(storedFilters) : filter?.interests;
+        try {
+          this.fetchShorts((filters || []).map((f: any) => f).join(" & ") || []);
+        } catch (error) {
+          this.fetchShorts(filters + 'shorts');
+        }
       });
   }
 
@@ -70,11 +76,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pauseAllVideos();
     this.setupIntersectionObserver();
 
-    // // Start autoplay on the first video
-    // const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
-    // if (firstVideo) {
-    //   this.playVideo(firstVideo);
-    // }
+    // Start autoplay on the first video
+    const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
+    if (firstVideo) {
+      this.playVideo(firstVideo);
+    }
 
     // Enable swipe gestures
     this.setupSwipeGestures();
@@ -151,6 +157,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       '{"event":"command","func":"pauseVideo","args":""}',
       "*"
     );
+    setTimeout(() => {
+      iframe.contentWindow?.postMessage(
+        '{"event":"command","func":"unMute","args":""}',
+        "*"
+      );
+    }, 1);
   }
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
@@ -169,7 +181,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   enableAudio() {
+    
     if (this.activeVideo) {
+      setTimeout(() => {
+        this.activeVideo?.contentWindow?.postMessage(
+          '{"event":"command","func":"playVideo","args":""}',
+          "*"
+        );
+      }, 100);
       setTimeout(() => {
         this.activeVideo?.contentWindow?.postMessage(
           '{"event":"command","func":"unMute","args":""}',
@@ -187,13 +206,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     return searchQuery;
   }
   overlayClass: any;
+
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if ((res.status = 200)) {
         this.dups = res?.body || []; //this.mapVideoData(res.body)
-        this.videos = this.getFallbackVideos(); //this.mapVideoData(this.dups);
+        this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
         this.reinitializeObserver();
         // Load dummy data on failure
       }
@@ -209,13 +229,26 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         id: short?.videoId,
       }));
   }
-  getFallbackVideos(): any[] {
+  getVideosinChunks(): any[] {
     // Shuffle the dups array
-    this.dups = this.dups.sort(() => Math.random() - 0.5);
+    // console.log(this.filterVideosByInterest(JSON.parse(localStorage.getItem('userFilters') || '[]')));
+    
     return this.dups.slice(0, 5).map((short: any) => ({
       ...short,
       safeUrl: this.getSafeURL(short.videoId),
     }));
+  }
+
+  filterVideosByInterest(interest: string): void {
+    this.videos = this.dups.filter(video => video.title.includes(interest));
+  }
+
+  applyStoredFilters(): void {
+    const storedFilters = localStorage.getItem('userFilters');
+    const filters = storedFilters ? JSON.parse(storedFilters) : [];
+    filters.forEach((filter: any) => {
+      this.filterVideosByInterest(filter);
+    });
   }
 
   reinitializeObserver(): void {
@@ -282,11 +315,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   loadMoreVideos(): void {
-    console.log("called");
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
-      this.videos.push(...this.getFallbackVideos());
+      this.videos.push(...this.getVideosinChunks());
       this.cdr.detectChanges();
       // Trigger re-initialization to update IntersectionObserver
       setTimeout(() => this.setupIntersectionObserver(), 100);

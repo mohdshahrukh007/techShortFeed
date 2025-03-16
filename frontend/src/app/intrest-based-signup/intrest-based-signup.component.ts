@@ -90,6 +90,7 @@ export class IntrestBasedSignupComponent {
     if (this.selectedInterests.length >= 1) {
       this.feedserviceService.setFilter({ interests: this.selectedInterests });
       // Navigate to next step or submit to backend
+    localStorage.setItem("filters", JSON.stringify(this.selectedInterests));
       this.router.navigate(["/reel"]);
     } else {
       alert("Please select at least 3 interests to continue");

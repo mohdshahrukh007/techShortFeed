@@ -81,6 +81,9 @@ export class ShortFilterComponent implements OnInit {
       contentType: this.selectedContentType,
       maxDuration: this.maxDuration,
     };
+    //make proper string 
+    const filterString = `Category: ${filters.category}, Skill Level: ${filters.skillLevel}, Content Type: ${filters.contentType}, Max Duration: ${filters.maxDuration}`;
+    localStorage.setItem("userFilters", JSON.stringify(filterString));
     this.feedService.setFilter(filters);
   }
 
