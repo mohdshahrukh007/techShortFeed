@@ -62,12 +62,16 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       .getFilter()
       .subscribe((filter: any) => {
         console.log(filter);
-        const storedFilters = localStorage.getItem('userFilters');
-        const filters = storedFilters ? JSON.parse(storedFilters) : filter?.interests;
+        const storedFilters = localStorage.getItem("userFilters");
+        const filters = storedFilters
+          ? JSON.parse(storedFilters)
+          : filter?.interests;
         try {
-          this.fetchShorts((filters || []).map((f: any) => f).join(" & ") || []);
+          this.fetchShorts(
+            (filters || []).map((f: any) => f).join(" & ") || []
+          );
         } catch (error) {
-          this.fetchShorts(filters + 'shorts');
+          this.fetchShorts(filters + "shorts");
         }
       });
   }
@@ -77,7 +81,9 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupIntersectionObserver();
 
     // Start autoplay on the first video
-    const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
+    const firstVideo = this.videoItems.first?.nativeElement.querySelector(
+      "iframe"
+    );
     if (firstVideo) {
       this.playVideo(firstVideo);
     }
@@ -157,13 +163,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       '{"event":"command","func":"pauseVideo","args":""}',
       "*"
     );
-    setTimeout(() => {
-      iframe.contentWindow?.postMessage(
-        '{"event":"command","func":"unMute","args":""}',
-        "*"
-      );
-    }, 1);
   }
+
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -180,22 +181,17 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-    enableAudio() {
-    
-    if (this.activeVideo) {
-      setTimeout(() => {
-        this.activeVideo?.contentWindow?.postMessage(
-          '{"event":"command","func":"playVideo","args":""}',
-          "*"
-        );
-      }, 100);
-      setTimeout(() => {
-        this.activeVideo?.contentWindow?.postMessage(
-          '{"event":"command","func":"unMute","args":""}',
-          "*"
-        );
-      }, 100);
-    }
+  enableAudio() {
+    this.activeVideo?.contentWindow?.postMessage(
+      '{"event":"command","func":"playVideo","args":""}',
+      "*"
+    );
+    setTimeout(() => {
+      this.activeVideo?.contentWindow?.postMessage(
+        '{"event":"command","func":"unMute","args":""}',
+        "*"
+      );
+    }, 100);
   }
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
@@ -211,27 +207,59 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      if ((res.status == 200)) {
-        this.dups = res?.body || [{
-          "kind": "youtube#searchResult",
-          "videoId": "DHjqpvDnNGE",
-          "title": "JavaScript in 100 Seconds",
-          "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-          "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-          "channelTitle": "Fireship",
-          "publishedAt": "2022-01-13T17:56:13Z",
-          "liveBroadcastContent": "none"
-      },
-      {
-          "kind": "youtube#searchResult",
-          "videoId": "aXOChLn5ZdQ",
-          "title": "JavaScript for the Haters",
-          "description": "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
-          "thumbnail": "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
-          "channelTitle": "Fireship",
-          "publishedAt": "2022-11-24T16:00:11Z",
-          "liveBroadcastContent": "none"
-      },]; //this.mapVideoData(res.body)
+      if (res.status == 200) {
+        this.dups = res?.body || [
+          {
+            kind: "youtube#searchResult",
+            videoId: "DHjqpvDnNGE",
+            title: "JavaScript in 100 Seconds",
+            description:
+              "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+            thumbnail: "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+            channelTitle: "Fireship",
+            publishedAt: "2022-01-13T17:56:13Z",
+            liveBroadcastContent: "none",
+          },
+          {
+            kind: "youtube#searchResult",
+            videoId: "aXOChLn5ZdQ",
+            title: "JavaScript for the Haters",
+            description:
+              "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+            thumbnail: "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+            channelTitle: "Fireship",
+            publishedAt: "2022-11-24T16:00:11Z",
+            liveBroadcastContent: "none",
+          },
+        ]; //this.mapVideoData(res.body)
+        this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
+        this.reinitializeObserver();
+        // Load dummy data on failure
+      } else {
+        this.dups = res?.body || [
+          {
+            kind: "youtube#searchResult",
+            videoId: "DHjqpvDnNGE",
+            title: "JavaScript in 100 Seconds",
+            description:
+              "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+            thumbnail: "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+            channelTitle: "Fireship",
+            publishedAt: "2022-01-13T17:56:13Z",
+            liveBroadcastContent: "none",
+          },
+          {
+            kind: "youtube#searchResult",
+            videoId: "aXOChLn5ZdQ",
+            title: "JavaScript for the Haters",
+            description:
+              "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+            thumbnail: "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+            channelTitle: "Fireship",
+            publishedAt: "2022-11-24T16:00:11Z",
+            liveBroadcastContent: "none",
+          },
+        ]; //this.mapVideoData(res.body)
         this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
         this.reinitializeObserver();
         // Load dummy data on failure
@@ -251,7 +279,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   getVideosinChunks(): any[] {
     // Shuffle the dups array
     // console.log(this.filterVideosByInterest(JSON.parse(localStorage.getItem('userFilters') || '[]')));
-    
+
     return this.dups.slice(0, 5).map((short: any) => ({
       ...short,
       safeUrl: this.getSafeURL(short.videoId),
@@ -259,11 +287,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   filterVideosByInterest(interest: string): void {
-    this.videos = this.dups.filter(video => video.title.includes(interest));
+    this.videos = this.dups.filter((video) => video.title.includes(interest));
   }
 
   applyStoredFilters(): void {
-    const storedFilters = localStorage.getItem('userFilters');
+    const storedFilters = localStorage.getItem("userFilters");
     const filters = storedFilters ? JSON.parse(storedFilters) : [];
     filters.forEach((filter: any) => {
       this.filterVideosByInterest(filter);
