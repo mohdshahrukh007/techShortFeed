@@ -500,3 +500,505 @@
         "liveBroadcastContent": "none"
     }
 ]
+[
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "DHjqpvDnNGE",
+        "title": "JavaScript in 100 Seconds",
+        "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+        "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2022-01-13T17:56:13Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "aXOChLn5ZdQ",
+        "title": "JavaScript for the Haters",
+        "description": "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+        "thumbnail": "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2022-11-24T16:00:11Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "5-oiLKEWIEw",
+        "title": "Best Programming Languages #programming #coding #javascript",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/5-oiLKEWIEw/hqdefault.jpg",
+        "channelTitle": "Devslopes",
+        "publishedAt": "2023-05-01T03:26:26Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "I5_Gx3JNho8",
+        "title": "How To Master JavaScript",
+        "description": "Twitch Everything is built live on twitch Twitch : https://bit.ly/3xhFO3E Discord: discord.gg/ThePrimeagen Spotify DevHour: ...",
+        "thumbnail": "https://i.ytimg.com/vi/I5_Gx3JNho8/hqdefault.jpg",
+        "channelTitle": "ThePrimeagen",
+        "publishedAt": "2024-05-29T19:37:45Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "gT0Lh1eYk78",
+        "title": "HTML, CSS, JavaScript Explained [in 4 minutes for beginners]",
+        "description": "Before you start any web development tutorials for beginners, FIRST understand what languages are used for building websites: ...",
+        "thumbnail": "https://i.ytimg.com/vi/gT0Lh1eYk78/hqdefault.jpg",
+        "channelTitle": "Danielle Thé",
+        "publishedAt": "2016-10-16T19:14:12Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "RvYYCGs45L4",
+        "title": "JavaScript Promise in 100 Seconds",
+        "description": "Learn JavaScript Promises in 100 seconds, then follow my new IG account for even more content ...",
+        "thumbnail": "https://i.ytimg.com/vi/RvYYCGs45L4/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2020-01-31T16:00:11Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "IfrJfGowmj0",
+        "title": "What is the difference between JavaScript and TypeScript ?! #tech #coding #stem",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/IfrJfGowmj0/hqdefault.jpg",
+        "channelTitle": "Tiff In Tech",
+        "publishedAt": "2024-09-26T19:00:02Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "y2OHIr_CZ4s",
+        "title": "Pikachu | HTML CSS JavaScript",
+        "description": "shorts #html #css #javascript #tutorials #trending Source code: https://learning-axis.com/snippets/ Sound effects from Pixabay.",
+        "thumbnail": "https://i.ytimg.com/vi/y2OHIr_CZ4s/hqdefault.jpg",
+        "channelTitle": "Learning Axis",
+        "publishedAt": "2023-05-25T03:10:04Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "4PZeIwXx1hc",
+        "title": "Maps Are A Game Changer For JavaScript",
+        "description": "Map Video: https://youtu.be/yJDofSGTSPQ?t=558 Find Me Here: My Blog: https://blog.webdevsimplified.com My Courses: ...",
+        "thumbnail": "https://i.ytimg.com/vi/4PZeIwXx1hc/hqdefault.jpg",
+        "channelTitle": "Web Dev Simplified",
+        "publishedAt": "2023-01-12T17:00:03Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "zO6CHvTErxE",
+        "title": "The best thing you can do with JavaScript #javascript #programming",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/zO6CHvTErxE/hqdefault.jpg",
+        "channelTitle": "Sam Meech-Ward",
+        "publishedAt": "2023-12-03T23:13:17Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "0Rt8pnYGFms",
+        "title": "JS is a vibes based language",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/0Rt8pnYGFms/hqdefault.jpg",
+        "channelTitle": "Alberta Tech",
+        "publishedAt": "2025-01-03T23:50:24Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "ZRjmGq1gAEQ",
+        "title": "Let’s play… Does your code suck? JavaScript Variables Edition",
+        "description": "Can you tell which code example is bad? Learn the subtle differences between variables in JavaScript by comparing let vs var.",
+        "thumbnail": "https://i.ytimg.com/vi/ZRjmGq1gAEQ/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2024-02-25T19:51:24Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "qgRUr-YUk1Q",
+        "title": "JavaScript Modules in 100 Seconds",
+        "description": "Learn how to import and export JS code with ES Modules in 100 seconds. Get the cheatsheet ...",
+        "thumbnail": "https://i.ytimg.com/vi/qgRUr-YUk1Q/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2020-01-02T17:42:40Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "Y3Lmf5QoaKA",
+        "title": "Created Reptile | HTML | CSS | Javascript #youtubeshorts #trending #coding #animation",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/Y3Lmf5QoaKA/hqdefault.jpg",
+        "channelTitle": "Shivin tutorial",
+        "publishedAt": "2024-08-19T02:52:59Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "NiQd9hZbuVo",
+        "title": "Should you Learn JavaScript in 2024?",
+        "description": "STEF'S DEVELOPER BOOTCAMP AND MENTORING PROGRAM https://unclestef.com/ JOIN STEF'S 'CODER'S CAREER ...",
+        "thumbnail": "https://i.ytimg.com/vi/NiQd9hZbuVo/hqdefault.jpg",
+        "channelTitle": "Stefan Mischook",
+        "publishedAt": "2024-02-06T15:45:01Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "_YV3NM3i_IY",
+        "title": "Why I Hate JavaScript",
+        "description": "All Clips are from the live stream of ThePrimeagen https://twitch.tv/ThePrimeagen Wanna Become a Backend Dev & Support me at ...",
+        "thumbnail": "https://i.ytimg.com/vi/_YV3NM3i_IY/hqdefault.jpg",
+        "channelTitle": "ThePrimeagenClips",
+        "publishedAt": "2024-01-26T16:00:22Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "KQ712CebFDM",
+        "title": "Solving JavaScript&#39;s Most NOTORIOUS Interview Question",
+        "description": "Can you solve this notorious JavaScript coding interview \"trick\" question? Prepping for your frontend interviews? Use code ...",
+        "thumbnail": "https://i.ytimg.com/vi/KQ712CebFDM/hqdefault.jpg",
+        "channelTitle": "Conner Ardman",
+        "publishedAt": "2023-02-24T14:30:04Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "mP0AuMKypd8",
+        "title": "Python vs. JavaScript",
+        "description": "Which one should you learn? Let me break it down for you.",
+        "thumbnail": "https://i.ytimg.com/vi/mP0AuMKypd8/hqdefault.jpg",
+        "channelTitle": "Tech With Tim",
+        "publishedAt": "2024-10-03T18:43:47Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "13Jvpp_SjzE",
+        "title": "SUPER USEFUL JavaScript Console Tool for Developers (Live Expression)  #dcode #javascript",
+        "description": "In today's video, we have a look at the Live Expression tool within Chrome Dev Tools. My Udemy Courses ...",
+        "thumbnail": "https://i.ytimg.com/vi/13Jvpp_SjzE/hqdefault.jpg",
+        "channelTitle": "dcode",
+        "publishedAt": "2023-09-15T11:15:00Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "SMZULGBYOZM",
+        "title": "Fastest way to learn Web Development #webdevelopment #html #css #javascript",
+        "description": "Fastest way to learn Web Development . ❣️ Save for later and subscribe for more! . For more content like this: ...",
+        "thumbnail": "https://i.ytimg.com/vi/SMZULGBYOZM/hqdefault.jpg",
+        "channelTitle": "Sahil & Sarra",
+        "publishedAt": "2023-09-03T05:00:20Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "-rtxfuRTVT4",
+        "title": "Just Learn JavaScript!",
+        "description": "JavaScript is one of the most versatile programming languages. You can do literally EVERYTHING with it. If you are new to coding ...",
+        "thumbnail": "https://i.ytimg.com/vi/-rtxfuRTVT4/hqdefault.jpg",
+        "channelTitle": "Travis Media",
+        "publishedAt": "2022-12-13T19:45:46Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "QnbspJRf7wc",
+        "title": "#shorts #programming #coding #css #html #javascript #ui #ux #design #programmers",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/QnbspJRf7wc/hqdefault.jpg",
+        "channelTitle": "AccioJob",
+        "publishedAt": "2024-03-18T14:19:06Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "L6btUQ8mDZo",
+        "title": "I Cannot Believe JavaScript Finally Added This New Array Method",
+        "description": "20 More Amazing Array Methods: https://youtu.be/mSBnJvHtgD0 Find Me Here: My Blog: https://blog.webdevsimplified.com My ...",
+        "thumbnail": "https://i.ytimg.com/vi/L6btUQ8mDZo/hqdefault.jpg",
+        "channelTitle": "Web Dev Simplified",
+        "publishedAt": "2023-12-14T17:00:27Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "W_MYx77TkXg",
+        "title": "Girls love Javascript",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/W_MYx77TkXg/hqdefault.jpg",
+        "channelTitle": "Jason Goodison",
+        "publishedAt": "2024-03-02T15:00:22Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "3O5DXpVESOI",
+        "title": "Html vs css &amp;js website design and development #coding #programming #tech #fyp  #html #tranding",
+        "description": "Exploring the roles of HTML, CSS, and JavaScript in website design and development! HTML lays the foundation of your ...",
+        "thumbnail": "https://i.ytimg.com/vi/3O5DXpVESOI/hqdefault.jpg",
+        "channelTitle": "Develop Code Journey",
+        "publishedAt": "2024-11-09T03:04:51Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "lwB4_v60l-g",
+        "title": "HTML vs CSS &amp; JavaScript || Html vs css &amp;js website design and development #html #coding #javascript",
+        "description": "Thanks For Watching! Don't forget to Like and Subscribe for more tutorials and coding insights! #trend #trending, #foryou, #viral ...",
+        "thumbnail": "https://i.ytimg.com/vi/lwB4_v60l-g/hqdefault.jpg",
+        "channelTitle": "Develop Code Journey",
+        "publishedAt": "2024-11-11T14:34:25Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "bYIhwrHHo3w",
+        "title": "Fast Food App in React Native 🔥 #shorts #reactnative #expo #reactjs #app #ui",
+        "description": "expo #reactnative #tailwindcss #javascript #programming #typescript #speedcode #coding #design #appdevelopment #reactjs ...",
+        "thumbnail": "https://i.ytimg.com/vi/bYIhwrHHo3w/hqdefault.jpg",
+        "channelTitle": "Code With Nomi",
+        "publishedAt": "2023-05-28T10:00:28Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "-oTdhdhZFrw",
+        "title": "Why not just re-write the whole app in javascript? #corporate",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/-oTdhdhZFrw/hqdefault.jpg",
+        "channelTitle": "Alberta Tech",
+        "publishedAt": "2024-06-24T01:33:03Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "ancXNJ44Y30",
+        "title": "Toggle Button Without HTML, CSS Or Javascript (Full Tutorial in Description)",
+        "description": "Make A Toggle Button Without CSS and Javascript (JS) In Editor X | No Code Tutorial In this video tutorial, Brandon Groce will ...",
+        "thumbnail": "https://i.ytimg.com/vi/ancXNJ44Y30/hqdefault.jpg",
+        "channelTitle": "NewForm with Brandon Groce",
+        "publishedAt": "2022-09-16T18:45:37Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "EoL5R_0h9xk",
+        "title": "Creative CODING: Making Visuals with JAVASCRIPT - Online Course by Bruno Imbrizi | Domestika English",
+        "description": "Learn the fundamentals of programming and discover how to develop, draw, and animate visuals and text with code: ...",
+        "thumbnail": "https://i.ytimg.com/vi/EoL5R_0h9xk/hqdefault.jpg",
+        "channelTitle": "Domestika English",
+        "publishedAt": "2021-11-16T11:45:01Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "CXh55uorQs0",
+        "title": "3 Levels Of React Developers #reactjs #reactdevelopment #reactjsdeveloper #webdevelopment",
+        "description": "The 3 levels of React.js developers and how they fetch data. What level are you at? ⭐ Get my full-stack Next.js with Express ...",
+        "thumbnail": "https://i.ytimg.com/vi/CXh55uorQs0/hqdefault.jpg",
+        "channelTitle": "Coding in Flow",
+        "publishedAt": "2024-08-21T09:35:20Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "nlKJmAvZoxo",
+        "title": "JavaScript CALLBACK FUNCTIONS Simplified",
+        "description": "In this video, I simplify the concept of callback functions in JavaScript and also share some use cases. You can also learn about ...",
+        "thumbnail": "https://i.ytimg.com/vi/nlKJmAvZoxo/hqdefault.jpg",
+        "channelTitle": "Deeecode The Web",
+        "publishedAt": "2022-09-07T11:45:50Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "KdlPTQoHvtw",
+        "title": "especially in the backend#coding #programming #javascript #python",
+        "description": "follow form more programming content specially in javascript , python , c++ , java and become skillful coder and developer Don't ...",
+        "thumbnail": "https://i.ytimg.com/vi/KdlPTQoHvtw/hqdefault.jpg",
+        "channelTitle": "CodeVenture",
+        "publishedAt": "2025-03-15T06:36:44Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "D9BnZM6RnEk",
+        "title": "How to Link JavaScript to HTML in Visual Studio Code 2023",
+        "description": "How to Link JavaScript to HTML in Visual Studio Code 2023 #javascript #html #visualstudio.",
+        "thumbnail": "https://i.ytimg.com/vi/D9BnZM6RnEk/hqdefault.jpg",
+        "channelTitle": "what is HTML?",
+        "publishedAt": "2023-08-10T17:01:55Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "jo6U429l3JM",
+        "title": "1 TRILLION messages #javascript #python #web #coding #programming",
+        "description": "Get a Free System Design PDF with 158 pages by subscribing to our weekly newsletter: https://bytebytego.ck.page/subscribe ...",
+        "thumbnail": "https://i.ytimg.com/vi/jo6U429l3JM/hqdefault.jpg",
+        "channelTitle": "ByteByteGo",
+        "publishedAt": "2023-12-26T16:35:00Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "4AqrlPm9i8s",
+        "title": "Junior Developer vs Senior Developer. #programming #coding #html #css #javascript #dsa #webdeveloper",
+        "description": "In today's fast-paced tech landscape, striking the right balance between honing development skills and mastering Data Structures ...",
+        "thumbnail": "https://i.ytimg.com/vi/4AqrlPm9i8s/hqdefault.jpg",
+        "channelTitle": "4_Programmers",
+        "publishedAt": "2024-06-14T07:18:51Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "jNgppRzIaMc",
+        "title": "How to master javascript",
+        "description": "How to master javascript.",
+        "thumbnail": "https://i.ytimg.com/vi/jNgppRzIaMc/hqdefault.jpg",
+        "channelTitle": "Chai aur Code",
+        "publishedAt": "2024-07-21T10:35:16Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "Yg1Wf_rFG7Q",
+        "title": "JavaScript Promises 👨🏻‍💻in 1 Minute #shorts",
+        "description": "Full video: https://www.youtube.com/watch?v=TnhCX0KkPqs JavaScript Promises and all their glory in 1 minute. I'm calling 10 ...",
+        "thumbnail": "https://i.ytimg.com/vi/Yg1Wf_rFG7Q/hqdefault.jpg",
+        "channelTitle": "ColorCode",
+        "publishedAt": "2022-12-22T13:00:30Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "-tee_eW-niQ",
+        "title": "JavaScript Explained in 60 Seconds ⚡️",
+        "description": "Are you confused where to start coding/what to learn/what roadmap to take? Take this free 2 minute quiz: ...",
+        "thumbnail": "https://i.ytimg.com/vi/-tee_eW-niQ/hqdefault.jpg",
+        "channelTitle": "Mehul - Codedamn",
+        "publishedAt": "2023-09-22T15:15:00Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "DjjrSW5Pe-k",
+        "title": "This JavaScript update is Incredible 💻 #technology #software #programming #code #javascript",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/DjjrSW5Pe-k/hqdefault.jpg",
+        "channelTitle": "Coding with Lewis",
+        "publishedAt": "2025-02-06T18:31:21Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "aXcuz6fn8_w",
+        "title": "the untold history of web development",
+        "description": "A totally comprehensive history of web development and JavaScript frameworks #humor #webdevelopment #shorts.",
+        "thumbnail": "https://i.ytimg.com/vi/aXcuz6fn8_w/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2023-12-20T23:50:43Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "Oe4eSeUY2xo",
+        "title": "Stop Making This Async/Await JavaScript Mistake!",
+        "description": "This is one of the biggest differences I see between \"pro\" and beginner javascript code. Prepping for your frontend interviews?",
+        "thumbnail": "https://i.ytimg.com/vi/Oe4eSeUY2xo/hqdefault.jpg",
+        "channelTitle": "Conner Ardman",
+        "publishedAt": "2024-07-31T13:30:16Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "iBbBPkVhgNQ",
+        "title": "JavaScript Event Loop Explained! 🚀 | How Async Code Works #shorts #coding #javascript #tutorial #js",
+        "description": "Wondering how JavaScript handles asynchronous code? Meet the Event Loop! In this quick video, we'll explain how the Event ...",
+        "thumbnail": "https://i.ytimg.com/vi/iBbBPkVhgNQ/hqdefault.jpg",
+        "channelTitle": "ColorCode",
+        "publishedAt": "2024-11-13T01:00:33Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "qEfqjKLCwhU",
+        "title": "Trolley Problem Solved #coding #programming #javascript #python",
+        "description": "this video is a fun take on programming logic follow form more programming content specially in javascript , python , c++ , java ...",
+        "thumbnail": "https://i.ytimg.com/vi/qEfqjKLCwhU/hqdefault.jpg",
+        "channelTitle": "CodeVenture",
+        "publishedAt": "2025-03-01T22:34:44Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "ITogH7lJTyE",
+        "title": "Async Await try-catch hell",
+        "description": "Async Await is heaven... until error handling comes into play. Learn how to avoid try/catch hell when writing async JavaScript code ...",
+        "thumbnail": "https://i.ytimg.com/vi/ITogH7lJTyE/hqdefault.jpg",
+        "channelTitle": "Fireship",
+        "publishedAt": "2021-06-08T14:54:34Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "7xStNKTM3bE",
+        "title": "JavaScript - Variables - W3Schools.com",
+        "description": "This video explains and demonstrates JavaScript Variables. Part of a series of video tutorials to learn JavaScript for beginners!",
+        "thumbnail": "https://i.ytimg.com/vi/7xStNKTM3bE/hqdefault.jpg",
+        "channelTitle": "w3schools.com",
+        "publishedAt": "2025-01-28T12:00:09Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "aPvkad_Eusg",
+        "title": "JavaScript Tutorial: Convert to Uppercase and Lowercase",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/aPvkad_Eusg/hqdefault.jpg",
+        "channelTitle": "freeCodeCamp.org",
+        "publishedAt": "2024-06-28T19:30:00Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "ltjr4LN04dU",
+        "title": "TypeScript has SWITCHED to Go Lang 💻 #software #coding #tech #javascript #programming",
+        "description": "",
+        "thumbnail": "https://i.ytimg.com/vi/ltjr4LN04dU/hqdefault.jpg",
+        "channelTitle": "Coding with Lewis",
+        "publishedAt": "2025-03-12T17:00:14Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "qITHupvqX4A",
+        "title": "What&#39;s a Signal? 🤔 #javascript",
+        "description": "Watch the full video: https://youtu.be/t18Kzj9S8-M 🖥️ Official Website & Courses https://academind.com/courses/ Academind ...",
+        "thumbnail": "https://i.ytimg.com/vi/qITHupvqX4A/hqdefault.jpg",
+        "channelTitle": "Academind",
+        "publishedAt": "2024-02-26T14:00:42Z",
+        "liveBroadcastContent": "none"
+    },
+    {
+        "kind": "youtube#searchResult",
+        "videoId": "fTOcWMD_5pk",
+        "title": "Easy Typewriter Animation in Pure CSS | No JavaScript",
+        "description": "Unlock the charm of the CSS typewriter effect on your website with this step-by-step tutorial. In this video, we'll explore creating a ...",
+        "thumbnail": "https://i.ytimg.com/vi/fTOcWMD_5pk/hqdefault.jpg",
+        "channelTitle": "Optimistic Web",
+        "publishedAt": "2024-01-11T09:12:00Z",
+        "liveBroadcastContent": "none"
+    }
+]
