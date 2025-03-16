@@ -1,6 +1,6 @@
 <div   class="video-container bg-dark">
   <app-short-filter></app-short-filter>
-  <div id="videoContainer" class="video-wrapper">
+  <div id="videoContainer" class="video-wrapper" (click)="enableAudio()">
     <div
       *ngFor="let video of videos;let i = index"
       #videoItem

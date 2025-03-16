@@ -159,13 +159,16 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
       '*'
     );
   }
-  
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
       if (iframe) {
         iframe.contentWindow?.postMessage(
           '{"event":"command","func":"pauseVideo","args":""}',
+          "*"
+        );
+        iframe.contentWindow?.postMessage(
+          '{"event":"command","func":"mute","args":""}',
           "*"
         );
       }
@@ -205,7 +208,28 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
                     "channelTitle": "Fireship",
                     "publishedAt": "2022-01-13T17:56:13Z",
                     "liveBroadcastContent": "none"
-                }] //this.mapVideoData(res.body)
+                },
+                {
+                  "kind": "youtube#searchResult",
+                  "videoId": "DHjqpvDnNGE",
+                  "title": "JavaScript in 100 Seconds",
+                  "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+                  "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+                  "channelTitle": "Fireship",
+                  "publishedAt": "2022-01-13T17:56:13Z",
+                  "liveBroadcastContent": "none"
+              },
+              {
+                "kind": "youtube#searchResult",
+                "videoId": "DHjqpvDnNGE",
+                "title": "JavaScript in 100 Seconds",
+                "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+                "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+                "channelTitle": "Fireship",
+                "publishedAt": "2022-01-13T17:56:13Z",
+                "liveBroadcastContent": "none"
+            }
+          ] //this.mapVideoData(res.body)
               this.videos = this.getFallbackVideos()//this.mapVideoData(this.dups); 
             this.reinitializeObserver();
             // Load dummy data on failure
