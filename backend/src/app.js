@@ -19,7 +19,6 @@ const setContext = (req, res, next) => {
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
 app.use("/api", sampleRoutes);
-// app.use("/", res.status(400).json({ error: "Topic is required" }));
 app.get('/', (req, res) => {
   res.json({ message: 'API is working!' });
 });

@@ -6,11 +6,11 @@ import {
   ViewChildren,
   AfterViewInit,
   OnDestroy,
-  AfterContentChecked,
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { FeedserviceService } from "../feedservice.service";
+import { ChangeDetectorRef } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ShortService } from "../short.service";
 
@@ -40,12 +40,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   touchEndY!: number;
   // Initialize minSwipeDistance with a default value (in pixels)
   minSwipeDistance: number = 30;
+  dups: Array<any>=[];
 
   constructor(
     private sanitizer: DomSanitizer,
     private shortService: ShortService,
-    private feedService: FeedserviceService,
-    private http: HttpClient
+    private cdr: ChangeDetectorRef,
+    private feedserviceService: FeedserviceService
   ) {}
   
   setIframeHeight() {
@@ -64,11 +65,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   ngOnInit(): void {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
-    this.filterSubscription = this.feedService
+    this.filterSubscription = this.feedserviceService
       .getFilter()
-      .subscribe((filter) => {
-        if (filter) {
-          this.applyFilters(filter);
+      .subscribe((filter: any) => {
+        if (filter.category) {
           if (this.videos.length === 0) {
             this.fetchShorts(filter);
           }
@@ -80,11 +80,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     this.pauseAllVideos(); 
     this.setupIntersectionObserver();
   
-    // Start autoplay on the first video
-    const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
-    if (firstVideo) {
-      this.playVideo(firstVideo);
-    }
+    // // Start autoplay on the first video
+    // const firstVideo = this.videoItems.first?.nativeElement.querySelector("iframe");
+    // if (firstVideo) {
+    //   this.playVideo(firstVideo);
+    // }
   
     // Enable swipe gestures
     this.setupSwipeGestures(); 
@@ -120,9 +120,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
           if (this.activeVideo !== nextActiveVideo) {
             this.activeVideo = nextActiveVideo;
             this.playVideo(nextActiveVideo);
-            setTimeout(() => {
-            // this.enableAudio();
-            }, 1000);
+            try {
+              let x :HTMLIFrameElement = nextActiveVideo;
+                 if(x?.nextSibling && x?.nextElementSibling && (x?.nextElementSibling as HTMLElement).offsetParent?.id =='loadMore'){
+                  this.loadMoreVideos();
+                }
+            } catch (err) {
+              
+            }
           }
         }
       },
@@ -169,13 +174,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   
   enableAudio() {
     if (this.activeVideo) {
-      this.activeVideo.contentWindow?.postMessage(
-        '{"event":"command","func":"unMute","args":""}',
-        "*"
-      );
+      setTimeout(() => {
+        this.activeVideo?.contentWindow?.postMessage(
+          '{"event":"command","func":"unMute","args":""}',
+          '*'
+        );
+      }, 100);
     }
   }
-  
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
     let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;
@@ -188,16 +194,28 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
 
     this.shortService.getYoutubeShort(searchUrl).subscribe(
       (res: any) => {
-        this.videos = this.mapVideoData(res);
-        this.reinitializeObserver();
+            if (res.status = 200) {
+              this.dups =[
+                {
+                    "kind": "youtube#searchResult",
+                    "videoId": "DHjqpvDnNGE",
+                    "title": "JavaScript in 100 Seconds",
+                    "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+                    "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+                    "channelTitle": "Fireship",
+                    "publishedAt": "2022-01-13T17:56:13Z",
+                    "liveBroadcastContent": "none"
+                }] //this.mapVideoData(res.body)
+              this.videos = this.getFallbackVideos()//this.mapVideoData(this.dups); 
+            this.reinitializeObserver();
+            // Load dummy data on failure
+            }
       },
-      (error) => {
-        console.error("Error fetching videos:", error); // Improved error logging
-        this.videos = this.getFallbackVideos(); // Load dummy data on failure
-        this.reinitializeObserver();
-      }
+      
     );
   }
+
+  
 
   mapVideoData(data: any[]): any[] {
     return (data || [])
@@ -206,38 +224,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
         title: short?.title,
         thumbnail: short?.thumbnail,
         id: short?.videoId,
-        safeUrl: this.getSafeURL(short?.videoId),
+      
       }));
   }
-
   getFallbackVideos(): any[] {
-    return [
-      {
-        videoId: "DHjqpvDnNGE",
-        title: "JavaScript in 100 Seconds",
-        thumbnail: "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-      },
-      {
-        videoId: "aXOChLn5ZdQ",
-        title: "JavaScript for the Haters",
-        thumbnail: "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
-      },
-      {
-        videoId: "5-oiLKEWIEw",
-        title: "Best Programming Languages #programming #coding #javascript",
-        thumbnail: "https://i.ytimg.com/vi/5-oiLKEWIEw/hqdefault.jpg",
-      },
-      {
-        videoId: "I5_Gx3JNho8",
-        title: "How To Master JavaScript",
-        thumbnail: "https://i.ytimg.com/vi/I5_Gx3JNho8/hqdefault.jpg",
-      },
-      {
-        videoId: "gT0Lh1eYk78",
-        title: "HTML, CSS, JavaScript Explained [in 4 minutes for beginners]",
-        thumbnail: "https://i.ytimg.com/vi/gT0Lh1eYk78/hqdefault.jpg",
-      },
-    ].map((short: any) => ({
+    // Shuffle the dups array
+    this.dups = this.dups.sort(() => Math.random() - 0.5);
+    return this.dups.slice(0, 5).map((short: any) => ({
       ...short,
       safeUrl: this.getSafeURL(short.videoId),
     }));
@@ -266,8 +259,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     if (container) {
       container.addEventListener("touchstart", (event) => {
         this.touchStartY = event.touches[0].clientY;
-        this.enableAudio()
-
       });
       container.addEventListener("touchend", (event) => {
         this.touchEndY = event.changedTouches[0].clientY;
@@ -308,7 +299,17 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
       this.scrollToVideo(this.currentIndex);
     }
   }
-
+  loadMoreVideos(): void {
+    console.log('called');
+    if (this.dups?.length > this.videos.length) {
+      const start = this.videos.length;
+      const end = start + 5;
+      this.videos.push(...this.getFallbackVideos());
+      this.cdr.detectChanges();
+      // Trigger re-initialization to update IntersectionObserver
+      setTimeout(() => this.setupIntersectionObserver(), 100);
+    }
+  }
   previousVideo(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -322,9 +323,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
   }
 
   getSafeURL(id: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-    );
+    console.log(' safe url');
+    
+      return this.sanitizer.bypassSecurityTrustResourceUrl(
+        `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+      );
+   
   }
 
   trackByFn(index: number, video: any): string {

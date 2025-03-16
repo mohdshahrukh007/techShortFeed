@@ -21,12 +21,14 @@ export class ShortService {
       catchError(this.handleError) // Handle error
     );
   }
-
   // Get YouTube Shorts
   getYoutubeShort(query: string) {
-    return this.http.get(`${this.ytUrl}${encodeURIComponent(query)}`).pipe(
+    return this.http.get(`${this.ytUrl}${encodeURIComponent(query)}`, { observe: 'response' }).pipe(
       map((response: any) => {
-        return response;
+        return {
+          status: response.status,
+          body: response.body
+        };
       }),
       catchError(this.handleError) // Handle error
     );

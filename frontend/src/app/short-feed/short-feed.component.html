@@ -1,4 +1,4 @@
-<div class="video-container bg-dark">
+<div   class="video-container bg-dark">
   <app-short-filter></app-short-filter>
   <div id="videoContainer" class="video-wrapper">
     <div
@@ -7,16 +7,18 @@
       class="shorts-container"
       [attr.data-video-id]="video.id"
     >
-      <div class="iframe-wrapper">
-        <iframe
-          [src]="video.safeUrl"
-          [style.height]="iframeHeight"
-          width="100%"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
+    
+    <div class="iframe-wrapper" [id]="videos.length-2 == i ? 'loadMore' : ''">
+        <iframe 
+        *ngIf="video.safeUrl"
+        [src]="video.safeUrl"
+        [style.height]="iframeHeight"
+        width="100%"
+        frameborder="0"
+        allow="accelerometer;autoplay clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
         <div class="iframe-overlay bg-dark" [ngStyle]="{ top: overlayClass}">
           <div class="px-2">
             <div class="player-name">{{getTitleWithoutHashtags(video?.title)}}</div>
