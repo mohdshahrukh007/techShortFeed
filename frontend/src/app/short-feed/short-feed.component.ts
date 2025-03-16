@@ -180,7 +180,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  enableAudio() {
+    enableAudio() {
     
     if (this.activeVideo) {
       setTimeout(() => {
@@ -211,8 +211,27 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
-      if ((res.status = 200)) {
-        this.dups = res?.body || []; //this.mapVideoData(res.body)
+      if ((res.status == 200)) {
+        this.dups = res?.body || [{
+          "kind": "youtube#searchResult",
+          "videoId": "DHjqpvDnNGE",
+          "title": "JavaScript in 100 Seconds",
+          "description": "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
+          "thumbnail": "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
+          "channelTitle": "Fireship",
+          "publishedAt": "2022-01-13T17:56:13Z",
+          "liveBroadcastContent": "none"
+      },
+      {
+          "kind": "youtube#searchResult",
+          "videoId": "aXOChLn5ZdQ",
+          "title": "JavaScript for the Haters",
+          "description": "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
+          "thumbnail": "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
+          "channelTitle": "Fireship",
+          "publishedAt": "2022-11-24T16:00:11Z",
+          "liveBroadcastContent": "none"
+      },]; //this.mapVideoData(res.body)
         this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
         this.reinitializeObserver();
         // Load dummy data on failure
