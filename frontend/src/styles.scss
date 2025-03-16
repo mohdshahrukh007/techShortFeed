@@ -1,10 +1,5 @@
   @import 'bootstrap/dist/css/bootstrap.min.css';
 
-  body {
-    font-family: 'Arial', sans-serif;
-    color: #ccc;
-    background-color: #121212;
-  }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Helvetica', sans-serif;
@@ -37,3 +32,11 @@
   button:hover {
     background-color: #1c7ed6;
   }
+  html, body {
+    height: 100%; 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+  }
+  

@@ -155,8 +155,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
     );
   }
   
-  
-
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -165,14 +163,9 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
           '{"event":"command","func":"pauseVideo","args":""}',
           "*"
         );
-        // iframe.contentWindow?.postMessage(
-        //   '{"event":"command","func":"mute","args":""}',
-        //   "*"
-        // );
       }
     });
   }
-
   
   enableAudio() {
     if (this.activeVideo) {
@@ -182,6 +175,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit,OnDestroy {
       );
     }
   }
+  
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any) {
     let searchQuery = `${filterSearch.category} ${filterSearch.contentType} ${filterSearch.skillLevel}`;

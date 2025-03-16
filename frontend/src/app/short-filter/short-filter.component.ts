@@ -1,18 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FeedserviceService } from "../feedservice.service";
-
-interface TechVideo {
-  id: number;
-  title: string;
-  creator: string;
-  creatorAvatar: string;
-  skillLevel: "beginner" | "intermediate" | "advanced";
-  techTags: string[];
-  likes: number;
-  dislikes: number;
-  comments: number;
-  thumbnailUrl: string;
-}
 
 @Component({
   selector: "app-short-filter",
@@ -20,10 +7,7 @@ interface TechVideo {
   styleUrls: ["./short-filter.component.scss"],
 })
 export class ShortFilterComponent implements OnInit {
-  videos: TechVideo[] = [];
-  filteredVideos: TechVideo[] = [];
   showFilters: boolean = false;
-
   // Filter state
   selectedTechnology: string = "Web Dev";
   selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "beginner";
@@ -47,15 +31,20 @@ export class ShortFilterComponent implements OnInit {
   contentTypes: string[] = ["Tutorials", "Reviews", "News", "Tips & Tricks"];
 
   constructor(private feedService: FeedserviceService) {}
+  @ViewChild('filterBar') filterBar!: ElementRef;
 
   ngOnInit(): void {
     this.getFilters(); // Initial filter setup
   }
 
-  trackByFn(index: number, video: TechVideo): number {
-    return video.id;
-  }
-
+  // ngAfterViewInit(): void {
+  //   document.addEventListener('click', (event) => {
+  //     if (!this.filterBar?.nativeElement?.contains(event?.target)) {
+  //       this.showFilters = false;
+  //     }
+  //   });
+  // }
+  
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
   }
