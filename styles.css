@@ -1,0 +1,9 @@
+/* ...existing code... */
+
+/* Ensure no CSS conflicts are hiding the icons */
+i.fas, i.far, i.fal, i.fab {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+/* ...existing code... */

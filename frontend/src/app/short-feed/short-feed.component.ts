@@ -61,19 +61,38 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filterSubscription = this.feedserviceService
       .getFilter()
       .subscribe((filter: any) => {
+        // example   // #Frontend #JS #TS #bestpractices #coding #programming
+        const developerType = localStorage.getItem("filters") || "";
+        const codingHashtag = localStorage.getItem("dynamicFilters") || "";
         console.log(filter);
-        const storedFilters = localStorage.getItem("userFilters");
-        const filters = storedFilters
-          ? JSON.parse(storedFilters)
-          : filter?.interests;
-        try {
-          this.fetchShorts(
-            (filters || []).map((f: any) => f).join(" & ") || []
-          );
-        } catch (error) {
-          this.fetchShorts(filters + "shorts");
-        }
+        
+        // let searchQuery = this.cleanQuery(codingHashtag);
+        let getHashtags = this.feedserviceService.getHashtags(developerType.replace(/"/g, ""));
+        this.fetchShorts(
+          codingHashtag + getHashtags + "#Shorts"
+        );
       });
+  }
+  cleanQuery(input: string): string {
+    const terms = Array.from(
+      new Set(
+        input
+          .split("&") // Split into array
+          .map((term) => term.trim()) // Trim spaces
+          .filter((term) => term) // Remove empty terms
+      )
+    );
+
+    // Add # at the start of each term (if not present)
+    const query = terms
+      .map((term) => (term.includes("#") ? term : `#${term}`))
+      .join(" | ");
+
+    // Add the last term as a hashtag without a pipe
+    const lastTerm = terms[terms.length - 1];
+    const finalHashtag = lastTerm.includes("#") ? lastTerm : `#${lastTerm}`;
+
+    return `${query} ${finalHashtag}`;
   }
 
   ngAfterViewInit(): void {
@@ -208,59 +227,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {
-        this.dups = res?.body || [
-          {
-            kind: "youtube#searchResult",
-            videoId: "DHjqpvDnNGE",
-            title: "JavaScript in 100 Seconds",
-            description:
-              "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-            thumbnail: "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-            channelTitle: "Fireship",
-            publishedAt: "2022-01-13T17:56:13Z",
-            liveBroadcastContent: "none",
-          },
-          {
-            kind: "youtube#searchResult",
-            videoId: "aXOChLn5ZdQ",
-            title: "JavaScript for the Haters",
-            description:
-              "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
-            thumbnail: "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
-            channelTitle: "Fireship",
-            publishedAt: "2022-11-24T16:00:11Z",
-            liveBroadcastContent: "none",
-          },
-        ]; //this.mapVideoData(res.body)
-        this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
-        this.reinitializeObserver();
-        // Load dummy data on failure
-      } else {
-        this.dups = res?.body || [
-          {
-            kind: "youtube#searchResult",
-            videoId: "DHjqpvDnNGE",
-            title: "JavaScript in 100 Seconds",
-            description:
-              "JavaScript is the the programming language that built the web. Learn how it evolved into a powerful tool for building websites, ...",
-            thumbnail: "https://i.ytimg.com/vi/DHjqpvDnNGE/hqdefault.jpg",
-            channelTitle: "Fireship",
-            publishedAt: "2022-01-13T17:56:13Z",
-            liveBroadcastContent: "none",
-          },
-          {
-            kind: "youtube#searchResult",
-            videoId: "aXOChLn5ZdQ",
-            title: "JavaScript for the Haters",
-            description:
-              "Why does everybody hate JavaScript so much? A complete roast of JS that highlights the strongest criticisms against the world's ...",
-            thumbnail: "https://i.ytimg.com/vi/aXOChLn5ZdQ/hqdefault.jpg",
-            channelTitle: "Fireship",
-            publishedAt: "2022-11-24T16:00:11Z",
-            liveBroadcastContent: "none",
-          },
-        ]; //this.mapVideoData(res.body)
-        this.videos = this.getVideosinChunks(); //this.mapVideoData(this.dups);
+        this.dups = res.body; //this.mapVideoData(res.body)
+        this.videos = this.getVideosinChunks(0, 5); //this.mapVideoData(this.dups);
         this.reinitializeObserver();
         // Load dummy data on failure
       }
@@ -273,14 +241,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       .map((short: any) => ({
         title: short?.title,
         thumbnail: short?.thumbnail,
-        id: short?.videoId,
+        id: this.getSafeURL(short?.videoId),
       }));
   }
-  getVideosinChunks(): any[] {
+  getVideosinChunks(start: any, end: any): any[] {
     // Shuffle the dups array
-    // console.log(this.filterVideosByInterest(JSON.parse(localStorage.getItem('userFilters') || '[]')));
-
-    return this.dups.slice(0, 5).map((short: any) => ({
+    // console.log(this.filterVideosByInterest(JSON.parse(localStorage.getItem('filters") || '[]')));
+    return this.dups.slice(start, end).map((short: any) => ({
       ...short,
       safeUrl: this.getSafeURL(short.videoId),
     }));
@@ -291,7 +258,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyStoredFilters(): void {
-    const storedFilters = localStorage.getItem("userFilters");
+    const storedFilters = localStorage.getItem("filters");
     const filters = storedFilters ? JSON.parse(storedFilters) : [];
     filters.forEach((filter: any) => {
       this.filterVideosByInterest(filter);
@@ -365,7 +332,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
-      this.videos.push(...this.getVideosinChunks());
+      this.videos.push(...this.getVideosinChunks(start, end));
       this.cdr.detectChanges();
       // Trigger re-initialization to update IntersectionObserver
       setTimeout(() => this.setupIntersectionObserver(), 100);

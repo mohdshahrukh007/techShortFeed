@@ -20,20 +20,20 @@
                 <button class="filter-btn" [class.active]="activeFilter === 'emerging'" (click)="filterInterests('emerging')">Emerging Tech</button>
                 </div>
                 
-                <div class="interests-container ">
-                <div *ngFor="let interest of filteredInterests" 
-                    class="interest-tag" 
-                    [class.selected]="selectedInterests.includes(interest.name)"
-                    (click)="toggleInterest(interest.name)">
-                    <div class="interest-icon" *ngIf="interest.icon">
-                    <i [class]="interest.icon"></i>
+                <div class="interests-container">
+                    <div *ngFor="let interest of filteredInterests" 
+                        class="d-flex interest-tag" 
+                        [class.selected]="selectedInterests.includes(interest.name)"
+                        (click)="toggleInterest(interest.name)">
+                        <div class="interest-icon" *ngIf="interest.icon">
+                            <i [class]="interest.icon"></i>
+                        </div>
+                       <div class="mx-1"> {{ interest.name }}</div>
+                        <div class="selection-indicator" *ngIf="selectedInterests.includes(interest.name)">
+                        </div>
                     </div>
-                    {{ interest.name }}
-                    <div class="selection-indicator" *ngIf="selectedInterests.includes(interest.name)">
-                    <i class="fas fa-check"></i>
-                    </div>
-                </div>
-                </div>
+                  </div>
+                  
                 
                 <div class="interest-progress text-white mt-2">
                 <div class="progress-text">

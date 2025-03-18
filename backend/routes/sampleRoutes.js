@@ -1,5 +1,5 @@
 const express = require('express');
-const {  getShorts } = require('../controllers/feed');
+const {  getShorts,getScrap } = require('../controllers/feed');
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/shorts', getShorts);
 
 // ✅ Route to post data
-// router.post('/data', postData);
+router.get('/scrap', getScrap);
 
 // ✅ Route to fetch Twitter videos
 // router.get('/twitter', getTwitter);

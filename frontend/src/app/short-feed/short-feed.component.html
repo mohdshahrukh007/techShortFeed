@@ -1,4 +1,4 @@
-<div   class="video-container bg-dark">
+<div class="video-container bg-dark">
   <app-short-filter></app-short-filter>
   <div id="videoContainer" class="video-wrapper">
 
@@ -21,8 +21,8 @@
         allowfullscreen
       ></iframe>
         <div class="iframe-overlay bg-dark" [ngStyle]="{ top: overlayClass}">
-          <div class="px-2">
-            <div class="player-name">{{getTitleWithoutHashtags(video?.title)}}</div>
+          <div class="w-80 px-2">
+            <div class="player-name text-truncate">{{getTitleWithoutHashtags(video?.title)}}</div>
             <div class="tags-container">
               <span *ngFor="let tag of getHashtags(video?.title)" class="tag-chip rounded" [ngClass]="'category'">{{ tag }}</span>
             </div>

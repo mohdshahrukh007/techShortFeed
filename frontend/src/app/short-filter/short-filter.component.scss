@@ -124,11 +124,16 @@
   
   .filter-options {
     display: flex;
-    flex-wrap: wrap;
     gap: 8px;
+    flex-direction: row;
+    overflow-x: scroll;
+    text-align: center;
+    align-items: center;
   }
   
   .filter-option {
+    text-align: center;
+    align-items: center;
     background-color: rgba(33, 150, 243, 0.1);
     border: 1px solid rgba(33, 150, 243, 0.3);
     color: #ffffff;
@@ -137,6 +142,26 @@
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s ease;
+  }
+  .filter-search input {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: #2a2a2a; /* Same as search container */
+    border: 1px solid rgba(33, 150, 243, 0.3); /* Subtle border with theme color */
+    border-radius: 16px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .filter-search input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .filter-search input:focus {
+    border-color: #2196f3; /* Highlight with theme color */
+    background-color: #1a1a1a;
   }
   
   .filter-option:hover {

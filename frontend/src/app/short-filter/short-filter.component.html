@@ -1,16 +1,19 @@
-<header>
+<header id="header">
   <div class="logo">
     <img
       src="../../assets/icons/download.png"
       width="50"
       height="30"
       class="rounded mx-1"
+      alt="TechShorts Logo"
     />
     <a [routerLink]="['/reel']" routerLinkActive="router-link-active">
       <span class="text-info">Tech</span><span class="text-light">Shorts</span>
     </a>
   </div>
+
   <div class="user-actions">
+    <!-- Notifications Icon -->
     <svg
       class="icon"
       xmlns="http://www.w3.org/2000/svg"
@@ -25,6 +28,8 @@
         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
       />
     </svg>
+
+    <!-- Filter Icon -->
     <div class="filter" (click)="toggleFilters()">
       <svg
         class="icon"
@@ -41,13 +46,16 @@
         />
       </svg>
     </div>
+
+    <!-- User Avatar -->
     <div class="user-avatar"></div>
   </div>
 </header>
 
+<!-- FILTER SECTION -->
 <div class="filter-section" *ngIf="showFilters">
   <div class="filter-header" (click)="toggleFilters()">
-    <h3>Filters</h3>
+    <!-- <h3>Filters</h3>
     <div class="filter-customize">
       <svg
         class="icon"
@@ -64,70 +72,62 @@
         />
       </svg>
       <span>Customize</span>
+    </div> -->
+  </div>
+
+  <!-- Subfilters -->
+  <div class="filter-group" >
+    <div class="filter-group-title">Related Topics</div>
+    <div class="filter-search">
+      <input
+      type="text"
+      placeholder="Search topics..."
+      [(ngModel)]="searchQuery"
+      (input)="filterSubfilters(searchQuery)"
+      class="search-input"
+      />
+    </div>
+    <div class="filter-options">
+      <div
+        *ngFor="let sub of subfilters"
+        [class.active]="selectedSubfilter === sub"
+        class="filter-option"
+        (click)="selectSubfilter(sub)"
+      >
+        {{ sub }}
+      </div>
     </div>
   </div>
 
-  <div class="filter-groups">
-    <div class="filter-group">
-      <div class="filter-group-title">Technology</div>
-      <div class="filter-options">
-        <div
-          *ngFor="let tech of technologies"
-          [class.active]="selectedTechnology === tech"
-          class="filter-option"
-          (click)="selectTechnology(tech)"
-        >
-          {{tech}}
-        </div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-group-title">Skill Level</div>
-      <div class="filter-options">
-        <div
-          *ngFor="let level of skillLevels"
-          [class.active]="selectedSkillLevel === level"
-          class="filter-option"
-          (click)="selectSkillLevel(level)"
-        >
-          {{level | titlecase}}
-        </div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-group-title">Content Type</div>
-      <div class="filter-options">
-        <div
-          *ngFor="let type of contentTypes"
-          [class.active]="selectedContentType === type"
-          class="filter-option"
-          (click)="selectContentType(type)"
-        >
-          {{type}}
-        </div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-group-title">Duration</div>
-      <div class="filter-options">
-        <input
-          type="range"
-          min="15"
-          max="300"
-          [value]="maxDuration"
-          class="duration-slider"
-          (input)="updateDuration($event)"
-        />
-        <div class="duration-labels">
-          <span>15s</span>
-          <span>{{maxDuration}}s</span>
-          <span>5m</span>
-        </div>
+  <!-- Skill Level Filter -->
+  <div class="filter-group">
+    <div class="filter-group-title">Skill Level</div>
+    <div class="filter-options">
+      <div
+        *ngFor="let level of skillLevels"
+        [class.active]="selectedSkillLevel === level"
+        class="filter-option"
+        (click)="selectSkillLevel(level)"
+      >
+        {{ level | titlecase }}
       </div>
     </div>
   </div>
+
+  <!-- Content Type Filter -->
+  <div class="filter-group">
+    <div class="filter-group-title">Content Type</div>
+    <div class="filter-options">
+      <div
+        *ngFor="let type of contentTypes"
+        [class.active]="selectedContentType === type"
+        class="filter-option"
+        (click)="selectContentType(type)"
+      >
+        {{ type }}
+      </div>
+    </div>
+  </div>
+
+
 </div>
- 
