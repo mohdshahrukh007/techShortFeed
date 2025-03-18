@@ -10,8 +10,10 @@ app.use(cors({
   methods: ["POST", "GET"],
   credentials: true
 }));
-
-
+const connectDB = require('../models/db');
+// Connect to MongoDB
+connectDB();
+// Add this middleware to set a context object on the request
 const setContext = (req, res, next) => {
   if (!req.context) req.context = {};
   next();
