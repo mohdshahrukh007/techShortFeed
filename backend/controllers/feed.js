@@ -317,7 +317,6 @@ const getShorts = async (req, res) => {
     res.status(200).json(videos);
     
   } catch (error) {
-    if (error?.response?.status === 403) {
       console.log("🔥 Quota exceeded. Fetching data from the database...");
 
       try {
@@ -335,9 +334,6 @@ const getShorts = async (req, res) => {
         console.error("❌ Error fetching from database:", dbError.message);
         res.status(500).json({ message: "Failed to load videos" });
       }
-    } else {
-      res.status(500).json({ message: "Failed to load videos from YouTube API" });
-    }
   }
 };
 
