@@ -15,7 +15,7 @@ const connectDB = require('../models/db');
 connectDB();
 // Add this middleware to set a context object on the request
 const setContext = (req, res, next) => {
-  const allowedOrigins = ['https://tech-short-5kzi.vercel.app']; // Replace with your allowed origin(s)
+  const allowedOrigins = ['https://techyshorts.netlify.app/','https://techyshorts.netlify.app']; // Replace with your allowed origin(s)
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
