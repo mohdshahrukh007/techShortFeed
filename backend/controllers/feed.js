@@ -285,7 +285,7 @@ const getShorts = async (req, res) => {
       `&q=${encodeURIComponent(searchQuery)}` +
       `&type=video` +
       `&videoDuration=short` +
-      `&maxResults=50` +
+      `&maxResults=20` +
       `&videoDefinition=high` +
       `&order=relevance` +
       `&safeSearch=moderate` +
