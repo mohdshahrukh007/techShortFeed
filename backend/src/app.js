@@ -15,15 +15,8 @@ const connectDB = require('../models/db');
 connectDB();
 // Add this middleware to set a context object on the request
 const setContext = (req, res, next) => {
-  const allowedOrigins = ['https://techyshorts.netlify.app/','https://techyshorts.netlify.app']; // Replace with your allowed origin(s)
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    if (!req.context) req.context = {};
-    req.context.origin = origin;
-  } else {
-    req.context = { origin: 'unauthorized' };
-  }
+  if (!req.context) req.context = {};
+  req.context.origin = req.headers.origin || 'unknown';
   next();
 };
 app.use(setContext);
