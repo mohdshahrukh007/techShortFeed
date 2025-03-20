@@ -274,7 +274,8 @@ const YOUTUBE_API_KEY = "AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA"; ///process.en
 //     ]);
 //   }
 // };
-const Short = require("../models/shorts");
+const getVideosFromDB = require("../vService/shortsDataQuery");
+const { Short, Video } = require("../models/shorts");
 
 const getShorts = async (req, res) => {
   try {
@@ -321,7 +322,7 @@ const getShorts = async (req, res) => {
 
       try {
         // ✅ Fallback to DB
-        const videosFromDB = await getVideosFromDB(searchQuery);
+        const videosFromDB = await getVideosFromDB(req?.query?.query);
 
         if (videosFromDB.length > 0) {
           console.log("✅ Fetched from DB");

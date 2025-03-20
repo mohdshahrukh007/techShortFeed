@@ -88,7 +88,7 @@
       />
     </div>
     <div class="filter-options">
-      <div
+      {{selectedSubfilter }}{{subfilters}}||<div
         *ngFor="let sub of subfilters"
         [class.active]="selectedSubfilter === sub"
         class="filter-option"

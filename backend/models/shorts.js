@@ -1,44 +1,29 @@
 const mongoose = require("mongoose");
 
+// Define schema for Shorts
 const shortSchema = new mongoose.Schema({
   videoId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
-  description: String,
-  thumbnail: String,
-  channelTitle: String,
-  publishedAt: Date,
-  liveBroadcastContent: String,
+  description: { type: String, default: "" },
+  thumbnail: { type: String, default: "" },
+  channelTitle: { type: String, default: "" },
+  publishedAt: { type: Date, default: null },
+  liveBroadcastContent: { type: String, default: "" },
 });
 
-const Short = mongoose.model("Short", shortSchema);
- 
-
-// Define schema
+// Define schema for Videos
 const videoSchema = new mongoose.Schema({
-  videoId: String,
-  title: String,
-  description: String,
-  thumbnail: String,
-  channelTitle: String,
-  publishedAt: Date,
+  videoId: { type: String, unique: true, required: true },
+  title: { type: String, default: "" },
+  description: { type: String, default: "" },
+  thumbnail: { type: String, default: "" },
+  channelTitle: { type: String, default: "" },
+  publishedAt: { type: Date, default: null },
 });
 
+// Create models
+const Short = mongoose.model("Short", shortSchema);
 const Video = mongoose.model("Video", videoSchema);
 
-// ✅ Function to fetch from database
-const getVideosFromDB = async (query) => {
-  try {
-    // Search for matching videos in DB
-    const videos = await Video.find({
-      title: { $regex: query, $options: "i" },
-    }).limit(20);
 
-    return videos;
-  } catch (error) {
-    console.error("❌ Database Error:", error);
-    throw error;
-  }
-};
-
-
-module.exports = { Short,getVideosFromDB };
+module.exports = { Short, Video };
