@@ -113,7 +113,7 @@ export class ShortFilterComponent implements OnInit {
       case 'technology':
         if (this.selectedTechnology !== value) {
           this.selectedTechnology = value;
-          this.updateSubfilters();
+          // this.updateSubfilters();
         }
         break;
       case 'skillLevel':

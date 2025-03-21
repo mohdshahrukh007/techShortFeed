@@ -46,10 +46,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   setIframeHeight() {
     const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
     const viewportHeight = window.innerHeight / 16; // Convert px to rem
-    const isPwa = window.matchMedia('(display-mode: standalone)').matches;
-    const adjustment = isPwa ? 1 : 0; // Adjust height for PWA if needed
-    this.iframeHeight = `${viewportHeight - footerHeight - adjustment}rem`;
-    this.overlayClass = `${viewportHeight - 7.5 - adjustment}rem`; // 120px in rem
+    this.iframeHeight = `${viewportHeight - footerHeight}rem`;
+    this.overlayClass = `${viewportHeight - 7.5}rem`; // 120px in rem
   }
 
   ngOnDestroy() {
@@ -58,20 +56,21 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     window.removeEventListener("resize", this.setIframeHeight.bind(this));
   }
+  combinedSearch:any =null
   ngOnInit(): void {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
     this.filterSubscription = this.feedserviceService
       .getFilter()
       .subscribe((userInterestCatagory: any) => {
-        !Object.keys(userInterestCatagory).length ? this.router.navigate(["/"]) : null;
         const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
         let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
         const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-        let search = Object.values(userInterestCatagory)
-          .map((value:any) => value.toString().replace(/[^a-zA-Z]/g, ""))
+        let $userInterestCatagory = Object.values(userInterestCatagory)  
+          .map((value: any) => value.toString().replace(/[^a-zA-Z]/g, ""))
           .join(" #");
-        uniqueHashtags?this.fetchShorts( uniqueHashtags + '#shorts' ):this.router.navigate(["/"]);
+         this.combinedSearch = uniqueHashtags? uniqueHashtags + " " + $userInterestCatagory: userInterestCatagory + " #shorts";
+        this.combinedSearch ? this.fetchShorts(this.combinedSearch) : this.router.navigate(["/"]);
       });
   }
 
@@ -206,19 +205,63 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
-    if (this.dups.length === 0 || filterSearch !== this.searchQuery) {
-      this.searchQuery = filterSearch;
-      this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
-        this.videos = this.getVideosinChunks(0, 5); //this.mapVideoData(this.dups);
+        let filteredVideos = this.getVideosinChunks(0, 5); // Initial chunk
+        let start = 5;
+        let end = 10;
+
+        while (filteredVideos.length >=5 && end <= this.dups.length) {
+          filteredVideos = this.getVideosinChunks(start, end); // Next window if no match found
+          start += 5;
+          end += 5;
+        }
+
+        this.videos = filteredVideos;
         this.reinitializeObserver();
+        // Load dummy data on failure
       }
-      });
-    } else {
-      this.videos = this.getVideosinChunks(0, 5);
-      this.reinitializeObserver();
-    }
+    });
+  }
+  getVideosinChunks(start: any, end: any): any[] {
+    // Shuffle the dups array
+    return this.filterVideosByInterest(this.dups.slice(start, end),this.combinedSearch).map((short: any) => ({
+      ...short,
+      safeUrl: this.getSafeURL(short.videoId),
+    }));
+  }
+
+  filterVideosByInterest(data: any, interest: string,levelMatch=1): Array<any> {
+    const userFilter = JSON.parse(localStorage.getItem("userFilters") || "{}");
+    const filteredData = data.filter((video: any) => {
+      const interestWords = interest?.toLowerCase().replace(/#/g, "").split(" ") || [];
+      const titleWords = video?.title.toLowerCase().replace(/#/g, "").split(" ") || [];
+      const matchesInterest = interestWords.some((word) => titleWords.includes(word));
+      
+      const matchesFilters = [
+        userFilter?.category?.toLowerCase(),
+        userFilter?.skillLevel?.toLowerCase(),
+        userFilter?.contentType?.toLowerCase(),
+      ]
+        .filter((filter) => filter)
+        .reduce((count, filter) => {
+          const isMatched = titleWords.includes(filter.toLowerCase());
+          if (isMatched) {
+        console.log(`Matched filter: ${filter}`);
+          }
+          return isMatched ? count + 1 : count;
+        }, 0) >= levelMatch;
+
+      if (matchesFilters) {
+        console.log(`Video "${video?.title}" matches user filters.`);
+      }
+
+      return matchesInterest && (Object.values(userFilter).length && matchesFilters) ? filteredData : true;
+    });
+
+    console.log("Filtered data:", filteredData);
+    return filteredData;
   }
 
   mapVideoData(data: any[]): any[] {
@@ -230,27 +273,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         id: this.getSafeURL(short?.videoId),
       }));
   }
-  getVideosinChunks(start: any, end: any): any[] {
-    // Shuffle the dups array
-    // console.log(this.filterVideosByInterest(JSON.parse(localStorage.getItem('filters") || '[]')));
-    return this.dups.slice(start, end).map((short: any) => ({
-      ...short,
-      safeUrl: this.getSafeURL(short.videoId),
-    }));
-  }
-
-  filterVideosByInterest(interest: string): void {
-    this.videos = this.dups.filter((video) => video.title.includes(interest));
-  }
-
-  applyStoredFilters(): void {
-    const storedFilters = localStorage.getItem("filters");
-    const filters = storedFilters ? JSON.parse(storedFilters) : [];
-    filters.forEach((filter: any) => {
-      this.filterVideosByInterest(filter);
-    });
-  }
-
+  
   reinitializeObserver(): void {
     setTimeout(() => {
       // this.pauseVideo();
@@ -318,7 +341,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   loadMoreVideos(): void {
     console.log('lMore');
-    
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;

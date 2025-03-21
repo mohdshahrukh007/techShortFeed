@@ -106,7 +106,7 @@
     <div class="filter-options my-2">
       <div
         *ngFor="let sub of subfilters"
-        [class.active]="selectedSubfilter == sub"
+        [class.active]="selectedTechnology == sub"
         class="filter-option my-1"
         (click)="selectFilter('technology',sub)"
       >
