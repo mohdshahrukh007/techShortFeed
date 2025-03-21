@@ -48,31 +48,47 @@
     </div>
 
     <!-- User Avatar -->
-    <div class="user-avatar"></div>
+    <div class="user-avatar d-flex justify-content-center align-items-center" (click)="toggleSidebar()">
+      <svg
+      class="icon"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      >
+      <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+      />
+      </svg>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" [class.active]="isSidebarOpen">
+      <div class="sidebar-header">
+      <h5> Menu</h5>
+      <button class="close-btn" (click)="toggleSidebar()">x</button>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="">
+          <a class="" >
+        Detox Youtube Feed
+        <span class="badge badge-primary position-absolute top-12 p-1 bg-danger">Comming Soon...</span>
+          </a>
+        </li>
+        <li><a (click)="reset()">Curate Interests</a></li>
+        <li><a>Logout</a></li>
+      </ul>
+    </div>
+    <!-- Note: The overlay will be added dynamically by the TypeScript code -->
   </div>
 </header>
 
 <!-- FILTER SECTION -->
 <div class="filter-section" *ngIf="showFilters">
   <div class="filter-header" (click)="toggleFilters()">
-    <!-- <h3>Filters</h3>
-    <div class="filter-customize">
-      <svg
-        class="icon"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-        />
-      </svg>
-      <span>Customize</span>
-    </div> -->
   </div>
 
   <!-- Subfilters -->
@@ -92,7 +108,7 @@
         *ngFor="let sub of subfilters"
         [class.active]="selectedSubfilter == sub"
         class="filter-option my-1"
-        (click)="selectSubfilter(sub)"
+        (click)="selectFilter('technology',sub)"
       >
         {{ sub }}
       </div>
@@ -105,9 +121,9 @@
     <div class="filter-options">
       <div
         *ngFor="let level of skillLevels"
-        [class.active]="selectedSkillLevel === level"
+        [class.active]="selectedSkillLevel == level"
         class="filter-option"
-        (click)="selectSkillLevel(level)"
+        (click)="selectFilter('skillLevel',level)"
       >
         {{ level | titlecase }}
       </div>
@@ -122,12 +138,10 @@
         *ngFor="let type of contentTypes"
         [class.active]="selectedContentType === type"
         class="filter-option"
-        (click)="selectContentType(type)"
+        (click)="selectFilter('contentType',type)"
       >
         {{ type }}
       </div>
     </div>
   </div>
-
-
 </div>

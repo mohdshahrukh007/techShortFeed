@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
 import { FeedserviceService } from "../feedservice.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-short-filter",
@@ -37,18 +38,18 @@ export class ShortFilterComponent implements OnInit {
       // deployment: ["Netlify", "Vercel", "Firebase", "AWS"],
     },
     Backend: {
-      skillLevels: ["Beginner", "Intermediate", "Advanced"],
-      contentTypes: ["Tutorials", "News", "Reviews"],
-      languages: ["Node.js", "Python", "Java", "Ruby", "PHP", "Go", "C#"],
+      // skillLevels: ["Beginner", "Intermediate", "Advanced"],
+      // contentTypes: ["Tutorials", "News", "Reviews"],
+      // languages: ["Node.js", "Python", "Java", "Ruby", "PHP", "Go", "C#"],
       frameworks: ["Express.js", "Django", "Spring Boot", "Ruby on Rails", "Laravel", "Flask"],
-      databases: ["MySQL", "PostgreSQL", "MongoDB", "Redis", "SQLite", "Cassandra"],
-      apiDesign: ["REST", "GraphQL", "gRPC", "WebSockets"],
-      testing: ["Jest", "Mocha", "Chai", "Supertest", "Postman"],
-      deployment: ["Docker", "Kubernetes", "AWS", "Azure", "Google Cloud", "Heroku"],
-      versionControl: ["Git", "GitHub Actions", "Jenkins", "CircleCI"],
-      optimization: ["Caching", "Load Balancing", "Database Indexing", "Query Optimization"],
-      security: ["Authentication", "Authorization", "OWASP", "Encryption"],
-      monitoring: ["Prometheus", "Grafana", "New Relic", "ELK Stack"],
+      // databases: ["MySQL", "PostgreSQL", "MongoDB", "Redis", "SQLite", "Cassandra"],
+      // apiDesign: ["REST", "GraphQL", "gRPC", "WebSockets"],
+      // testing: ["Jest", "Mocha", "Chai", "Supertest", "Postman"],
+      // deployment: ["Docker", "Kubernetes", "AWS", "Azure", "Google Cloud", "Heroku"],
+      // versionControl: ["Git", "GitHub Actions", "Jenkins", "CircleCI"],
+      // optimization: ["Caching", "Load Balancing", "Database Indexing", "Query Optimization"],
+      // security: ["Authentication", "Authorization", "OWASP", "Encryption"],
+      // monitoring: ["Prometheus", "Grafana", "New Relic", "ELK Stack"],
     },
     dev: {
       categories: ["Frontend", "Backend", "JavaScript", "Python", "Java", "Spring", "Game Dev", "Mobile Dev", "DevOps"],
@@ -71,20 +72,30 @@ export class ShortFilterComponent implements OnInit {
 
   constructor(
     private feedService: FeedserviceService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private router: Router
   ) {}
 
   @ViewChild('filterBar') filterBar!: ElementRef;
-
+  isSidebarOpen:boolean = false
   ngOnInit(): void {
     // Load user interests from the service (like user signup)
-    this.technologies = JSON.parse(localStorage.getItem("filters") || "[]");
-    this.selectedTechnology = 'Frontend'//this.technologies[0] || ""; // Use first technology if available
+    this.selectedTechnology = localStorage.getItem("filters") || ""; // Use first technology if available
     this.updateSubfilters(); // Initialize subfilters based on the first interest
   }
-
+  toggleSidebar(){
+    this.isSidebarOpen = !this.isSidebarOpen
+  }
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
+  }
+  reset(){
+    this.selectedTechnology = 'Frontend'
+    this.selectedSkillLevel = 'beginner'
+    this.selectedContentType = ''
+    this.selectedSubfilter = ''
+    localStorage.clear();
+    this.router.navigate(['/']); // Navigate to the main page
   }
   searchQuery:any
   filterSubfilters(searchTerm?: string): void {
@@ -92,33 +103,33 @@ export class ShortFilterComponent implements OnInit {
       this.updateSubfilters(); // Reset to all subfilters if no search term
       return;
     }
-
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     this.subfilters = this.subfilters.filter(subfilter =>
       subfilter.toLowerCase().includes(lowerCaseSearchTerm)
     );
   }
-
-  selectTechnology(tech: string): void {
-    if (this.selectedTechnology !== tech) {
-      this.selectedTechnology = tech;
-      this.updateSubfilters();
-      this.getFilters();
+  selectFilter(type: 'technology' | 'skillLevel' | 'contentType', value: string): void {
+    switch (type) {
+      case 'technology':
+        if (this.selectedTechnology !== value) {
+          this.selectedTechnology = value;
+          this.updateSubfilters();
+        }
+        break;
+      case 'skillLevel':
+        if (this.selectedSkillLevel !== value) {
+          this.selectedSkillLevel = value as "beginner" | "intermediate" | "advanced";
+        }
+        break;
+      case 'contentType':
+        if (this.selectedContentType !== value) {
+          this.selectedContentType = value;
+        }
+        break;
     }
-  }
-
-  selectSkillLevel(level: "beginner" | "intermediate" | "advanced"): void {
-    if (this.selectedSkillLevel !== level) {
-      this.selectedSkillLevel = level;
-      this.getFilters();
-    }
-  }
-
-  selectContentType(type: string): void {
-    if (this.selectedContentType !== type) {
-      this.selectedContentType = type;
-      this.getFilters();
-    }
+    console.log("Selected", type, ":", value);
+    
+    this.getFilters();
   }
 
   selectSubfilter(subfilter: string): void {

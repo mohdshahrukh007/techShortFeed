@@ -13,6 +13,7 @@ import { FeedserviceService } from "../feedservice.service";
 import { ChangeDetectorRef } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ShortService } from "../short.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-short-feed",
@@ -39,7 +40,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private shortService: ShortService,
     private cdr: ChangeDetectorRef,
-    private feedserviceService: FeedserviceService
+    private feedserviceService: FeedserviceService,
+    private router: Router
   ) {}
 
   setIframeHeight() {
@@ -60,39 +62,16 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     window.addEventListener("resize", this.setIframeHeight.bind(this));
     this.filterSubscription = this.feedserviceService
       .getFilter()
-      .subscribe((filter: any) => {
-        // example   // #Frontend #JS #TS #bestpractices #coding #programming
-        const developerType = localStorage.getItem("filters") || "";
-        const codingHashtag = localStorage.getItem("dynamicFilters") || "";
-        console.log(filter);
-        
-        // let searchQuery = this.cleanQuery(codingHashtag);
-        let getHashtags = this.feedserviceService.getHashtags(developerType.replace(/"/g, ""));
-        this.fetchShorts(
-          codingHashtag + getHashtags + "#Shorts"
-        );
+      .subscribe((userInterestCatagory: any) => {
+        !Object.keys(userInterestCatagory).length ? this.router.navigate(["/"]) : null;
+        const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
+        let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
+        const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
+        let search = Object.values(userInterestCatagory)
+          .map((value:any) => value.toString().replace(/[^a-zA-Z]/g, ""))
+          .join(" #");
+        uniqueHashtags?this.fetchShorts( uniqueHashtags + '#shorts' ):this.router.navigate(["/"]);
       });
-  }
-  cleanQuery(input: string): string {
-    const terms = Array.from(
-      new Set(
-        input
-          .split("&") // Split into array
-          .map((term) => term.trim()) // Trim spaces
-          .filter((term) => term) // Remove empty terms
-      )
-    );
-
-    // Add # at the start of each term (if not present)
-    const query = terms
-      .map((term) => (term.includes("#") ? term : `#${term}`))
-      .join(" | ");
-
-    // Add the last term as a hashtag without a pipe
-    const lastTerm = terms[terms.length - 1];
-    const finalHashtag = lastTerm.includes("#") ? lastTerm : `#${lastTerm}`;
-
-    return `${query} ${finalHashtag}`;
   }
 
   ngAfterViewInit(): void {
@@ -110,6 +89,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     // Enable swipe gestures
     this.setupSwipeGestures();
   }
+  
   setupIntersectionObserver(): void {
     if (this.observer) {
       this.observer.disconnect();
@@ -317,6 +297,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           .some((entry) => entry.target === iframe && entry.isIntersecting);
         if (!isIntersecting) {
           this.pauseVideo(iframe);
+          // this.enableAudio();
         }
       }
     }, 100);
@@ -326,9 +307,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.currentIndex < this.videoItems.length - 1) {
       this.currentIndex++;
       this.scrollToVideo(this.currentIndex);
+      this.enableAudio();
     }
   }
   loadMoreVideos(): void {
+    console.log('lMore');
+    
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;

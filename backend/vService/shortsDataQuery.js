@@ -1,18 +1,14 @@
-const Short = require("../models/shorts"); // Adjust the path if necessary
+const { Short } = require("../models/shorts"); // Ensure this path is correct
 
-// Function to search for Shorts by title or other fields
-async function searchShorts(searchQuery) {
-    try {
-        const results = await Short.find({
-            $or: [
-                { title: { $regex: searchQuery, $options: "i" } }, // Case-insensitive search in title
-                { description: { $regex: searchQuery, $options: "i" } }, // Case-insensitive search in description
-            ]
-        });
-        return results;
-    } catch (error) {
-        console.error("Error searching for shorts:", error);
-        throw error;
-    }
-}
-module.exports = { searchShorts };
+const searchShorts = async (query) => {
+  try {
+    // Use Mongoose's `find` method to search for shorts in the database
+    const results = await Short.find({ title: { $regex: query, $options: "i" } });
+    return results;
+  } catch (error) {
+    console.error("Error searching for shorts:", error.message);
+    throw error;
+  }
+};
+
+module.exports = searchShorts;

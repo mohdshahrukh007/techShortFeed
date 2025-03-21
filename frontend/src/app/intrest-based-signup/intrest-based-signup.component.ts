@@ -78,44 +78,45 @@ export class IntrestBasedSignupComponent implements OnInit {
     } else {
       this.selectedInterests.push(interest);
     }
-    this.generateDynamicFilters();
+    // this.generateDynamicFilters();
   }
 
-  generateDynamicFilters(): void {
-    const relatedFilters:any = {
-      "Frontend": ["JavaScript", "TypeScript", "Web Development", "App Development", "AI", "UI/UX"],
-      "Backend": ["Node.js", "Databases", "API Development", "Security", "Performance Optimization"],
-      "DevOps": ["CI/CD", "Containerization", "Cloud Services", "Monitoring", "Automation"],
-      "AI": ["Machine Learning", "Data Science", "Neural Networks", "NLP", "Computer Vision"],
-      "Interview Preparation": ["Common Questions", "Coding Challenges", "System Design", "Behavioral Questions"],
-      "Tips & Tricks": ["Best Practices", "Code Snippets", "Productivity Hacks", "Debugging Techniques"],
-      "Optimization Techniques": ["Performance Tuning", "Memory Management", "Efficient Algorithms", "Scalability Strategies"]
-    };
+  // generateDynamicFilters(): void {
+  //   // const relatedFilters:any = {
+  //   //   "Frontend": ["JavaScript", "TypeScript", "Web Development", "App Development", "AI", "UI/UX"],
+  //   //   "Backend": ["Node.js", "Databases", "API Development", "Security", "Performance Optimization"],
+  //   //   "DevOps": ["CI/CD", "Containerization", "Cloud Services", "Monitoring", "Automation"],
+  //   //   "AI": ["Machine Learning", "Data Science", "Neural Networks", "NLP", "Computer Vision"],
+  //   //   "Interview Preparation": ["Common Questions", "Coding Challenges", "System Design", "Behavioral Questions"],
+  //   //   "Tips & Tricks": ["Best Practices", "Code Snippets", "Productivity Hacks", "Debugging Techniques"],
+  //   //   "Optimization Techniques": ["Performance Tuning", "Memory Management", "Efficient Algorithms", "Scalability Strategies"]
+  //   // };
 
-    this.dynamicFilters = [];
-    this.selectedInterests.forEach(interest => {
-      if (relatedFilters[interest]) {
-        this.dynamicFilters.push(...relatedFilters[interest]);
-      }
-    });
+  //   this.dynamicFilters = [];
+  //   // this.selectedInterests.forEach(interest => {
+  //   //   // if (relatedFilters[interest]) {
+  //   //   //   this.dynamicFilters.push(...relatedFilters[interest]);
+  //   //   // }
+  //   // });
 
-    // Remove duplicates
-    this.dynamicFilters = [...new Set(this.dynamicFilters)];
-  }
+  //   // Remove duplicates
+  //   this.dynamicFilters = [...new Set(this.dynamicFilters)];
+  // }
   createAccount(): void {
     localStorage.clear();
     if (this.selectedInterests.length >= 1) {
-      const interestsString = this.selectedInterests.join(" & ");
-      const dynamicFiltersString = this.dynamicFilters.join(" & ");
+      let interestsString = this.selectedInterests.join(" & ");
+      // const dynamicFiltersString = this.dynamicFilters.join(" & ");
   
-      this.feedserviceService.setFilter({
-        interests: interestsString,
-        dynamicFilters: dynamicFiltersString
-      });
-  
-      localStorage.setItem("filters", JSON.stringify(interestsString));
-      localStorage.setItem("dynamicFilters", JSON.stringify(dynamicFiltersString));
-  
+      // this.feedserviceService.setFilter({
+      //   interests: interestsString,
+      //   // dynamicFilters: dynamicFiltersString
+      // });
+      this.feedserviceService.setFilter(interestsString);
+      // localStorage.setItem("filters", JSON.stringify(interestsString));
+      // localStorage.setItem("dynamicFilters", JSON.stringify(dynamicFiltersString));
+   
+      localStorage.setItem("filters", interestsString);
       this.router.navigate(["/reel"]);
     } else {
       alert("Please select at least 1 interest to continue");

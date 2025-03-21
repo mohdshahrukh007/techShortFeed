@@ -7,7 +7,7 @@ import { environment } from "src/environment/environment";
 })
 export class ShortService {
   private twitterUrl =""
-  private ytUrl = environment.apiUrl+"/api/shorts?query=";
+  private ytUrl ='http://localhost:3000'+"/api/shorts?query=";
 
   constructor(private http: HttpClient) {}
 
