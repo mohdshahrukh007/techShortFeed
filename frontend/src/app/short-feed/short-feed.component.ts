@@ -8,7 +8,6 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { HttpClient } from "@angular/common/http";
 import { FeedserviceService } from "../feedservice.service";
 import { ChangeDetectorRef } from "@angular/core";
 import { Subscription } from "rxjs";
@@ -47,8 +46,10 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   setIframeHeight() {
     const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
     const viewportHeight = window.innerHeight / 16; // Convert px to rem
-    this.iframeHeight = `${viewportHeight - footerHeight}rem`;
-    this.overlayClass = `${viewportHeight - 7.5}rem`; // 120px in rem
+    const isPwa = window.matchMedia('(display-mode: standalone)').matches;
+    const adjustment = isPwa ? 1 : 0; // Adjust height for PWA if needed
+    this.iframeHeight = `${viewportHeight - footerHeight - adjustment}rem`;
+    this.overlayClass = `${viewportHeight - 7.5 - adjustment}rem`; // 120px in rem
   }
 
   ngOnDestroy() {
@@ -205,14 +206,19 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     const searchUrl = this.buildQueryUrl(filterSearch);
-    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+    if (this.dups.length === 0 || filterSearch !== this.searchQuery) {
+      this.searchQuery = filterSearch;
+      this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
         this.videos = this.getVideosinChunks(0, 5); //this.mapVideoData(this.dups);
         this.reinitializeObserver();
-        // Load dummy data on failure
       }
-    });
+      });
+    } else {
+      this.videos = this.getVideosinChunks(0, 5);
+      this.reinitializeObserver();
+    }
   }
 
   mapVideoData(data: any[]): any[] {
@@ -338,7 +344,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(" safe url");
 
     return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+      `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${id}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
     );
   }
 
