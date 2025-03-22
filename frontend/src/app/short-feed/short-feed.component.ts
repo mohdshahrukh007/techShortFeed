@@ -287,13 +287,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 0) >= levelMatch;
 
       if (matchesFilters) {
-        console.log(`Video "${video?.title}" matches user filters.`);
+        console.log(`Video "${video?.title}" matches user filters.`+userFilter);
       }
+console.log(matchesInterest,matchesFilters);
 
-      return matchesInterest && (Object.values(userFilter).length && matchesFilters) ? filteredData : true;
+      return matchesInterest && (Object.values(userFilter).length && matchesFilters) ? video : true;
     });
 
-    console.log("Filtered data:", filteredData);
     return filteredData;
   }
 
