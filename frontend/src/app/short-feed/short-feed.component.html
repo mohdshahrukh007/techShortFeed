@@ -9,17 +9,18 @@
       [attr.data-video-id]="video.id"
     >
     
-    <div class="iframe-wrapper" (touchstart)="enableAudio()"  [id]="videos.length-2 == i ? 'loadMore' : ''">
+    <div class="iframe-wrapper" [id]="videos.length-2 == i ? 'loadMore' : ''">
         <iframe 
         *ngIf="video.safeUrl"
+        [id]="video.videoId"
         [src]="video.safeUrl"
         [style.height]="iframeHeight"
         width="100%"
-        frameborder="0"
+        frameborder="0" 
         allow="accelerometer;autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
-      ></iframe>
+            ></iframe>
         <div class="iframe-overlay bg-dark" [ngStyle]="{ top: overlayClass}">
           <div class="w-80 px-2">
             <div class="player-name text-truncate">{{getTitleWithoutHashtags(video?.title)}}</div>
