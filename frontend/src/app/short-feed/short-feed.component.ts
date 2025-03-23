@@ -60,10 +60,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
         let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
         const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-        let $userInterestCatagory = Object.values(userInterestCatagory)  
-          .map((value: any) => value.toString().replace(/[^a-zA-Z]/g, ""))
-          .join(" #");
+        let $userInterestCatagory = Object.keys(userInterestCatagory).length ? userInterestCatagory : "";
+          console.log('user filter ',$userInterestCatagory);
+          
          this.combinedSearch = uniqueHashtags? uniqueHashtags + " " + $userInterestCatagory: userInterestCatagory + " #shorts";
+         console.log(this.combinedSearch);
         this.combinedSearch ? this.fetchShorts(this.combinedSearch) : this.router.navigate(["/"]);
       });
   }
@@ -289,7 +290,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       if (matchesFilters) {
         console.log(`Video "${video?.title}" matches user filters.`+userFilter);
       }
-console.log(matchesInterest,matchesFilters);
 
       return matchesInterest && (Object.values(userFilter).length && matchesFilters) ? video : true;
     });
@@ -413,8 +413,6 @@ console.log(matchesInterest,matchesFilters);
   }
 
   getSafeURL(id: string): SafeResourceUrl {
-    console.log(" safe url");
-
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${id}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
     );

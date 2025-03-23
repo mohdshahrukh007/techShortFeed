@@ -3,12 +3,15 @@ require("dotenv").config(); // Load .env file
 const { chromium } = require("playwright");
 
 const YOUTUBE_API_KEY = "AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA"; ///process.env.YOUTUBE_API_KEY;
+const YOUTUBE_API_KEY1 = "AIzaSyB9n2oF3eolmvmtHhqpwxZaQ1i2dZrPwHQ"; ///process.env.YOUTUBE_API_KEY;
+
 const searchShorts = require("../vService/shortsDataQuery");
 const { Short, Video } = require("../models/shorts");
 
 const getShorts = async (req, res) => {
   try {
     const searchQuery = req?.query?.query || "frontend development";
+    const today = new Date().toISOString();
     const url =
       `https://www.googleapis.com/youtube/v3/search?part=snippet` +
       `&q=${encodeURIComponent(searchQuery)}` +
@@ -21,7 +24,7 @@ const getShorts = async (req, res) => {
       `&relevanceLanguage=en` +
       `&regionCode=US` +
       `&videoEmbeddable=true` +
-      `&key=${process.env.YOUTUBE_API_KEY}`;
+      `&key=${YOUTUBE_API_KEY}`;
 
     const response = await axios.get(url);
 console.log(JSON.parse(response.data));
@@ -34,39 +37,36 @@ console.log(JSON.parse(response.data));
       channelTitle: video.snippet.channelTitle,
       publishedAt: video.snippet.publishedAt,
       liveBroadcastContent: video.snippet.liveBroadcastContent,
-      data: video,
     }));
 
     // ✅ Save videos to MongoDB, update if they already exist
     for (const video of videos) {
-      await Short.findOneAndUpdate(
-        { videoId: video.videoId },
-        video,
-        { upsert: true, new: true }
-      );
+      await Short.findOneAndUpdate({ videoId: video.videoId }, video, {
+        upsert: true,
+        new: true,
+      });
     }
-    console.log("🔥  Fetching data from the YT...");
+    console.log("🔥  Fetchinghow data from the YT...");
 
     res.status(200).json(videos);
-    
   } catch (error) {
-      console.log("🔥 Quota exceeded. Fetching data from the database...");
+    console.log("🔥 Quota exceeded. Fetching data from the database...");
 
-      try {
-        // ✅ Fallback to DB
-        const videosFromDB = await searchShorts(req?.query?.query);
+    try {
+      // ✅ Fallback to DB
+      const videosFromDB = await searchShorts(req?.query?.query);
 
-        if (videosFromDB.length > 0) {
-          console.log("✅ Fetched from DB");
-          res.status(200).json(videosFromDB);
-        } else {
-          console.log("❌ No fallback data available in the database.");
-          res.status(404).json({ message: "No videos found" });
-        }
-      } catch (dbError) {
-        console.error("❌ Error fetching from database:", dbError.message);
-        res.status(500).json({ message: "Failed to load videos" });
+      if (videosFromDB.length > 0) {
+        console.log("✅ Fetched from DB", videosFromDB.length);
+        res.status(200).json(videosFromDB);
+      } else {
+        console.log("❌ No fallback data available in the database.");
+        res.status(404).json({ message: "No videos found" });
       }
+    } catch (dbError) {
+      console.error("❌ Error fetching from database:", dbError.message);
+      res.status(500).json({ message: "Failed to load videos" });
+    }
   }
 };
 
@@ -153,4 +153,4 @@ const getScrap = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch yt videos" });
   }
 };
-module.exports = { getShorts, getScrap};
+module.exports = { getShorts, getScrap };
