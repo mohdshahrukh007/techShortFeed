@@ -9,7 +9,7 @@
       [attr.data-video-id]="video.id"
     >
     
-    <div class="iframe-wrapper" [id]="videos.length-2 == i ? 'loadMore' : ''">
+    <div class="iframe-wrapper" (touchstart)="enableAudio()"  [id]="videos.length-2 == i ? 'loadMore' : ''">
         <iframe 
         *ngIf="video.safeUrl"
         [id]="video.videoId"
