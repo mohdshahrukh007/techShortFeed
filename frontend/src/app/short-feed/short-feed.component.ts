@@ -60,9 +60,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
         let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
         const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-        let $userInterestCatagory = Object.keys(userInterestCatagory).length ? userInterestCatagory : "";
-          console.log('user filter ',$userInterestCatagory);
-          
+        let $userInterestCatagory = Object.keys(userInterestCatagory).length
+          ? Object.entries(userInterestCatagory)
+              .map(([key, value]) => `${value}`)
+              .join(" ")
+          : "";
          this.combinedSearch = uniqueHashtags? uniqueHashtags + " " + $userInterestCatagory: userInterestCatagory + " #shorts";
          console.log(this.combinedSearch);
         this.combinedSearch ? this.fetchShorts(this.combinedSearch) : this.router.navigate(["/"]);
