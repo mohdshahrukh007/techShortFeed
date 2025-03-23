@@ -115,7 +115,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           if (this.activeVideo !== nextActiveVideo) {
             this.activeVideo = nextActiveVideo;
             this.playVideo(nextActiveVideo);
-            this.enableAudio();
+            // this.enableAudio();
             try {
               let x: HTMLIFrameElement = nextActiveVideo;
               if (
