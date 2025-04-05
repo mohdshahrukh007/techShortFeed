@@ -64,7 +64,6 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #2196f3;
   }
   
   .filter-section {
@@ -129,6 +128,8 @@
     overflow-x: scroll;
     text-align: center;
     align-items: center;
+    white-space: nowrap;
+
   }
   
   .filter-option {
@@ -236,3 +237,4 @@
   background-color: #2a2a2a;
   color: #0dcaf0; /* Match your theme's text-info color */
 }
+

@@ -60,7 +60,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
         let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
         const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-        let $userInterestCatagory = Object.keys(userInterestCatagory).length
+        let $userInterestCatagory = typeof userInterestCatagory ==='object' && Object.keys(userInterestCatagory).length
           ? Object.entries(userInterestCatagory)
               .map(([key, value]) => `${value}`)
               .join(" ")

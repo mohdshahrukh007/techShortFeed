@@ -129,22 +129,9 @@ export class ShortFilterComponent implements OnInit {
     }
     console.log("Selected", type, ":", value);
     
-    this.getFilters();
-  }
+  } 
 
-  selectSubfilter(subfilter: string): void {
-    if (this.selectedSubfilter !== subfilter) {
-      this.selectedSubfilter = subfilter;
-      this.getFilters();
-    }
-  }
-
-  updateDuration(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const newDuration = Number(target.value);
-      this.getFilters();
-  }
-
+   
   updateSubfilters(): void {
     // If selected technology is a nested category (like Frontend), handle subcategories
     if (this.filters[this.selectedTechnology]) {
@@ -160,7 +147,8 @@ export class ShortFilterComponent implements OnInit {
     this.selectedSubfilter = this.subfilters[0] || "";
   }
 
-  getFilters(): void {
+  applyFilters(): void {
+    this.toggleFilters();
     const filters = {
       category: this.selectedTechnology,
       skillLevel: this.selectedSkillLevel,
