@@ -1,13 +1,14 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, map, throwError } from "rxjs";
+import { catchError, map, throwError, of } from "rxjs";
 import { environment } from "src/environment/environment";
+
 @Injectable({
   providedIn: "root",
 })
 export class ShortService {
-  private twitterUrl =""
-  private ytUrl = environment.apiUrl+"/api/shorts?query=";
+  private twitterUrl = "";
+  private ytUrl = environment.apiUrl + "/api/shorts?query=";
 
   constructor(private http: HttpClient) {}
 
