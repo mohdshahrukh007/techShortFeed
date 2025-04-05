@@ -27,7 +27,6 @@ const getShorts = async (req, res) => {
       `&key=${YOUTUBE_API_KEY}`;
 
     const response = await axios.get(url);
-console.log(JSON.parse(response.data));
 
     const videos = response.data.items.map((video) => ({
       videoId: video.id.videoId,
