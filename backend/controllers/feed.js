@@ -69,7 +69,6 @@ const getShorts = async (req, res) => {
   }
 };
 
-module.exports = { getShorts };
 
 const getShortsviaScrapCall = async (keyword, limit = 5) => {
   const browser = await chromium.launch({ headless: false }); // 🔥 Use headless: false for debugging
@@ -152,4 +151,26 @@ const getScrap = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch yt videos" });
   }
 };
-module.exports = { getShorts, getScrap };
+
+const getReddit = async (req, res) => {
+  const keyword = req.query || "javascript";
+  console.log(keyword);
+  
+  const limit = parseInt(req.query.limit) || 20;
+  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(keyword)}&type=link&sort=relevance&limit=${limit}&restrict_sr=on&t=all&raw_json=1`;
+  try {
+    const response = await axios.get(url);
+    response.data.data.children.map((item, index) => {
+      console.log(item.data.secure_media);
+      
+      !item.data.secure_media?.reddit_video.fallback_url && console.log(index,item.data.secure_media?.reddit_video.fallback_url);
+      
+    })
+    
+    res.status(200).json({data: response.data.data});
+  } catch (error) {
+    console.error("❌ Error fetching Reddit data:", error.message);
+    res.status(500).json({ error: "Failed to fetch Reddit data" });
+  }
+}
+module.exports = { getShorts, getScrap ,getReddit};

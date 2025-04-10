@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
+import Hls from 'hls.js';
 
 @Injectable({
   providedIn: "root",
 })
 export class FeedserviceService {
+  private hls?: Hls;
   private filterObject = new BehaviorSubject<Record<string, any>>({});
 
   constructor() {}
@@ -27,8 +29,54 @@ export class FeedserviceService {
   getHashtagsData() {
     return [
       {
+        type: "Dev",
+        hashtags: [
+          "#ChatGPT",
+          "#Midjourney",
+          "#DALLE",
+          "#Copilot",
+          "#AutoML",
+          "#AIApis",
+          "#LangChain",
+          "#VectorDBs",
+          "#PromptEngineering",
+          "#AIAgents",
+          "#SystemDesign",
+          "#DSA",
+          "#TopInterviewQuestions",
+          "#TechShorts",
+          "#ResumeTips",
+          "#BehavioralRounds",
+          "#CodingRounds",
+          "#MockInterviews",
+          "#CrackingTheCode",
+          "#TechCareerAdvice",
+        ],
+      },
+
+      {
         type: "Frontend",
         hashtags: [
+          "#ChatGPT",
+          "#Midjourney",
+          "#DALLE",
+          "#Copilot",
+          "#AutoML",
+          "#AIApis",
+          "#LangChain",
+          "#VectorDBs",
+          "#PromptEngineering",
+          "#AIAgents",
+          "#SystemDesign",
+          "#DSA",
+          "#TopInterviewQuestions",
+          "#TechShorts",
+          "#ResumeTips",
+          "#BehavioralRounds",
+          "#CodingRounds",
+          "#MockInterviews",
+          "#CrackingTheCode",
+          "#TechCareerAdvice",
           "#Coding",
           "#Programming",
           "#JavaScript",
@@ -38,10 +86,8 @@ export class FeedserviceService {
           "#VueJS",
           "#Frontend",
           "#WebDevelopment",
-          "#CodeTips",
           "#CSS",
           "#HTML",
-          "#Frontend",
         ],
       },
       {
@@ -356,5 +402,24 @@ export class FeedserviceService {
       (d) => d.type.toLowerCase() === userType.toLowerCase()
     );
     return dev ? dev.hashtags.join(" | ") : "";
+  }
+  loadVideo(videoUrl:any,nativeElement: any): void {
+    // Clean up previous instance if exists
+    if (this.hls) {
+      this.hls.destroy();
+    }
+
+    if (Hls.isSupported()) {
+      this.hls = new Hls();
+      this.hls.loadSource(videoUrl);
+      this.hls.attachMedia(nativeElement);
+      this.hls.on(Hls.Events.ERROR, (event, data) => {
+        console.error('HLS.js error:', data);
+      });
+    } else if (nativeElement.canPlayType('application/vnd.apple.mpegurl')) {
+      nativeElement.src = videoUrl;
+    } else {
+      console.warn('HLS not supported in this browser');
+    }
   }
 }

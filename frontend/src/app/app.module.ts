@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from 'src/environment/environment';
 import { IntrestBasedSignupComponent } from './intrest-based-signup/intrest-based-signup.component';
+import { RedditPlayerComponent } from './reddit-player/reddit-player.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { IntrestBasedSignupComponent } from './intrest-based-signup/intrest-base
     ShortFeedComponent,
     ShortFilterComponent,
     IntrestBasedSignupComponent,
+    RedditPlayerComponent,
   ],
   imports: [
     BrowserModule,

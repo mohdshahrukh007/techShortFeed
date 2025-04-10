@@ -15,11 +15,14 @@ interface Interest {
 })
 export class IntrestBasedSignupComponent implements OnInit {
   selectedInterests: string[] = [];
-  activeFilter: string = "all";
+  activeFilter: string = "dev";
   filteredInterests: Interest[] = [];
   dynamicFilters: string[] = [];
+  
   interests: Interest[] = [
+    
     // Development category
+    
     { name: "Frontend", category: "dev", icon: "fas fa-code" },
     { name: "Mobile Dev", category: "dev", icon: "fas fa-mobile-alt" },
     { name: "Game Dev", category: "dev", icon: "fas fa-gamepad" },
@@ -65,11 +68,8 @@ export class IntrestBasedSignupComponent implements OnInit {
     this.filterInterests("dev");
   }
 
-  filterInterests(category: string): void {
-    this.activeFilter = category;
-    this.filteredInterests = category === "all"
-      ? this.interests
-      : this.interests.filter(interest => interest.category === category);
+  filterInterests(category: string= "dev"): void {
+    this.filteredInterests = this.interests.filter(interest => interest.category === category);
   }
 
   toggleInterest(interest: string): void {
@@ -106,16 +106,7 @@ export class IntrestBasedSignupComponent implements OnInit {
     localStorage.clear();
     if (this.selectedInterests.length >= 1) {
       let interestsString = this.selectedInterests.join(" & ");
-      // const dynamicFiltersString = this.dynamicFilters.join(" & ");
-  
-      // this.feedserviceService.setFilter({
-      //   interests: interestsString,
-      //   // dynamicFilters: dynamicFiltersString
-      // });
       this.feedserviceService.setFilter(interestsString);
-      // localStorage.setItem("filters", JSON.stringify(interestsString));
-      // localStorage.setItem("dynamicFilters", JSON.stringify(dynamicFiltersString));
-   
       localStorage.setItem("filters", interestsString);
       this.router.navigate(["/reel"]);
     } else {

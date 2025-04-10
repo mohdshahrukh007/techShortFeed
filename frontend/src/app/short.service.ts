@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, map, throwError, of, Observable } from "rxjs";
 import { environment } from "src/environment/environment";
@@ -6,46 +10,37 @@ import { environment } from "src/environment/environment";
 @Injectable({
   providedIn: "root",
 })
-
 export class ShortService {
-  private apiUrl =
-  'https://api.twitter.com/2/tweets'
-  
-
-private headers = new HttpHeaders({
-  Authorization: 'Bearer FhO1ZgCWWXWKKU3SHzaRjGxjJmBjVYiJidBc8wia0n72Ugm8QB', // Replace with your token
-});
-
-  
-    getTwitterShorts(): Observable<any> {
-      return this.http.get(this.apiUrl, { headers: this.headers });
-    }
-  private twitterUrl = "";
+  private redditUrl = environment.apiUrl + "/api/reddit?query=";
   private ytUrl = environment.apiUrl + "/api/shorts?query=";
-
+  randomKeywords = [
+    "tech",
+    "javascript",
+    "react",
+    "funny",
+    "life",
+    "startup",
+    "design",
+    "ai",
+  ];
   constructor(private http: HttpClient) {}
-
-  // Get Twitter Shorts
-  getTwitterShort(query: string) {
-    return this.http.get(`${this.twitterUrl}${encodeURIComponent(query)}`).pipe(
-      map((response: any) => {
-        // ✅ Process response (if needed)
-        return response;
-      }),
-      catchError(this.handleError) // Handle error
-    );
+ 
+  getRedditShort(query: string):Observable<any> {
+    return this.http.get(`${this.redditUrl}${encodeURIComponent(query)}`)
   }
   // Get YouTube Shorts
   getYoutubeShort(query: string) {
-    return this.http.get(`${this.ytUrl}${encodeURIComponent(query)}`, { observe: 'response' }).pipe(
-      map((response: any) => {
-        return {
-          status: response.status,
-          body: response.body
-        };
-      }),
-      catchError(this.handleError) // Handle error
-    );
+    return this.http
+      .get(`${this.ytUrl}${encodeURIComponent(query)}`, { observe: "response" })
+      .pipe(
+        map((response: any) => {
+          return {
+            status: response.status,
+            body: response.body,
+          };
+        }),
+        catchError(this.handleError) // Handle error
+      );
   }
 
   // ✅ Error Handling
