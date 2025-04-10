@@ -52,6 +52,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
  
   combinedSearch:any =null
   ngOnInit(): void {
+    this.getTwitter()
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
     this.filterSubscription = this.feedserviceService
@@ -429,4 +430,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       return !filters.category || video?.title?.includes(filters.category);
     });
   }
+   getTwitter() {
+   this.shortService.getTwitterShorts().subscribe((res: any) => {
+    console.log(res);
+    
+   })
+  }
 }
+
+

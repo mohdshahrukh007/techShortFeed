@@ -1,12 +1,25 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, map, throwError, of } from "rxjs";
+import { catchError, map, throwError, of, Observable } from "rxjs";
 import { environment } from "src/environment/environment";
 
 @Injectable({
   providedIn: "root",
 })
+
 export class ShortService {
+  private apiUrl =
+  'https://api.twitter.com/2/tweets'
+  
+
+private headers = new HttpHeaders({
+  Authorization: 'Bearer FhO1ZgCWWXWKKU3SHzaRjGxjJmBjVYiJidBc8wia0n72Ugm8QB', // Replace with your token
+});
+
+  
+    getTwitterShorts(): Observable<any> {
+      return this.http.get(this.apiUrl, { headers: this.headers });
+    }
   private twitterUrl = "";
   private ytUrl = environment.apiUrl + "/api/shorts?query=";
 

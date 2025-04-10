@@ -13,7 +13,6 @@
                 </div>
                 
                 <div class="category-filter d-block p-1 m-2">
-                <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="filterInterests('all')">All</button>
                 <button class="filter-btn" [class.active]="activeFilter === 'dev'" (click)="filterInterests('dev')">Development</button>
                 <button class="filter-btn" [class.active]="activeFilter === 'data'" (click)="filterInterests('data')">Data</button>
                 <button class="filter-btn" [class.active]="activeFilter === 'design'" (click)="filterInterests('design')">Design</button>
@@ -37,7 +36,6 @@
                 
                 <div class="interest-progress text-white mt-2">
                 <div class="progress-text">
-                    <span>{{ selectedInterests.length }} selected</span>
                     <!-- <span *ngIf="selectedInterests.length < 3">Select at least {{ 3 - selectedInterests.length }} more</span> -->
                     <span *ngIf="selectedInterests.length >= 3">Great choices!</span>
                 </div>

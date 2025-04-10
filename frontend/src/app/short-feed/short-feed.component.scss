@@ -194,3 +194,20 @@ iframe {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.like-dislike-share-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 6rem;
+  right: 0px;
+  padding:10px;
+  background-color: transparent;
+  button {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 25px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: transparent;
+  }
+}

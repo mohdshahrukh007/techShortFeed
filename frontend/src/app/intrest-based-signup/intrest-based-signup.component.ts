@@ -62,7 +62,7 @@ export class IntrestBasedSignupComponent implements OnInit {
   constructor(private router: Router, private feedserviceService: FeedserviceService) {}
 
   ngOnInit(): void {
-    this.filterInterests("all");
+    this.filterInterests("dev");
   }
 
   filterInterests(category: string): void {
