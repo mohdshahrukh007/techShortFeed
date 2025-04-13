@@ -3,6 +3,8 @@ const { Short } = require("../models/shorts"); // Ensure this path is correct
 const searchShorts = async (query) => {
   try {
     // Use Mongoose's `find` method to search for shorts in the database
+    console.log("Searching for shorts with query:", query);
+    
     const results = await Short.find({ title: { $regex: query, $options: "i" } });
     return results;
   } catch (error) { 

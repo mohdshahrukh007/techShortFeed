@@ -26,7 +26,8 @@ export class ShortService {
   constructor(private http: HttpClient) {}
  
   getRedditShort(query: string):Observable<any> {
-    return this.http.get(`${this.redditUrl}${encodeURIComponent(query)}`)
+    return this.http.get('https://www.reddit.com/r/videos/hot.json?limit=10')
+    // return this.http.get(`${this.redditUrl}${encodeURIComponent(query)}`)
   }
   // Get YouTube Shorts
   getYoutubeShort(query: string) {

@@ -50,22 +50,18 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.iframeHeight = `${viewportHeight - footerHeight}rem`;
     this.overlayClass = `${viewportHeight - 7.5}rem`; // 120px in rem
   }
-
   combinedSearch: any = null;
   ngOnInit(): void {
+    localStorage.removeItem("removedIframes");
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
-    this.filterSubscription = this.feedserviceService
-      .getFilter()
-      .subscribe((userInterestCatagory: any) => {
-        const searchQueryHash =
-          JSON.stringify(localStorage.getItem("filters")) || "";
-        let getHashtags = this.feedserviceService.getHashtags(
-          searchQueryHash && searchQueryHash?.replace(/"/g, "")
-        );
-        const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(
-          " "
-        );
+    this.filterSubscription = this.feedserviceService.getFilter().subscribe((userInterestCatagory: any) => {
+        const searchQueryHash =JSON.stringify(localStorage.getItem("filters")) || "";
+        let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
+        const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
+        console.log(getHashtags);
+        console.log(uniqueHashtags);
+        
         let $userInterestCatagory =
           typeof userInterestCatagory === "object" &&
           Object.keys(userInterestCatagory).length
@@ -78,7 +74,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           : userInterestCatagory + " #shorts";
         console.log(this.combinedSearch);
         this.combinedSearch
-          ? this.fetchShorts(this.combinedSearch)
+          ? this.fetchShorts( this.combinedSearch)
           : this.router.navigate(["/"]);
       });
   }
@@ -86,7 +82,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.pauseAllVideos();
     this.setupIntersectionObserver();
-
     // Start autoplay on the first video
     const firstVideo = this.videoItems.first?.nativeElement.querySelector(
       "iframe"
@@ -124,7 +119,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         if (nextActiveVideo) {
           // If the next active video is different from the current one
           if (this.activeVideo && this.activeVideo !== nextActiveVideo) {
-            this.pauseVideo(this.activeVideo); // Pause only the previous active video
+            this.pauseVideo(this.activeVideo,this.activeVideo.id); // Pause only the previous active video
           }
           // Assign and play the next video
           if (this.activeVideo !== nextActiveVideo) {
@@ -168,12 +163,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     if (removedIframes.includes(iframe.id)) {
       let removedVDO = removedIframes[iframe.id];
-      iframe.src = ""; // Unload the iframe
       console.log(`Iframe with id: ${iframe.id} was previously removed.`);
-      iframe.setAttribute(
-        "src",
+      const sanitizedUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         `https://www.youtube.com/embed/${removedVDO}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${removedVDO}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-      ); // Clear the src attribute to ensure it doesn't load
+      );
+      iframe.setAttribute('src', sanitizedUrl as string);  // Safely set the sanitized URL
       return;
     }
     iframe.contentWindow?.postMessage(
@@ -183,7 +177,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   pauseVideo(iframe: HTMLIFrameElement, id?: any): void {
-    // this.removeIframe(id);
+    this.removeIframe(id);
     iframe.contentWindow?.postMessage(
       '{"event":"command","func":"pauseVideo","args":""}',
       "*"
@@ -201,6 +195,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.setItem("removedIframes", JSON.stringify(removedIframes));
     }
   }
+ 
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -254,14 +249,15 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
           start += 5;
           end += 5;
         }
-        this.getRedditShortCall().subscribe((redditShorts: any) => {
-          this.redditShorts = redditShorts;
-          this.videos = [...this.redditShorts];
-          console.log("Reddit Shorts:", this.videos);
-          this.cdr.detectChanges();
-
-        });
-        this.videos = [...this.redditShorts,...filteredVideos];
+        // this.getRedditShortCall().subscribe((redditShorts: any) => {
+        //   this.redditShorts = redditShorts;
+        //   this.videos = [...this.redditShorts,...filteredVideos];
+        //   console.log("Reddit Shorts:", this.videos);
+        //   this.cdr.detectChanges();
+        // });
+        this.videos = [...this.redditShorts, ...filteredVideos];
+        console.log(this.videos);
+        this.cdr.detectChanges();
 
         this.reinitializeObserver();
         // Load dummy data on failure
@@ -387,7 +383,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadMoreVideos(): void {
-    console.log("lMore");
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
@@ -395,13 +390,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cdr.detectChanges();
       // Trigger re-initialization to update IntersectionObserver
       setTimeout(() => this.setupIntersectionObserver(), 100);
-    }
-  }
-
-  onPlayerStateChange(event: any, index: number): void {
-    if (event.data === 0) {
-      // Video ended
-      // this.removeIframe(index);//cn replay
     }
   }
 
@@ -440,17 +428,19 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.shortService.getRedditShort(this.combinedSearch).pipe(
       map((res: any) =>
         res?.data?.children
-      .filter((post: any) => !!post?.data?.secure_media?.reddit_video?.hls_url)
-      .map((post: any) => ({
-          channelTitle: post?.data?.title,
-          title: post?.data?.title,
-          url: post?.data?.redditVideo,
-          description: "",
-          videoId: post?.data?.secure_media?.reddit_video.hls_url ,
-          safeUrl: this.getSafeURL(
-            this.extractYoutubeId(post?.data?.media?.oembed?.html)
-          ),
-        }))
+          .filter(
+            (post: any) => !!post?.data?.secure_media?.reddit_video?.hls_url
+          )
+          .map((post: any) => ({
+            channelTitle: post?.data?.title,
+            title: post?.data?.title,
+            url: post?.data?.redditVideo,
+            description: "",
+            videoId: post?.data?.secure_media?.reddit_video.hls_url,
+            safeUrl: this.getSafeURL(
+              this.extractYoutubeId(post?.data?.media?.oembed?.html)
+            ),
+          }))
       )
     );
   }
@@ -460,5 +450,4 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     const match = urlOrEmbed?.match(regex);
     return match ? match[1] : "";
   }
-
 }

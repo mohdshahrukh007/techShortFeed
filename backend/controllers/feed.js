@@ -2,15 +2,15 @@ const axios = require("axios");
 require("dotenv").config(); // Load .env file
 const { chromium } = require("playwright");
 
-const YOUTUBE_API_KEY = "AIzaSyBpC_1cf5IWYzDBHGuPocjzKvA-wIGAsZA"; ///process.env.YOUTUBE_API_KEY;
-const YOUTUBE_API_KEY1 = "AIzaSyB9n2oF3eolmvmtHhqpwxZaQ1i2dZrPwHQ"; ///process.env.YOUTUBE_API_KEY;
-
+const YOUTUBE_API_KEY =  "AIzaSyAa-roHueJmhR7Ii7IIiPSHDYnopthNxJc@"; ///process.env.YOUTUBE_API_KEY;
 const searchShorts = require("../vService/shortsDataQuery");
 const { Short, Video } = require("../models/shorts");
 
 const getShorts = async (req, res) => {
   try {
     const searchQuery = req?.query?.query || "frontend development";
+    console.log(searchQuery);
+    
     const today = new Date().toISOString();
     const url =
       `https://www.googleapis.com/youtube/v3/search?part=snippet` +
@@ -26,7 +26,7 @@ const getShorts = async (req, res) => {
       `&videoEmbeddable=true` +
       `&key=${YOUTUBE_API_KEY}`;
 
-    const response = await axios.get(url+1);
+    const response = await axios.get(url);
 
     const videos = response.data.items.map((video) => ({
       videoId: video.id.videoId,
@@ -45,11 +45,10 @@ const getShorts = async (req, res) => {
         new: true,
       });
     }
-    console.log("🔥  Fetchinghow data from the YT...");
 
     res.status(200).json(videos);
   } catch (error) {
-    console.log("🔥 Quota exceeded. Fetching data from the database...");
+    console.error("🔥 Quota exceeded or API error:", error.message, "Fetching data from the database...");
 
     try {
       // ✅ Fallback to DB
@@ -155,12 +154,9 @@ const getScrap = async (req, res) => {
 const getReddit = async (req, res) => {
   const keyword = req.query || "javascript";
   const limit = parseInt(req.query.limit) || 2000;
-  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent("javascript + code")}&type=link&sort=relevance&limit=${limit}&restrict_sr=on&t=all&raw_json=1`;
+  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(keyword)}&type=link&sort=relevance&limit=${limit}&restrict_sr=on&t=all&raw_json=1`;
   try {
     const response = await axios.get(url);
-    response.data.data.children.map((item, index) => {
-      console.log(index,item.titles);
-  })
     res.status(200).json({data: response.data.data});
   } catch (error) {
     console.error("❌ Error fetching Reddit data:", error.message);

@@ -12,7 +12,7 @@
         (touchstart)="enableAudio()"
         [id]="videos.length-3 == i ? 'loadMore' : ''"
       >
-        <app-reddit-player [videoUrl]="video.videoId"></app-reddit-player>
+        <app-reddit-player *ngIf="redditShorts.length" [videoUrl]="video.videoId"></app-reddit-player>
         <!-- <video #videoPlayer controls autoplay muted width="100%"></video> -->
         <iframe
           *ngIf="video?.safeUrl"
