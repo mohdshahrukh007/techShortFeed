@@ -2,7 +2,7 @@ const axios = require("axios");
 require("dotenv").config(); // Load .env file
 const { chromium } = require("playwright");
 
-const YOUTUBE_API_KEY =  "AIzaSyAa-roHueJmhR7Ii7IIiPSHDYnopthNxJc@"; ///process.env.YOUTUBE_API_KEY;
+const YOUTUBE_API_KEY =  "AIzaSyAa-roHueJmhR7Ii7IIiPSHDYnopthNxJc"; ///process.env.YOUTUBE_API_KEY;
 const searchShorts = require("../vService/shortsDataQuery");
 const { Short, Video } = require("../models/shorts");
 
