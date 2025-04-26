@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import Hls from 'hls.js';
+// import Hls from 'hls.js';
 
 @Injectable({
   providedIn: "root",
@@ -409,23 +409,23 @@ export class FeedserviceService {
     }
     return "";
 }
-  loadVideo(videoUrl:any,nativeElement: any): void {
-    // Clean up previous instance if exists
-    if (this.hls) {
-      this.hls.destroy();
-    }
+  // loadVideo(videoUrl:any,nativeElement: any): void {
+  //   // Clean up previous instance if exists
+  //   if (this.hls) {
+  //     this.hls.destroy();
+  //   }
 
-    if (Hls.isSupported()) {
-      this.hls = new Hls();
-      this.hls.loadSource(videoUrl);
-      this.hls.attachMedia(nativeElement);
-      this.hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error('HLS.js error:', data);
-      });
-    } else if (nativeElement.canPlayType('application/vnd.apple.mpegurl')) {
-      nativeElement.src = videoUrl;
-    } else {
-      console.warn('HLS not supported in this browser');
-    }
-  }
+  //   if (Hls.isSupported()) {
+  //     this.hls = new Hls();
+  //     this.hls.loadSource(videoUrl);
+  //     this.hls.attachMedia(nativeElement);
+  //     this.hls.on(Hls.Events.ERROR, (event, data) => {
+  //       console.error('HLS.js error:', data);
+  //     });
+  //   } else if (nativeElement.canPlayType('application/vnd.apple.mpegurl')) {
+  //     nativeElement.src = videoUrl;
+  //   } else {
+  //     console.warn('HLS not supported in this browser');
+  //   }
+  // }
 }
