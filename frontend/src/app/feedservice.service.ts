@@ -397,12 +397,18 @@ export class FeedserviceService {
       },
     ];
   }
+
   getHashtags(userType: string): string {
     let dev = this.getHashtagsData().find(
       (d) => d.type.toLowerCase() === userType.toLowerCase()
     );
-    return dev ? dev.hashtags.join("| ") : "";
-  }
+    if (dev) {
+        // Shuffle the hashtags array
+        const shuffledHashtags = dev.hashtags.sort(() => Math.random() - 0.5);
+        return shuffledHashtags.join(" | ");
+    }
+    return "";
+}
   loadVideo(videoUrl:any,nativeElement: any): void {
     // Clean up previous instance if exists
     if (this.hls) {

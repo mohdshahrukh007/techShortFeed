@@ -1,6 +1,6 @@
 <div class="video-container bg-dark">
   <app-short-filter></app-short-filter>
-  <div id="videoContainer" class="video-wrapper">
+  <div id="videoContainer" class="video-wrapper" *ngIf="refreshData">
     <div
       *ngFor="let video of videos;let i = index"
       #videoItem
@@ -12,7 +12,6 @@
         (touchstart)="enableAudio()"
         [id]="videos.length-3 == i ? 'loadMore' : ''"
       >
-        <app-reddit-player *ngIf="redditShorts.length" [videoUrl]="video.videoId"></app-reddit-player>
         <!-- <video #videoPlayer controls autoplay muted width="100%"></video> -->
         <iframe
           *ngIf="video?.safeUrl"

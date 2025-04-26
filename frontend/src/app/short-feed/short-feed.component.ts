@@ -30,6 +30,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   private activeVideo: HTMLIFrameElement | null = null;
   touchStartY: number | undefined;
   touchEndY!: number;
+  refreshData: boolean = false;
   // Initialize minSwipeDistance with a default value (in pixels)
   minSwipeDistance: number = 30;
   dups: Array<any> = [];
@@ -42,7 +43,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private feedserviceService: FeedserviceService,
     private router: Router
-  ) {}
+  ) { }
 
   setIframeHeight() {
     const footerHeight = 4.375; // 70px in rem (assuming 1rem = 16px)
@@ -56,29 +57,36 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setIframeHeight();
     window.addEventListener("resize", this.setIframeHeight.bind(this));
     this.filterSubscription = this.feedserviceService.getFilter().subscribe((userInterestCatagory: any) => {
-        const searchQueryHash =JSON.stringify(localStorage.getItem("filters")) || "";
-        let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
-        const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-        console.log(getHashtags);
-        console.log(uniqueHashtags);
-        
-        let $userInterestCatagory =
-          typeof userInterestCatagory === "object" &&
+      this.dups = []; // Clear dups array on new filter
+      this.redditShorts = []; // Clear redditShorts array on new filter
+      this.videos = []; // Clear videos array on new filter
+      this.refreshDiv();
+      this.combinedSearch = null; // Clear combinedSearch on new filter
+      const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
+      let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
+      const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
+      let $userInterestCatagory =
+        typeof userInterestCatagory === "object" &&
           Object.keys(userInterestCatagory).length
-            ? Object.entries(userInterestCatagory)
-                .map(([key, value]) => `${value}`)
-                .join(" ")
-            : "";
-        this.combinedSearch = uniqueHashtags
-          ? uniqueHashtags + " " + $userInterestCatagory
-          : userInterestCatagory + " #shorts";
-        console.log(this.combinedSearch);
-        this.combinedSearch
-          ? this.fetchShorts( this.combinedSearch)
-          : this.router.navigate(["/"]);
-      });
+          ? Object.entries(userInterestCatagory)
+            .map(([key, value]) => `${value}`)
+            .join(" ")
+          : "";
+      this.combinedSearch = uniqueHashtags
+        ? uniqueHashtags + " " + $userInterestCatagory
+        : userInterestCatagory + " #shorts";
+      console.log(this.combinedSearch);
+      this.combinedSearch
+        ? this.fetchShorts(this.combinedSearch)
+        : this.router.navigate(["/"]);
+    });
   }
-
+  refreshDiv(): void {
+    this.refreshData = false; // Hide the div
+    setTimeout(() => {
+      this.refreshData = true; // Show the div again after a short delay
+    }, 0); // Delay can be adjusted if needed
+  }
   ngAfterViewInit(): void {
     this.pauseAllVideos();
     this.setupIntersectionObserver();
@@ -119,7 +127,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         if (nextActiveVideo) {
           // If the next active video is different from the current one
           if (this.activeVideo && this.activeVideo !== nextActiveVideo) {
-            this.pauseVideo(this.activeVideo,this.activeVideo.id); // Pause only the previous active video
+            this.pauseVideo(this.activeVideo, this.activeVideo.id); // Pause only the previous active video
           }
           // Assign and play the next video
           if (this.activeVideo !== nextActiveVideo) {
@@ -132,7 +140,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
                 x?.nextSibling &&
                 x?.nextElementSibling &&
                 (x?.nextElementSibling as HTMLElement).offsetParent?.id ==
-                  "loadMore"
+                "loadMore"
               ) {
                 this.loadMoreVideos();
               }
@@ -195,7 +203,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.setItem("removedIframes", JSON.stringify(removedIframes));
     }
   }
- 
+
   pauseAllVideos() {
     this.videoItems.forEach((item) => {
       const iframe = item.nativeElement.querySelector("iframe");
@@ -240,25 +248,24 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
-        let filteredVideos = this.getVideosinChunks(0, 5); // Initial chunk
         let start = 5;
         let end = 10;
 
-        while (filteredVideos.length >= 5 && end <= this.dups.length) {
-          filteredVideos = this.getVideosinChunks(start, end); // Next window if no match found
-          start += 5;
-          end += 5;
-        }
+        let filteredVideos=[] = this.getVideosinChunks(0, 5); // Initial chunk
+
+        // while (filteredVideos.length >= 5 && end <= this.dups.length) {
+        //   filteredVideos = this.getVideosinChunks(start, end); // Next window if no match found
+        //   start += 5;
+        //   end += 5;
+        // }
         // this.getRedditShortCall().subscribe((redditShorts: any) => {
         //   this.redditShorts = redditShorts;
         //   this.videos = [...this.redditShorts,...filteredVideos];
         //   console.log("Reddit Shorts:", this.videos);
         //   this.cdr.detectChanges();
         // });
-        this.videos = [...this.redditShorts, ...filteredVideos];
-        console.log(this.videos);
+        this.videos = [ ...filteredVideos];
         this.cdr.detectChanges();
-
         this.reinitializeObserver();
         // Load dummy data on failure
       }
@@ -266,13 +273,11 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   getVideosinChunks(start: any, end: any): any[] {
     // Shuffle the dups array
-    return this.filterVideosByInterest(
-      this.dups.slice(start, end),
-      this.combinedSearch
-    ).map((short: any) => ({
+    return this.filterVideosByInterest(this.dups.slice(start, end), this.combinedSearch).map((short: any) => ({
       ...short,
       safeUrl: this.getSafeURL(short.videoId),
     }));
+
   }
 
   filterVideosByInterest(
@@ -280,41 +285,50 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     interest: string,
     levelMatch = 1
   ): Array<any> {
+    let matchesFilters = false;
     const userFilter = JSON.parse(localStorage.getItem("userFilters") || "{}");
     const filteredData = data.filter((video: any) => {
+      if (!video?.title) return false; // Skip if title is not available
+
       const interestWords =
         interest?.toLowerCase().replace(/#/g, "").split(" ") || [];
       const titleWords =
         video?.title.toLowerCase().replace(/#/g, "").split(" ") || [];
+      const descriptionWords =
+        video?.description.toLowerCase().replace(/#/g, "").split(" ") || [];
+
       const matchesInterest = interestWords.some((word) =>
         titleWords.includes(word)
       );
+      const matchesDescription = descriptionWords.some((words: string) =>
+        interestWords.includes(words)
+      );
 
-      const matchesFilters =
-        [
-          userFilter?.category?.toLowerCase(),
-          userFilter?.skillLevel?.toLowerCase(),
-          userFilter?.contentType?.toLowerCase(),
-        ]
-          .filter((filter) => filter)
-          .reduce((count, filter) => {
-            const isMatched = titleWords.includes(filter.toLowerCase());
-            if (isMatched) {
-              console.log(`Matched filter: ${filter}`);
-            }
-            return isMatched ? count + 1 : count;
-          }, 0) >= levelMatch;
+      let filteredData = [
+        userFilter?.category?.toLowerCase(),
+        userFilter?.skillLevel?.toLowerCase(),
+        userFilter?.contentType?.toLowerCase(),
+      ]
+      console.log(userFilter, 'userFilter');
+      console.log(interestWords, 'interestWords');
+      matchesFilters = filteredData
+        .filter((filter) => filter)
+        .reduce((count, filter) => {
+          const isMatched = titleWords.includes(filter.toLowerCase());
+          const isMatchedDescription = descriptionWords.includes(filter.toLowerCase()); 
 
+          if (isMatched || isMatchedDescription) {
+            console.log(`Video  matches filter .`, filter);
+          }
+          return isMatched ? count + 1 : count;
+        }, 0) >= levelMatch;
       if (matchesFilters) {
         console.log(
           `Video "${video?.title}" matches user filters.` + userFilter
         );
       }
 
-      return matchesInterest &&
-        Object.values(userFilter).length &&
-        matchesFilters
-        ? video
+      return (matchesInterest || matchesDescription) && Object.values(userFilter).length && matchesFilters ? video
         : true;
     });
 
@@ -383,6 +397,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadMoreVideos(): void {
+    console.log("Loading more videos...");
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
@@ -390,6 +405,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cdr.detectChanges();
       // Trigger re-initialization to update IntersectionObserver
       setTimeout(() => this.setupIntersectionObserver(), 100);
+    } else {
+      // Shuffle combinedSearch
+      if (this.combinedSearch) {
+        const searchArray = this.combinedSearch.split(" ");
+        this.combinedSearch = searchArray.sort(() => Math.random() - 0.5).join(" ");
+      }
+      this.fetchShorts(this.combinedSearch);
+      console.log("API call made to fetch more videos.");
     }
   }
 
@@ -424,26 +447,26 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       return !filters.category || video?.title?.includes(filters.category);
     });
   }
-  getRedditShortCall(): Observable<any[]> {
-    return this.shortService.getRedditShort(this.combinedSearch).pipe(
-      map((res: any) =>
-        res?.data?.children
-          .filter(
-            (post: any) => !!post?.data?.secure_media?.reddit_video?.hls_url
-          )
-          .map((post: any) => ({
-            channelTitle: post?.data?.title,
-            title: post?.data?.title,
-            url: post?.data?.redditVideo,
-            description: "",
-            videoId: post?.data?.secure_media?.reddit_video.hls_url,
-            safeUrl: this.getSafeURL(
-              this.extractYoutubeId(post?.data?.media?.oembed?.html)
-            ),
-          }))
-      )
-    );
-  }
+  // getRedditShortCall(): Observable<any[]> {
+  //   return this.shortService.getRedditShort(this.combinedSearch).pipe(
+  //     map((res: any) =>
+  //       res?.data?.children
+  //         .filter(
+  //           (post: any) => !!post?.data?.secure_media?.reddit_video?.hls_url
+  //         )
+  //         .map((post: any) => ({
+  //           channelTitle: post?.data?.title,
+  //           title: post?.data?.title,
+  //           url: post?.data?.redditVideo,
+  //           description: "",
+  //           videoId: post?.data?.secure_media?.reddit_video.hls_url,
+  //           safeUrl: this.getSafeURL(
+  //             this.extractYoutubeId(post?.data?.media?.oembed?.html)
+  //           ),
+  //         }))
+  //     )
+  //   );
+  // }
 
   extractYoutubeId(urlOrEmbed: string): string {
     const regex = /(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;

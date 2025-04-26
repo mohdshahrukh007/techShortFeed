@@ -160,7 +160,7 @@ export class ShortFilterComponent implements OnInit {
 
     // Save as an object to localStorage
     localStorage.setItem("userFilters", JSON.stringify(filters));
-
+    
     // Send filters to feed service
     this.feedService.setFilter(filters);
   }
