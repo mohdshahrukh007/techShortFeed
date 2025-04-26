@@ -6,7 +6,7 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root",
 })
 export class FeedserviceService {
-  private hls?: Hls;
+  // private hls?: Hls;
   private filterObject = new BehaviorSubject<Record<string, any>>({});
 
   constructor() {}
