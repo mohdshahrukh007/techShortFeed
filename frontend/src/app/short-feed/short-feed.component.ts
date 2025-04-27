@@ -61,7 +61,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.redditShorts = []; // Clear redditShorts array on new filter
       this.videos = []; // Clear videos array on new filter
       this.refreshDiv();
-      this.combinedSearch = null; // Clear combinedSearch on new filter
+      this.cdr.detectChanges();
+      // this.combinedSearch = null; // Clear combinedSearch on new filter
       const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
       let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
       const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
@@ -75,11 +76,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.combinedSearch = uniqueHashtags
         ? uniqueHashtags + " " + $userInterestCatagory
         : userInterestCatagory + " #shorts";
-      console.log(this.combinedSearch);
       this.combinedSearch
         ? this.fetchShorts(this.combinedSearch)
         : this.router.navigate(["/"]);
     });
+    console.log(this.combinedSearch);
+
   }
   refreshDiv(): void {
     this.refreshData = false; // Hide the div
@@ -244,6 +246,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
+    console.log(filterSearch, "filterSearch");
+    
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {

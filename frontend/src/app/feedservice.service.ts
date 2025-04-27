@@ -405,7 +405,7 @@ export class FeedserviceService {
     if (dev) {
         // Shuffle the hashtags array
         const shuffledHashtags = dev.hashtags.sort(() => Math.random() - 0.5);
-        return shuffledHashtags.join(" | ");
+        return shuffledHashtags.join("|");
     }
     return "";
 }
