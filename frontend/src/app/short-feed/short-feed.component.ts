@@ -168,15 +168,16 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   playVideo(iframe: HTMLIFrameElement): void {
+    if (!iframe.id) {
+      console.warn("Iframe without an id cannot be played.");
+      return;
+    }
     const removedIframes = JSON.parse(
       localStorage.getItem("removedIframes") || "[]"
     );
     if (removedIframes.includes(iframe.id)) {
-      let removedVDO = removedIframes[iframe.id];
-      console.log(`Iframe with id: ${iframe.id} was previously removed.`);
-      const sanitizedUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${removedVDO}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${removedVDO}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
-      );
+      let removedVDO = removedIframes.includes(iframe.id) ? iframe.id:  this.removeIframe(iframe.id);
+      const sanitizedUrl =`https://www.youtube.com/embed/${iframe.id}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${iframe.id}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
       iframe.setAttribute('src', sanitizedUrl as string);  // Safely set the sanitized URL
       return;
     }
@@ -402,6 +403,13 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadMoreVideos(): void {
     console.log("Loading more videos...");
+    console.log(this.videos.length, "videos.length");
+    console.log(this.dups?.length, "dups.length");
+    // Check if there are more videos to load
+    if (this.videos.length >= this.dups?.length) {
+      console.log("No more videos to load.");
+    }
+    
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
