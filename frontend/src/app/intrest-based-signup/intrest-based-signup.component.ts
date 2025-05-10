@@ -69,6 +69,7 @@ export class IntrestBasedSignupComponent implements OnInit {
   }
 
   filterInterests(category: string= "dev"): void {
+    this.activeFilter = category;
     this.filteredInterests = this.interests.filter(interest => interest.category === category);
   }
 

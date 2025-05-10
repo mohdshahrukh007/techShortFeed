@@ -174,8 +174,8 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.getItem("removedIframes") || "[]"
     );
     if (removedIframes.includes(iframe.id)) {
-      let removedVDO = removedIframes.includes(iframe.id) ? iframe.id:  this.removeIframe(iframe.id);
-      const sanitizedUrl =`https://www.youtube.com/embed/${iframe.id}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${iframe.id}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
+      let removedVDO = removedIframes.includes(iframe.id) ? iframe.id : this.removeIframe(iframe.id);
+      const sanitizedUrl = `https://www.youtube.com/embed/${iframe.id}?enablejsapi=1&autoplay=1&mute=1&controls=0&playlist=${iframe.id}&modestbranding=1&rel=0&loop=1&iv_load_policy=3`
       iframe.setAttribute('src', sanitizedUrl as string);  // Safely set the sanitized URL
       return;
     }
@@ -192,6 +192,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       "*"
     );
   }
+
   removeIframe(id: string): void {
     const iframe = document.getElementById(id) as HTMLIFrameElement;
     if (iframe) {
@@ -246,30 +247,15 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any): void {
     console.log(filterSearch, "filterSearch");
-    
+
     const searchUrl = this.buildQueryUrl(filterSearch);
     this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
-        let start = 5;
-        let end = 10;
-
-        let filteredVideos=[] = this.getVideosinChunks(0, 5); // Initial chunk
-
-        // while (filteredVideos.length >= 5 && end <= this.dups.length) {
-        //   filteredVideos = this.getVideosinChunks(start, end); // Next window if no match found
-        //   start += 5;
-        //   end += 5;
-        // }
-        // this.getRedditShortCall().subscribe((redditShorts: any) => {
-        //   this.redditShorts = redditShorts;
-        //   this.videos = [...this.redditShorts,...filteredVideos];
-        //   console.log("Reddit Shorts:", this.videos);
-        //   this.cdr.detectChanges();
-        // });
-        this.videos = [ ...filteredVideos];
-        this.cdr.detectChanges();
+        let filteredVideos = [] = this.getVideosinChunks(0, 5); // Initial chunk
+        this.videos = [...filteredVideos];
         this.reinitializeObserver();
+        this.cdr.detectChanges();
         // Load dummy data on failure
       }
     });
@@ -318,7 +304,7 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         .filter((filter) => filter)
         .reduce((count, filter) => {
           const isMatched = titleWords.includes(filter.toLowerCase());
-          const isMatchedDescription = descriptionWords.includes(filter.toLowerCase()); 
+          const isMatchedDescription = descriptionWords.includes(filter.toLowerCase());
 
           if (isMatched || isMatchedDescription) {
             console.log(`Video  matches filter .`, filter);
@@ -401,31 +387,47 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadMoreVideos(): void {
     console.log("Loading more videos...");
-    console.log(this.videos.length, "videos.length");
-    console.log(this.dups?.length, "dups.length");
-    // Check if there are more videos to load
     if (this.videos.length >= this.dups?.length) {
       console.log("No more videos to load.");
+      return;
     }
-    
+  
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
       this.videos.push(...this.getVideosinChunks(start, end));
       this.cdr.detectChanges();
-      // Trigger re-initialization to update IntersectionObserver
-      setTimeout(() => this.setupIntersectionObserver(), 100);
+      // Wait for DOM updates
+      setTimeout(() => {this.setupIntersectionObserver()}, 100);
     } else {
-      // Shuffle combinedSearch
+      // If no more in dups → fetch new batch
       if (this.combinedSearch) {
-        const searchArray = this.combinedSearch.split(" ");
-        this.combinedSearch = searchArray.sort(() => Math.random() - 0.5).join(" ");
+        this.fetchShorts(this.combinedSearch);
+        this.reinitializeObserver();
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          const firstVideoElement = this.videoItems.first?.nativeElement;
+          if (firstVideoElement) {
+            const iframe = firstVideoElement.querySelector('iframe');
+            firstVideoElement.scrollIntoView({ behavior: 'smooth', block: 'middle' });
+            if (iframe) {
+              this.playVideo(iframe);
+            }
+          }
+          
+        }, 200);
       }
-      this.fetchShorts(this.combinedSearch);
-      console.log("API call made to fetch more videos.");
     }
   }
-
+  
+  scrollIframeToTop(iframe: HTMLIFrameElement): void {
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.scrollTo(0, 0); // Scroll to the top-left corner
+      console.log(`Scrolled iframe with id: ${iframe.id} to the top.`);
+    } else {
+      console.warn("Unable to scroll iframe. Content window not accessible.");
+    }
+  }
   ngOnDestroy() {
     localStorage.removeItem("removedIframes");
     if (this.filterSubscription) {

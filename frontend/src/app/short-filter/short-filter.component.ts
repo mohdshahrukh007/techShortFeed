@@ -11,7 +11,8 @@ export class ShortFilterComponent implements OnInit {
   showFilters: boolean = false;
 
   // Filter state
-  selectedTechnology: string = "";
+  selectedTechnology: string = "Angular";
+  SkillsFilter: string = "";
   selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "beginner";
   selectedContentType: string = "";
   selectedSubfilter: string = "";
@@ -80,7 +81,7 @@ export class ShortFilterComponent implements OnInit {
   isSidebarOpen:boolean = false
   ngOnInit(): void {
     // Load user interests from the service (like user signup)
-    this.selectedTechnology = localStorage.getItem("filters") || ""; // Use first technology if available
+    this.SkillsFilter = localStorage.getItem("filters") || ""; // Use first technology if available
     this.updateSubfilters(); // Initialize subfilters based on the first interest
   }
   toggleSidebar(){
@@ -90,14 +91,14 @@ export class ShortFilterComponent implements OnInit {
     this.showFilters = !this.showFilters;
   }
   reset(){
-    this.selectedTechnology = 'Frontend'
+    this.SkillsFilter = 'Frontend'
     this.selectedSkillLevel = 'beginner'
     this.selectedContentType = ''
     this.selectedSubfilter = ''
     localStorage.clear();
     this.router.navigate(['/']); // Navigate to the main page
   }
-  searchQuery:any
+  searchQuery:any=""
   filterSubfilters(searchTerm?: string): void {
     if (!searchTerm) {
       this.updateSubfilters(); // Reset to all subfilters if no search term
@@ -134,8 +135,8 @@ export class ShortFilterComponent implements OnInit {
    
   updateSubfilters(): void {
     // If selected technology is a nested category (like Frontend), handle subcategories
-    if (this.filters[this.selectedTechnology]) {
-      const techFilters = this.filters[this.selectedTechnology];
+    if (this.filters[this.SkillsFilter]) {
+      const techFilters = this.filters[this.SkillsFilter];
       this.subfilters = Object.keys(techFilters).reduce(
         (result, key) => [...result, ...techFilters[key]],
         [] as string[]

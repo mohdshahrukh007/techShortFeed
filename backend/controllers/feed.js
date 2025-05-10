@@ -24,7 +24,7 @@ const getShorts = async (req, res) => {
       `&relevanceLanguage=en` +
       `&regionCode=US` +
       `&videoEmbeddable=true` +
-      `&key=${YOUTUBE_API_KEY}`;
+      `&key=${YOUTUBE_API_KEY}1`;
 
     const response = await axios.get(url);
 
