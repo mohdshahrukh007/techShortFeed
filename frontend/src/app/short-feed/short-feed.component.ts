@@ -80,8 +80,6 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
         ? this.fetchShorts(this.combinedSearch)
         : this.router.navigate(["/"]);
     });
-    console.log(this.combinedSearch);
-
   }
   refreshDiv(): void {
     this.refreshData = false; // Hide the div

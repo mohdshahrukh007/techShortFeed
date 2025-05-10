@@ -1,59 +1,137 @@
 <div class="video-container bg-dark">
   <app-short-filter></app-short-filter>
   <div id="videoContainer" class="video-wrapper" *ngIf="refreshData">
-    <div
-      *ngFor="let video of videos;let i = index"
-      #videoItem
-      class="shorts-container"
-      [attr.data-video-id]="video?.id"
-    >
+    <ng-container *ngIf="videos?.length && videos.length > 0; else loader">
       <div
-        class="iframe-wrapper"
-        (touchstart)="enableAudio()"
-        [id]="videos.length-3 == i ? 'loadMore' : ''"
+        *ngFor="let video of videos; let i = index"
+        #videoItem
+        class="shorts-container"
+        [attr.data-video-id]="video?.id"
       >
-        <!-- <video #videoPlayer controls autoplay muted width="100%"></video> -->
-        <iframe
-          *ngIf="video?.safeUrl"
-          [id]="video?.videoId"
-          [src]="video?.safeUrl"
-          [style.height]="iframeHeight"
-          width="100%"
-          frameborder="0"
-          allow="accelerometer;autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-        <div class="iframe-overlay bg-dark ml-4" [ngStyle]="{ top: overlayClass}">
-          <div class="like-dislike-share-container">
-            <button class="like-btn">
-              <i class="fa-regular fa-thumbs-up"></i>
-            </button>
-            <button class="dislike-btn">
-              <i class="fa-regular fa-thumbs-down"></i>
-            </button>
-            <button class="dislike-btn">
-              <i class="fa fa-share"></i>
-            </button>
-          </div>
-          <div class="w-80 px-2">
-            <div class="player-name text-truncate">
-              {{getTitleWithoutHashtags(video?.title)}}
+        <div
+          class="iframe-wrapper"
+          (touchstart)="enableAudio()"
+          [id]="videos.length - 3 == i ? 'loadMore' : ''"
+        >
+          <!-- <video #videoPlayer controls autoplay muted width="100%"></video> -->
+          <iframe
+            *ngIf="video?.safeUrl"
+            [id]="video?.videoId"
+            [src]="video?.safeUrl"
+            [style.height]="iframeHeight"
+            width="100%"
+            frameborder="0"
+            allow="accelerometer;autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+          <div
+            class="iframe-overlay bg-dark ml-4"
+            [ngStyle]="{ top: overlayClass }"
+          >
+            <div class="like-dislike-share-container">
+              <button class="like-btn">
+                <i class="fa-regular fa-thumbs-up"></i>
+              </button>
+              <button class="dislike-btn">
+                <i class="fa-regular fa-thumbs-down"></i>
+              </button>
+              <button class="dislike-btn">
+                <i class="fa fa-share"></i>
+              </button>
             </div>
-            <div class="tags-container">
-              <span
-                *ngFor="let tag of getHashtags(video?.title)"
-                class="tag-chip rounded"
-                [ngClass]="'category'"
-                >{{ tag }}</span
-              >
+            <div class="w-80 px-2">
+              <div class="player-name text-truncate">
+                {{ getTitleWithoutHashtags(video?.title) }}
+              </div>
+              <div class="tags-container">
+                <span
+                  *ngFor="let tag of getHashtags(video?.title)"
+                  class="tag-chip rounded"
+                  [ngClass]="'category'"
+                  >{{ tag }}</span
+                >
+              </div>
             </div>
-          </div>
-          <div class="profile-icon py-1" *ngIf="video?.thumbnail">
-            <img [src]="video?.thumbnail" alt="Player profile" />
+            <div class="profile-icon py-1" *ngIf="video?.thumbnail">
+              <img [src]="video?.thumbnail" alt="Player profile" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #loader>
+      <div class="loader" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+          <defs>
+            <path id="left-motion-path" d="M30,100 L92,100" />
+            <path id="right-motion-path" d="M170,100 L108,100" />
+          </defs>
+
+          <rect x="0.5" y="0.5" fill="black" />
+
+          <ellipse rx="8" ry="8" fill="red">
+            <animateMotion
+              repeatCount="indefinite"
+              calcMode="spline"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              keyPoints="0.5; 0.35; 1; 1; 0; 0.5; 0.5"
+              keySplines="0, 0.8, 1, 1; 0.8, 0, 1, 1; 0, 0, 1, 1; 0.42, 0, 0.58, 1; 0.42, 0, 0.58, 1; 0, 0, 1, 1"
+            >
+              <mpath href="#left-motion-path" />
+            </animateMotion>
+
+            <animate
+              attributeName="rx"
+              repeatCount="indefinite"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              values="8; 8.4; 8; 8; 7.6; 8; 8"
+            />
+
+            <animate
+              attributeName="ry"
+              repeatCount="indefinite"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              values="8; 7.6; 8; 8; 8.4; 8; 8"
+            />
+          </ellipse>
+
+          <ellipse rx="8" ry="8" fill="red">
+            <animateMotion
+              repeatCount="indefinite"
+              calcMode="spline"
+              begin="-1000ms"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              keyPoints="0.5; 0.35; 1; 1; 0; 0.5; 0.5"
+              keySplines="0, 0.8, 1, 1; 0.8, 0, 1, 1; 0, 0, 1, 1; 0.42, 0, 0.58, 1; 0.42, 0, 0.58, 1; 0, 0, 1, 1"
+            >
+              <mpath href="#right-motion-path" />
+            </animateMotion>
+
+            <animate
+              attributeName="rx"
+              repeatCount="indefinite"
+              begin="-1000ms"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              values="8; 8.4; 8; 8; 7.6; 8; 8"
+            />
+
+            <animate
+              attributeName="ry"
+              repeatCount="indefinite"
+              begin="-1000ms"
+              dur="2000ms"
+              keyTimes="0; 0.1; 0.2; 0.7; 0.8; 0.95; 1"
+              values="8; 7.6; 8; 8; 8.4; 8; 8"
+            />
+          </ellipse>
+        </svg>
+      </div>
+    </ng-template>
   </div>
 </div>
