@@ -68,30 +68,31 @@ getYoutubeData = async (req, res) => {
 
     // Save videos to the database
     for (const video of videos) {
-      if (!video.videoId) {
-        console.warn("Skipping video with missing videoId:", video);
-        continue;
-      }
-      await Short.findOneAndUpdate(
-        { videoId: video.videoId },
-        {
-          title: video.title,
-          description: video.description,
-          thumbnailUrl: video.thumbnail,
-          videoId: video.videoId,
-          publishedAt: video.publishedAt,
-          channelTitle: video.channelTitle,
-          source: "youtube",
-          searchQuery: searchCatagory,
-          filter: filterType,
-        },
-        {
-          upsert: true,
-          new: true,
-        }
-      );
-      return videos;
+      // if (!video.videoId) {
+      //   console.warn("Skipping video with missing videoId:", video);
+      //   continue;
+      // }
+      // await Short.findOneAndUpdate(
+      //   { videoId: video.videoId },
+      //   {
+      //     title: video.title,
+      //     description: video.description,
+      //     thumbnailUrl: video.thumbnail,
+      //     videoId: video.videoId,
+      //     publishedAt: video.publishedAt,
+      //     channelTitle: video.channelTitle,
+      //     source: "youtube",
+      //     searchQuery: searchCatagory,
+      //     filter: filterType,
+      //   },
+      //   {
+      //     upsert: true,
+      //     new: true,
+      //   }
+      // );
 }
+return videos;
+
 }
 
 const getShorts = async (req, res) => {
