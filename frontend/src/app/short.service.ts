@@ -32,7 +32,7 @@ export class ShortService {
   // Get YouTube Shorts
   getYoutubeShort(query: string,data:any,filter:string): Observable<any> {
     return this.http
-      .post(`${this.ytUrl}`,{data:data,query:query,filter:filter} ,{ observe: "response" })
+      .post(`${this.ytUrl}`,{data:data,query:query,filter:filter} )
       .pipe(
         map((response: any) => {
           return {

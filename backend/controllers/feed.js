@@ -25,7 +25,6 @@ getYoutubeData = async (req, res) => {
   youtubeSearchQuery = req?.body?.query;
   filterType = req?.body?.filter;
   searchCatagory = req?.body?.data;
-  const publishedAfter = new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(); // Last 7 days
       const apiKey = getCurrentApiKey();
       console.log("Using API key:", apiKey);
       const url =
@@ -57,7 +56,6 @@ getYoutubeData = async (req, res) => {
     let response = await axios.get(url);
     // Validate and map the response
     console.log("Response status:", response);
-    
     const videos = response.data.items.map((video) => ({
       videoId: video?.id?.videoId || null,
       title: video?.snippet?.title || "No title",
@@ -74,24 +72,24 @@ getYoutubeData = async (req, res) => {
         console.warn("Skipping video with missing videoId:", video);
         continue;
       }
-      // await Short.findOneAndUpdate(
-      //   { videoId: video.videoId },
-      //   {
-      //     title: video.title,
-      //     description: video.description,
-      //     thumbnailUrl: video.thumbnail,
-      //     videoId: video.videoId,
-      //     publishedAt: video.publishedAt,
-      //     channelTitle: video.channelTitle,
-      //     source: "youtube",
-      //     searchQuery: searchCatagory,
-      //     filter: filterType,
-      //   },
-      //   {
-      //     upsert: true,
-      //     new: true,
-      //   }
-      // );
+      await Short.findOneAndUpdate(
+        { videoId: video.videoId },
+        {
+          title: video.title,
+          description: video.description,
+          thumbnailUrl: video.thumbnail,
+          videoId: video.videoId,
+          publishedAt: video.publishedAt,
+          channelTitle: video.channelTitle,
+          source: "youtube",
+          searchQuery: searchCatagory,
+          filter: filterType,
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
       return videos;
 }
 }
