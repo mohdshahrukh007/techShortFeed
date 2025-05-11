@@ -20,7 +20,6 @@ const getCurrentApiKey = () => YOUTUBE_API_KEYS[currentKeyIndex];
 const rotateApiKey = () => {
   currentKeyIndex = (currentKeyIndex + 1) % YOUTUBE_API_KEYS.length;
 };
-
 getYoutubeData = async (req, res) => {
   youtubeSearchQuery = req?.body?.query;
   filterType = req?.body?.filter;
