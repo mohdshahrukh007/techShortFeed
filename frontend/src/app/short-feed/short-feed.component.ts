@@ -63,21 +63,25 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.refreshDiv();
       this.cdr.detectChanges();
       // this.combinedSearch = null; // Clear combinedSearch on new filter
-      const searchQueryHash = JSON.stringify(localStorage.getItem("filters")) || "";
+      const searchQueryHash = localStorage.getItem("filters") || "";
       let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
       const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-      let $userInterestCatagory =
-        typeof userInterestCatagory === "object" &&
-          Object.keys(userInterestCatagory).length
-          ? Object.entries(userInterestCatagory)
-            .map(([key, value]) => `${value}`)
-            .join(" ")
-          : "";
-      this.combinedSearch = uniqueHashtags
-        ? uniqueHashtags + " " + $userInterestCatagory
-        : userInterestCatagory + " #shorts";
+      // let $userInterestCatagory =
+      //   typeof userInterestCatagory === "object" &&
+      //     Object.keys(userInterestCatagory).length
+      //     ? Object.entries(userInterestCatagory)
+      //       .map(([key, value]) => `${value}`)
+      //       .join(" ")
+      //     : "";
+      // this.combinedSearch = uniqueHashtags
+      //   ? uniqueHashtags + " " + $userInterestCatagory
+      //   : userInterestCatagory + " #shorts";
+      this.combinedSearch = uniqueHashtags ? uniqueHashtags + " #shorts":'';
+      //now taking as oject 
       this.combinedSearch
-        ? this.fetchShorts(this.combinedSearch)
+      // ? this.fetchShorts(this.combinedSearch,searchQueryHash,$userInterestCatagory)
+      ? this.fetchShorts(this.combinedSearch,searchQueryHash,userInterestCatagory)
+
         : this.router.navigate(["/"]);
     });
   }
@@ -235,21 +239,24 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
   // Build the YouTube query URL based on filters
-  buildQueryUrl(filterSearch: any) {
-    let searchQuery;
-    if (typeof filterSearch) searchQuery = `${filterSearch} `;
-    else
-      searchQuery = `${filterSearch} ${filterSearch?.category} ${filterSearch?.contentType} ${filterSearch?.skillLevel}`;
+  buildQueryUrl(filterSearch: any, userInterestCatagory: any): string {
+    const searchQuery = [
+      // userInterestCatagory.category,
+      // userInterestCatagory.skillLevel,
+      // userInterestCatagory.contentType,
+      filterSearch,
+    ]
+      .filter((item) => item) // Remove undefined or null values
+      .join("|"); // Join with " | "
+  
     return searchQuery;
   }
   overlayClass: any;
 
   // Fetch YouTube Shorts
-  fetchShorts(filterSearch?: any): void {
-    console.log(filterSearch, "filterSearch");
-
-    const searchUrl = this.buildQueryUrl(filterSearch);
-    this.shortService.getYoutubeShort(searchUrl).subscribe((res: any) => {
+  fetchShorts(filterSearch?: any, typeOfDev: any = null, userInterestCatagory?: any): void {
+    const searchUrl = this.buildQueryUrl(filterSearch,userInterestCatagory);
+    this.shortService.getYoutubeShort(searchUrl,typeOfDev,userInterestCatagory).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
         let filteredVideos = [] = this.getVideosinChunks(0, 5); // Initial chunk

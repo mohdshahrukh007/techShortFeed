@@ -4,7 +4,7 @@ const {  getShorts,getReddit } = require('../controllers/feed');
 const router = express.Router();
 
 // ✅ Route to fetch YouTube Shorts
-router.get('/shorts', getShorts);
+router.post('/shorts', getShorts);
 
 // ✅ Route to post data
 router.get('/reddit', getReddit);

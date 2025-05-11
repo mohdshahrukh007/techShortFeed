@@ -12,7 +12,7 @@ import { environment } from "src/environment/environment";
 })
 export class ShortService {
   private redditUrl = environment.apiUrl + "/api/reddit?query=";
-  private ytUrl = environment.apiUrl + "/api/shorts?query=";
+  private ytUrl = environment.apiUrl + "/api/shorts";
   randomKeywords = [
     "tech",
     "javascript",
@@ -30,9 +30,9 @@ export class ShortService {
     // return this.http.get(`${this.redditUrl}${encodeURIComponent(query)}`)
   }
   // Get YouTube Shorts
-  getYoutubeShort(query: string) {
+  getYoutubeShort(query: string,data:any,filter:string): Observable<any> {
     return this.http
-      .get(`${this.ytUrl}${encodeURIComponent(query)}`, { observe: "response" })
+      .post(`${this.ytUrl}`,{data:data,query:query,filter:filter} ,{ observe: "response" })
       .pipe(
         map((response: any) => {
           return {

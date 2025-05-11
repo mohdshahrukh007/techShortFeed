@@ -1,20 +1,36 @@
 const axios = require("axios");
 require("dotenv").config(); // Load .env file
-const { chromium } = require("playwright");
-
-const YOUTUBE_API_KEY =  "AIzaSyAa-roHueJmhR7Ii7IIiPSHDYnopthNxJc"; ///process.env.YOUTUBE_API_KEY;
+// List of YouTube API keys
+const YOUTUBE_API_KEYS = [
+  "AIzaSyDwRdSOdeXHLNJZszerfYGfgQmS0NwVnqg",
+  "AIzaSyCrV-l4SSpFQH6NykCWSABMsXpJ5zsYqpA",
+  "AIzaSyAa-roHueJmhR7Ii7IIiPSHDYnopthNxJc",
+];
 const searchShorts = require("../vService/shortsDataQuery");
-const { Short, Video } = require("../models/shorts");
+const { Short } = require("../models/shorts");
+let searchCatagory = null;
+let filterType = null;
+let youtubeSearchQuery = null;
 
-const getShorts = async (req, res) => {
-  try {
-    const searchQuery = req?.query?.query || "frontend development";
-    console.log(searchQuery);
-    
-    const today = new Date().toISOString();
-    const url =
+let currentKeyIndex = 0; // Start with the first API key
+// Function to get the current API key
+const getCurrentApiKey = () => YOUTUBE_API_KEYS[currentKeyIndex];
+
+// Function to rotate to the next API key
+const rotateApiKey = () => {
+  currentKeyIndex = (currentKeyIndex + 1) % YOUTUBE_API_KEYS.length;
+};
+
+getYoutubeData = async (req, res) => {
+  youtubeSearchQuery = req?.body?.query;
+  filterType = req?.body?.filter;
+  searchCatagory = req?.body?.data;
+  const publishedAfter = new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(); // Last 7 days
+      const apiKey = getCurrentApiKey();
+      console.log("Using API key:", apiKey);
+      const url =
       `https://www.googleapis.com/youtube/v3/search?part=snippet` +
-      `&q=${encodeURIComponent(searchQuery)}` +
+      `&q=${encodeURIComponent(youtubeSearchQuery)}` +
       `&type=video` +
       `&videoDuration=short` +
       `&maxResults=20` +
@@ -24,35 +40,101 @@ const getShorts = async (req, res) => {
       `&relevanceLanguage=en` +
       `&regionCode=US` +
       `&videoEmbeddable=true` +
-      `&key=${YOUTUBE_API_KEY}1`;
+      `&key=${apiKey}`;
+      // `https://www.googleapis.com/youtube/v3/search?part=snippet` +
+      // `&q=${encodeURIComponent(youtubeSearchQuery)}` +
+      // `&type=video` +
+      // `&videoDuration=short` +
+      // `&maxResults=20` +
+      // `&videoDefinition=high` +
+      // `&order=date` +  
+      // `&safeSearch=moderate` +
+      // `&relevanceLanguage=en` +
+      // `&regionCode=US` +
+      // `&videoEmbeddable=true` +
+      // `&key=${apiKey}`;
 
-    const response = await axios.get(url);
-
+    let response = await axios.get(url);
+    // Validate and map the response
+    console.log("Response status:", response);
+    
     const videos = response.data.items.map((video) => ({
-      videoId: video.id.videoId,
-      title: video.snippet.title,
-      description: video.snippet.description,
-      thumbnail: video.snippet.thumbnails.high.url,
-      channelTitle: video.snippet.channelTitle,
-      publishedAt: video.snippet.publishedAt,
-      liveBroadcastContent: video.snippet.liveBroadcastContent,
+      videoId: video?.id?.videoId || null,
+      title: video?.snippet?.title || "No title",
+      description: video?.snippet?.description || "No description",
+      thumbnail: video?.snippet?.thumbnails?.high?.url || "",
+      channelTitle: video?.snippet?.channelTitle || "Unknown channel",
+      publishedAt: video?.snippet?.publishedAt || "Unknown date",
+      liveBroadcastContent: video?.snippet?.liveBroadcastContent || "none",
     }));
 
-    // ✅ Save videos to MongoDB, update if they already exist
+    // Save videos to the database
     for (const video of videos) {
-      await Short.findOneAndUpdate({ videoId: video.videoId }, video, {
-        upsert: true,
-        new: true,
-      });
-    }
+      if (!video.videoId) {
+        console.warn("Skipping video with missing videoId:", video);
+        continue;
+      }
+      // await Short.findOneAndUpdate(
+      //   { videoId: video.videoId },
+      //   {
+      //     title: video.title,
+      //     description: video.description,
+      //     thumbnailUrl: video.thumbnail,
+      //     videoId: video.videoId,
+      //     publishedAt: video.publishedAt,
+      //     channelTitle: video.channelTitle,
+      //     source: "youtube",
+      //     searchQuery: searchCatagory,
+      //     filter: filterType,
+      //   },
+      //   {
+      //     upsert: true,
+      //     new: true,
+      //   }
+      // );
+      return videos;
+}
+}
 
-    res.status(200).json(videos);
-  } catch (error) {
-    console.error("🔥 Quota exceeded or API error:", error.message, "Fetching data from the database...");
+const getShorts = async (req, res) => {
+  try{
+    let v = await getYoutubeData(req, res)
+    res.status(200).json(v);
+} catch (error) {
+
+  rotateApiKey();
+    console.error(
+      "🔥 Quota exceeded or API error:",
+      error.message,
+      "Fetching data from the database..."
+    );
 
     try {
-      // ✅ Fallback to DB
-      const videosFromDB = await searchShorts(req?.query?.query);
+      // Fallback to DB
+      const videosFromDB = await searchShorts(searchCatagory);
+      console.log("Fallback data from DB:", videosFromDB.length);
+
+      for (const video of videosFromDB) {
+        if (!video.videoId) {
+          // console.warn("Skipping video with missing videoId from DB:", video);
+          continue;
+        }
+
+        // await Short.findOneAndUpdate(
+        //   { youtubeVideoId: video.videoId },
+        //   {
+        //     title: video?.title,
+        //     description: video.description,
+        //     thumbnailUrl: video.thumbnails?.high?.url || "",
+        //     youtubeVideoId: video.videoId,
+        //     publishedAt: video.publishedAt,
+        //     channelTitle: video.channelTitle,
+        //     source: "youtube",
+        //     searchQuery: searchCatagory,
+        //     filter: filterType,
+        //   }
+        // );
+      }
 
       if (videosFromDB.length > 0) {
         console.log("✅ Fetched from DB", videosFromDB.length);
@@ -67,7 +149,6 @@ const getShorts = async (req, res) => {
     }
   }
 };
-
 
 const getShortsviaScrapCall = async (keyword, limit = 5) => {
   const browser = await chromium.launch({ headless: false }); // 🔥 Use headless: false for debugging
@@ -154,13 +235,15 @@ const getScrap = async (req, res) => {
 const getReddit = async (req, res) => {
   const keyword = req.query || "javascript";
   const limit = parseInt(req.query.limit) || 2000;
-  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(keyword)}&type=link&sort=relevance&limit=${limit}&restrict_sr=on&t=all&raw_json=1`;
+  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(
+    keyword
+  )}&type=link&sort=relevance&limit=${limit}&restrict_sr=on&t=all&raw_json=1`;
   try {
     const response = await axios.get(url);
-    res.status(200).json({data: response.data.data});
+    res.status(200).json({ data: response.data.data });
   } catch (error) {
     console.error("❌ Error fetching Reddit data:", error.message);
     res.status(500).json({ error: "Failed to fetch Reddit data" });
   }
-}
-module.exports = { getShorts, getScrap ,getReddit};
+};
+module.exports = { getShorts, getScrap, getReddit };

@@ -50,7 +50,27 @@ export class FeedserviceService {
           "CodingRounds",
           "MockInterviews",
           "CrackingTheCode",
-          "TechCareerAdvice",
+          // "TechCareerAdvice",
+          // Added channels
+          // "Kevin Powell",
+          // "The Net Ninja",
+          // "Traversy Media",
+          // "Web Dev Simplified",
+          // "freeCodeCamp.org",
+          // "DesignCourse",
+          // "Figma",
+          // "CharliMarieTV",
+          // "Ben Awad",
+          // "Codevolution",
+          // "Academind",
+          // "Jhey Tompkins",
+          // "Adam Argyle",
+          // "Fireship",
+          // "Build With Angga",
+          // "Coding in Public",
+          // "CodeSTACKr",
+          // "Ania Kubów",
+          // "Simon Grimm",
         ],
       },
 
@@ -88,6 +108,26 @@ export class FeedserviceService {
           "WebDevelopment",
           "CSS",
           "HTML",
+          // Added channels
+          // "Kevin Powell",
+          // "The Net Ninja",
+          // "Traversy Media",
+          // "Web Dev Simplified",
+          // "freeCodeCamp.org",
+          // "DesignCourse",
+          // "Figma",
+          // "CharliMarieTV",
+          // "Ben Awad",
+          // "Codevolution",
+          // "Academind",
+          // "Jhey Tompkins",
+          // "Adam Argyle",
+          // "Fireship",
+          // "Build With Angga",
+          // "Coding in Public",
+          // "CodeSTACKr",
+          // "Ania Kubów",
+          // "Simon Grimm",
         ],
       },
       {
@@ -405,6 +445,9 @@ export class FeedserviceService {
     if (dev) {
         // Shuffle the hashtags array
         const shuffledHashtags = dev.hashtags.sort(() => Math.random() - 0.5);
+        console.log(shuffledHashtags);
+        
+        // Add a space after each "|"
         return shuffledHashtags.join("|");
     }
     return "";

@@ -13,8 +13,8 @@ export class ShortFilterComponent implements OnInit {
   // Filter state
   selectedTechnology: string = "Angular";
   SkillsFilter: string = "";
-  selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "beginner";
-  selectedContentType: string = "";
+  selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "advanced";
+  selectedContentType: string = "Tips & Tricks";
   selectedSubfilter: string = "";
 
   // User-specific interests (pulled from the service)
@@ -154,14 +154,11 @@ export class ShortFilterComponent implements OnInit {
       category: this.selectedTechnology,
       skillLevel: this.selectedSkillLevel,
       contentType: this.selectedContentType,
-      subfilter: this.selectedSubfilter,
+      // subfilter: this.selectedSubfilter,
     };
-
-    console.log("Filters:", filters);
-
     // Save as an object to localStorage
     localStorage.setItem("userFilters", JSON.stringify(filters));
-    
+    localStorage.removeItem("removedIframes") 
     // Send filters to feed service
     this.feedService.setFilter(filters);
   }
