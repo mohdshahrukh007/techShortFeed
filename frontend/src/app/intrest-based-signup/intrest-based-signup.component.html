@@ -8,11 +8,11 @@
                 
                 <h1 class="form-title">Create your account</h1>
                 
-                <div class="text-center welcome-message">
+                <div class="text-center welcome-message font-monospace">
                 <p>Tell us what you're passionate about so we can personalize your feed</p>
                 </div>
                 
-                <div class="category-filter d-block p-1 m-2">
+                <div class="py-2 category-filter d-block p-1 my-2">
                 <button class="filter-btn" [class.active]="activeFilter === 'dev'" (click)="filterInterests('dev')">Development</button>
                 <button class="filter-btn" [class.active]="activeFilter === 'data'" (click)="filterInterests('data')">Data</button>
                 <button class="filter-btn" [class.active]="activeFilter === 'design'" (click)="filterInterests('design')">Design</button>

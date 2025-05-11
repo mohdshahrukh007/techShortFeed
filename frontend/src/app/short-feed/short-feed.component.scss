@@ -59,8 +59,12 @@ iframe {
 
 .video-wrapper {
   scroll-snap-type: y mandatory;
-  overflow-y: scroll;
-  height: 100vh;
+    overflow-y: scroll;
+    height: 100vh;
+    background: #333;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #000;
+    border-radius: 10px;
 }
 
 .shorts-container {

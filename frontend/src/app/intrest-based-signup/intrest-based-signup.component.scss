@@ -7,139 +7,162 @@
   --text-secondary: rgba(255, 255, 255, 0.7);
   --border: rgba(255, 255, 255, 0.1);
 }
-
-body {
-  background-color: var(--background);
-  color: var(--text);
-  font-family: "Inter", sans-serif;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.category-filter{
-  overflow: hidden;
-  background-color: black;
-  font-size: small;
-  text-wrap: normal;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+ 
 .signup-card {
-  height: 100vh;
-  background-color: var(--card-bg);
-  width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  background: #111;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
 }
+
+/* Logo with gradient text */
+.logo span {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #4d1f7d, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Form title */
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Welcome message */
+.welcome-message p {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* Category filter buttons */
+.category-filter .filter-btn {
+  margin: 0.2rem;
+  padding: 0.4rem 1rem;
+  border-radius: 24px;
+  border: 1px solid #333;
+  background: #1e1e1e;
+  color: white;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.category-filter .filter-btn.active {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: white;
+  box-shadow: 0 0 6px #6a11cb;
+}
+
+.category-filter .filter-btn:hover {
+  border-color: #6a11cb;
+}
+
+/* Interests container (glass effect) */
 .interests-container {
   display: flex;
   flex-wrap: wrap;
-  max-height: 20rem;
-  overflow: hidden;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 30px;
-  position: relative;
-  z-index: 1;
-}
-.filter-btn {
-  display: inline-block;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.04);
   border-radius: 16px;
-  background: black;
-
-  margin-right: 6px;
-  margin-bottom: 8px;
-  cursor: pointer;
-}
-
-.filter-btn.active {
-  background: var(--primary);
-}
-.logo span {
-  font-size: 24px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #3183ff, #5644ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 1px;
-}
-
-.glow {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  filter: blur(60px);
-}
-
-.glow-1 {
-  background-color: var(--primary);
-  top: -30px;
-  left: -30px;
-}
-
-.glow-2 {
-  background-color: var(--secondary);
-  bottom: -30px;
-  right: -30px;
-}
-
-.logo {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
+  padding: 1rem;
+  backdrop-filter: blur(6px);
   margin-bottom: 1rem;
 }
 
-.form-title {
-  text-align: center;
-  font-size: 20px;
-  margin-bottom: 1rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-}
-
+/* Interest tag/chip */
 .interest-tag {
-  display: inline-block;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  color: var(--text-secondary);
-  margin-right: 6px;
-  margin-bottom: 8px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 24px;
+  border: 1px solid #444;
+  background: #222;
+  color: white;
   cursor: pointer;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.interest-tag:hover {
+  border-color: #6a11cb;
 }
 
 .interest-tag.selected {
-  background-color: var(--primary);
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
   color: white;
+  box-shadow: 0 0 6px #6a11cb;
 }
 
+/* Icon spacing */
+.interest-icon {
+  margin-right: 0.3rem;
+}
+
+/* Progress bar */
+.interest-progress .progress-bar {
+  background: #333;
+  border-radius: 24px;
+  height: 6px;
+  margin-top: 0.3rem;
+  overflow: hidden;
+}
+
+.interest-progress .progress-fill {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Signup button */
 .signup-btn {
-  position: absolute;
-  bottom: 0;
-  background-color: var(--primary);
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border-radius: 32px;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
   color: white;
   border: none;
-  padding: 15px;
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 3rem;
-  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 20px rgba(106,17,203,0.4);
+  transition: all 0.2s;
+}
+
+.signup-btn:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+
+.signup-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000; /* Black track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333; /* Dark grey thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Slightly lighter on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #000;
 }
