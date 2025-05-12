@@ -1,6 +1,6 @@
 {
-  "name": "youtube-shorts-ui",
-  "short_name": "youtube-shorts-ui",
+  "short_name": "Tech Reel",
+  "name": "Tech Reel",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
