@@ -128,7 +128,6 @@ export class ShortFilterComponent implements OnInit {
         }
         break;
     }
-    console.log("Selected", type, ":", value);
     
   } 
 

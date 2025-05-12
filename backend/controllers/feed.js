@@ -20,7 +20,7 @@ const getCurrentApiKey = () => YOUTUBE_API_KEYS[currentKeyIndex];
 const rotateApiKey = () => {
   currentKeyIndex = (currentKeyIndex + 1) % YOUTUBE_API_KEYS.length;
 };
-getYoutubeData = async (req, res) => {
+const getYoutubeData = async (req, res) => {
   youtubeSearchQuery = req?.body?.query;
   filterType = req?.body?.filter;
   searchCatagory = req?.body?.data;
@@ -54,8 +54,7 @@ getYoutubeData = async (req, res) => {
 
     let response = await axios.get(url);
     // Validate and map the response
-    console.log("Response status:", response);
-    const videos = response.data.items.map((video) => ({
+    let videos = response.data.items.map((video) => ({
       videoId: video?.id?.videoId || null,
       title: video?.snippet?.title || "No title",
       description: video?.snippet?.description || "No description",
@@ -64,9 +63,10 @@ getYoutubeData = async (req, res) => {
       publishedAt: video?.snippet?.publishedAt || "Unknown date",
       liveBroadcastContent: video?.snippet?.liveBroadcastContent || "none",
     }));
+    console.log("Response status:", videos.length);
 
     // Save videos to the database
-    for (const video of videos) {
+    // for (const video of videos) {
       // if (!video.videoId) {
       //   console.warn("Skipping video with missing videoId:", video);
       //   continue;
@@ -89,7 +89,7 @@ getYoutubeData = async (req, res) => {
       //     new: true,
       //   }
       // );
-}
+// }
 return videos;
 
 }
@@ -97,8 +97,10 @@ return videos;
 const getShorts = async (req, res) => {
   try{
     let v = await getYoutubeData(req, res)
+    console.log("Fetched videos:", v.length);
     res.status(200).json(v);
 } catch (error) {
+console.log("Error fetching videos:", error);
 
   rotateApiKey();
     console.error(

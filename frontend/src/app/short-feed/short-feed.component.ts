@@ -66,23 +66,22 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       const searchQueryHash = localStorage.getItem("filters") || "";
       let getHashtags = this.feedserviceService.getHashtags(searchQueryHash && searchQueryHash?.replace(/"/g, ""));
       const uniqueHashtags = Array.from(new Set(getHashtags.split(" "))).join(" ");
-      // let $userInterestCatagory =
-      //   typeof userInterestCatagory === "object" &&
-      //     Object.keys(userInterestCatagory).length
-      //     ? Object.entries(userInterestCatagory)
-      //       .map(([key, value]) => `${value}`)
-      //       .join(" ")
-      //     : "";
-      // this.combinedSearch = uniqueHashtags
-      //   ? uniqueHashtags + " " + $userInterestCatagory
-      //   : userInterestCatagory + " #shorts";
-      this.combinedSearch = uniqueHashtags ? uniqueHashtags + " #shorts":'';
+      let userInterestfilter = {...userInterestCatagory}
+      let $userInterestCatagory =
+        typeof userInterestCatagory === "object" &&
+          Object.keys(userInterestCatagory).length
+          ? Object.entries(userInterestCatagory)
+            .map(([key, value]) => `${value}`)
+            .join(" ")
+          : "";
+      this.combinedSearch = uniqueHashtags
+        ? uniqueHashtags + " " + $userInterestCatagory
+        : userInterestCatagory;
+      this.combinedSearch = uniqueHashtags ? searchQueryHash + " "+uniqueHashtags : $userInterestCatagory;
       //now taking as oject 
-      this.combinedSearch
+      // this.combinedSearch
       // ? this.fetchShorts(this.combinedSearch,searchQueryHash,$userInterestCatagory)
-      ? this.fetchShorts(this.combinedSearch,searchQueryHash,userInterestCatagory)
-
-        : this.router.navigate(["/"]);
+      this.combinedSearch ? this.fetchShorts(this.combinedSearch, searchQueryHash,userInterestfilter) : this.router.navigate(["/"]);
     });
   }
   refreshDiv(): void {
@@ -241,22 +240,22 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
   // Build the YouTube query URL based on filters
   buildQueryUrl(filterSearch: any, userInterestCatagory: any): string {
     const searchQuery = [
-      // userInterestCatagory.category,
-      // userInterestCatagory.skillLevel,
-      // userInterestCatagory.contentType,
+      userInterestCatagory.category,
+      userInterestCatagory.skillLevel,
+      userInterestCatagory.contentType,
       filterSearch,
     ]
       .filter((item) => item) // Remove undefined or null values
       .join("|"); // Join with " | "
-  
+
     return searchQuery;
   }
   overlayClass: any;
 
   // Fetch YouTube Shorts
   fetchShorts(filterSearch?: any, typeOfDev: any = null, userInterestCatagory?: any): void {
-    const searchUrl = this.buildQueryUrl(filterSearch,userInterestCatagory);
-    this.shortService.getYoutubeShort(searchUrl,typeOfDev,userInterestCatagory).subscribe((res: any) => {
+    const searchUrl = this.buildQueryUrl(filterSearch, userInterestCatagory);
+    this.shortService.getYoutubeShort(searchUrl, typeOfDev, userInterestCatagory).subscribe((res: any) => {
       if (res.status == 200) {
         this.dups = res.body; //this.mapVideoData(res.body)
         let filteredVideos = [] = this.getVideosinChunks(0, 5); // Initial chunk
@@ -398,14 +397,14 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log("No more videos to load.");
       return;
     }
-  
+
     if (this.dups?.length > this.videos.length) {
       const start = this.videos.length;
       const end = start + 5;
       this.videos.push(...this.getVideosinChunks(start, end));
       this.cdr.detectChanges();
       // Wait for DOM updates
-      setTimeout(() => {this.setupIntersectionObserver()}, 100);
+      setTimeout(() => { this.setupIntersectionObserver() }, 100);
     } else {
       // If no more in dups → fetch new batch
       if (this.combinedSearch) {
@@ -421,12 +420,12 @@ export class ShortFeedComponent implements OnInit, AfterViewInit, OnDestroy {
               this.playVideo(iframe);
             }
           }
-          
+
         }, 200);
       }
     }
   }
-  
+
   scrollIframeToTop(iframe: HTMLIFrameElement): void {
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.scrollTo(0, 0); // Scroll to the top-left corner
