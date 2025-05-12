@@ -4,7 +4,6 @@ const searchShorts = async (query) => {
   try {
     // Use Mongoose's `find` method to search for shorts in the database
     console.log("Searching for shorts with query:", query);
-
     const results = await Short.find({ searchQuery: { $regex: query, $options: "i" } })
       .sort({ updatedAt: -1 }) // Sort by `updatedAt` in descending order (most recent first)
       .exec(); // Execute the query
