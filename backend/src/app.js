@@ -22,9 +22,20 @@ const setContext = (req, res, next) => {
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
 app.use("/api", sampleRoutes);
+// Define schema & model
+const itemSchema = new mongoose.Schema({ data: Object }, { timestamps: true });
+const Item = mongoose.model("Item", itemSchema);
 
-app.post("/save", async (req, res) => res.json(await new Item({ data: req.body }).save()));
-app.get("/get", async (req, res) => res.json(await Item.find()));
+app.post("/save", async (req, res) => {
+  const saved = await new Item({ data: req.body }).save();
+  res.json(saved);
+});
+
+app.get("/get", async (req, res) => {
+  const items = await Item.find();
+  res.json(items);
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'API is working!' });
 });
