@@ -22,6 +22,9 @@ const setContext = (req, res, next) => {
 app.use(setContext);
 const sampleRoutes = require("../routes/sampleRoutes");
 app.use("/api", sampleRoutes);
+
+app.post("/save", async (req, res) => res.json(await new Item({ data: req.body }).save()));
+app.get("/get", async (req, res) => res.json(await Item.find()));
 app.get('/', (req, res) => {
   res.json({ message: 'API is working!' });
 });
