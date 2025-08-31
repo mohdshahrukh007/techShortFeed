@@ -66,30 +66,30 @@ const getYoutubeData = async (req, res) => {
     console.log("Response status:", videos.length);
 
     // Save videos to the database
-    // for (const video of videos) {
-      // if (!video.videoId) {
-      //   console.warn("Skipping video with missing videoId:", video);
-      //   continue;
-      // }
-      // await Short.findOneAndUpdate(
-      //   { videoId: video.videoId },
-      //   {
-      //     title: video.title,
-      //     description: video.description,
-      //     thumbnailUrl: video.thumbnail,
-      //     videoId: video.videoId,
-      //     publishedAt: video.publishedAt,
-      //     channelTitle: video.channelTitle,
-      //     source: "youtube",
-      //     searchQuery: searchCatagory,
-      //     filter: filterType,
-      //   },
-      //   {
-      //     upsert: true,
-      //     new: true,
-      //   }
-      // );
-// }
+    for (const video of videos) {
+      if (!video.videoId) {
+        console.warn("Skipping video with missing videoId:", video);
+        continue;
+      }
+      await Short.findOneAndUpdate(
+        { videoId: video.videoId },
+        {
+          title: video.title,
+          description: video.description,
+          thumbnailUrl: video.thumbnail,
+          videoId: video.videoId,
+          publishedAt: video.publishedAt,
+          channelTitle: video.channelTitle,
+          source: "youtube",
+          searchQuery: searchCatagory,
+          filter: filterType,
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+}
 return videos;
 
 }
@@ -120,20 +120,7 @@ console.log("Error fetching videos:", error);
           continue;
         }
 
-        // await Short.findOneAndUpdate(
-        //   { youtubeVideoId: video.videoId },
-        //   {
-        //     title: video?.title,
-        //     description: video.description,
-        //     thumbnailUrl: video.thumbnails?.high?.url || "",
-        //     youtubeVideoId: video.videoId,
-        //     publishedAt: video.publishedAt,
-        //     channelTitle: video.channelTitle,
-        //     source: "youtube",
-        //     searchQuery: searchCatagory,
-        //     filter: filterType,
-        //   }
-        // );
+      
       }
 
       if (videosFromDB.length > 0) {

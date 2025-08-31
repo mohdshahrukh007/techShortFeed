@@ -14,13 +14,13 @@ export class ShortFilterComponent implements OnInit {
   selectedTechnology: string = "Angular";
   SkillsFilter: string = "";
   selectedSkillLevel: "beginner" | "intermediate" | "advanced" = "advanced";
-  selectedContentType: string = "Tips & Tricks";
+  selectedContentType: string = "Interview Question Snippet";
   selectedSubfilter: string = "";
 
   // User-specific interests (pulled from the service)
   technologies: string[] = [];
   skillLevels: ("beginner" | "intermediate" | "advanced")[] = ["beginner", "intermediate", "advanced"];
-  contentTypes: string[] = ["Tutorials", "Reviews", "News", "Tips & Tricks", "Best Practices", "Interview Question Snippet"];
+  contentTypes: string[] = ["Best Practices", "Interview Question Snippet", "Tips & Tricks", "Tutorials", "Reviews", "News"];
 
   // Dynamic filters
   filters: { [key: string]: { [key: string]: string[] } } = {
@@ -82,6 +82,7 @@ export class ShortFilterComponent implements OnInit {
   ngOnInit(): void {
     // Load user interests from the service (like user signup)
     this.SkillsFilter = localStorage.getItem("filters") || ""; // Use first technology if available
+    this.applyFilters();
     this.updateSubfilters(); // Initialize subfilters based on the first interest
   }
   toggleSidebar(){
