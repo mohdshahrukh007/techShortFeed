@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+		"name": "TechShorts App API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Invoices",
+			"item": [
+				{
+					"name": "Create Invoice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"INV-{{$timestamp}}\",\n    \"date\": \"{{$isoTimestamp}}\",\n    \"customerName\": \"Jane Doe\",\n    \"items\": [\n        {\n            \"id\": \"ITEM-001\",\n            \"name\": \"Patar\",\n            \"pricePerDay\": 15,\n            \"quantity\": 2,\n            \"days\": 5,\n            \"total\": 150\n        },\n        {\n            \"id\": \"ITEM-002\",\n            \"name\": \"Shuttering Plate\",\n            \"pricePerDay\": 10,\n            \"quantity\": 10,\n            \"days\": 5,\n            \"total\": 500\n        }\n    ],\n    \"grandTotal\": 650,\n    \"advance\": 150,\n    \"netTotal\": 500\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Invoices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Invoice by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/INV-1756301295235",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"INV-1756301295235"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Invoice by ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerName\": \"Jane Doe (Updated)\",\n    \"advance\": 200,\n    \"netTotal\": 450\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices/INV-1756301295235",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"INV-1756301295235"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Invoice by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/INV-1756301295235",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"INV-1756301295235"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Items (Catalog)",
+			"item": [
+				{
+					"name": "Create Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"patar2\",\n    \"pricePerDay\": 12\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/items/60c72b2f9b1d8c001f8e4c8b",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"items",
+								"60c72b2f9b1d8c001f8e4c8b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item by ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pricePerDay\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/items/60c72b2f9b1d8c001f8e4c8b",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"items",
+								"60c72b2f9b1d8c001f8e4c8b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/items/60c72b2f9b1d8c001f8e4c8b",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"items",
+								"60c72b2f9b1d8c001f8e4c8b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "App Config",
+			"item": [
+				{
+					"name": "Get App Config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/config",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create or Update App Config",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Bharat Store\",\n    \"address\": \"front of nielet\",\n    \"phone\": \"+91 82990 38845\",\n    \"themeColor\": \"#667eea\",\n    \"language\": \"hi\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/config",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

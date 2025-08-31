@@ -5,10 +5,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Configure CORS to allow the custom 'x-user-id' header
 app.use(cors({
   origin: '*', // Allow any origin
-  methods: ["POST", "GET"],
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all methods used in your API
+  allowedHeaders: ["Content-Type", "Authorization", "x-user-id"] // Explicitly allow the custom header
 }));
 const connectDB = require('../models/db');
 // Connect to MongoDB
@@ -19,22 +20,13 @@ const setContext = (req, res, next) => {
   req.context.origin = req.headers.origin || 'unknown';
   next();
 };
+
 app.use(setContext);
+
 const sampleRoutes = require("../routes/sampleRoutes");
-// app.use("/api", sampleRoutes);
-// // Define schema & model
-// const itemSchema = new mongoose.Schema({ data: Object }, { timestamps: true });
-// const Item = mongoose.model("Item", itemSchema);
-
-// app.post("/save", async (req, res) => {
-//   const saved = await new Item({ data: req.body }).save();
-//   res.json(saved);
-// });
-
-// app.get("/get", async (req, res) => {
-//   const items = await Item.find();
-//   res.json(items);
-// });
+const invoiceRoutes = require("../routes/invoiceRoutes");
+app.use("/api", sampleRoutes);
+app.use("/api", invoiceRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'API is working!' });
