@@ -75,23 +75,31 @@ export class ShortFilterComponent implements OnInit {
     private feedService: FeedserviceService,
     private elementRef: ElementRef,
     private router: Router
-  ) {}
+  ) { }
 
   @ViewChild('filterBar') filterBar!: ElementRef;
-  isSidebarOpen:boolean = false
+  isSidebarOpen: boolean = false
   ngOnInit(): void {
     // Load user interests from the service (like user signup)
     this.SkillsFilter = localStorage.getItem("filters") || ""; // Use first technology if available
     this.applyFilters();
+    this.toggleFilters();
+
     this.updateSubfilters(); // Initialize subfilters based on the first interest
   }
-  toggleSidebar(){
+  toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen
   }
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
   }
-  reset(){
+  closeTutorial() {
+    localStorage.setItem('skipTutorial', 'true');
+  }
+  getSkipStatus() {
+    return localStorage.getItem('skipTutorial') === 'true';
+  }
+  reset() {
     this.SkillsFilter = 'Frontend'
     this.selectedSkillLevel = 'beginner'
     this.selectedContentType = ''
@@ -99,7 +107,7 @@ export class ShortFilterComponent implements OnInit {
     localStorage.clear();
     this.router.navigate(['/']); // Navigate to the main page
   }
-  searchQuery:any=""
+  searchQuery: any = ""
   filterSubfilters(searchTerm?: string): void {
     if (!searchTerm) {
       this.updateSubfilters(); // Reset to all subfilters if no search term
@@ -129,10 +137,10 @@ export class ShortFilterComponent implements OnInit {
         }
         break;
     }
-    
-  } 
 
-   
+  }
+
+
   updateSubfilters(): void {
     // If selected technology is a nested category (like Frontend), handle subcategories
     if (this.filters[this.SkillsFilter]) {
@@ -158,7 +166,7 @@ export class ShortFilterComponent implements OnInit {
     };
     // Save as an object to localStorage
     localStorage.setItem("userFilters", JSON.stringify(filters));
-    localStorage.removeItem("removedIframes") 
+    localStorage.removeItem("removedIframes")
     // Send filters to feed service
     this.feedService.setFilter(filters);
   }
